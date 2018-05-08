@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ projects }}
+<p>
+Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user }} {% endfor %}
+</p>
+<p>
+    {% for site in projects.sites.all  %}
+    {{ site }}--
+    {% for step in site.steps.all %}
+        Steps:
+        name :{{ step.name }},
+        order: {{ step.order }},
+        checkklist: {{ step.checklist }}
+        {% endfor %}
+    <br>
+
+    {% endfor %}
+</p>
+</body>
+</html>

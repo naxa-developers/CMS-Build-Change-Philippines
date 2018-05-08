@@ -17,8 +17,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+
 urlpatterns = [
-    path('core/', include('core.urls')),
+    path('core/', include('core.urls', namespace="core")),
+    path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),
     path('api-auth/', include('rest_framework.urls')),
 
