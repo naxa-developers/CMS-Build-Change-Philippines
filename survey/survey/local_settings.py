@@ -18,5 +18,15 @@ INSTALLED_APPS += [
 MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-
-INTERNAL_IPS = '127.0.0.1'
+#
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#         'CACHE': False,
+#         'BUNDLE_DIR_NAME': '/dist/',#('/build/' if DEBUG else '/dist/'),
+#         # 'BUNDLE_DIR_NAME': '/build/',#('/build/' if DEBUG else '/dist/'),
+#         'STATS_FILE': os.path.join(settings.BASE_DIR, 'webpack-stats.json'),
+#         # 'STATS_FILE': os.path.join(settings.BASE_DIR, 'webpack-stats-local.json'),
+#     }
+# }
+#
+# INTERNAL_IPS = '127.0.0.1'

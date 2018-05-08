@@ -1,0 +1,27 @@
+{
+	"name": "datatables",
+	"version": "1.10.4",
+	"main": [
+		"datamedia/js/jquery.dataTables.js",
+		"datamedia/css/jquery.dataTables.css"
+	],
+	"dependencies": {
+		"jquery": ">=1.7.0"
+	},
+	"license": "MIT",
+	"keywords": [
+		"jquery",
+		"datatables",
+		"table",
+		"javascript",
+		"library"
+	],
+	"ignore": [
+		"/.*",
+		"examples",
+		"datamedia/unit_testing",
+		"composer.json",
+		"dataTables.jquery.json",
+		"package.json"
+	]
+}

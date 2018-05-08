@@ -1,0 +1,18 @@
+{% load staticfiles %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+<html>
+  <head>
+ {% render_bundle 'vendor_stylesheets' 'css'  %}
+  {% render_bundle 'main' 'css'  %}
+  </head>
+  <body>
+  <div id="app">
+
+  </div>
+
+    {% render_bundle 'main' 'js' %}
+  </body>
+</html>

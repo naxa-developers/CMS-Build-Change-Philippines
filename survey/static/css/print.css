@@ -1,0 +1,72 @@
+@media print {
+    .report_type_header {
+        background-image: url(../img/rare-bg.jpg) !important;
+        color: #fff !important;
+        text-align: center !important;
+        padding: 12px !important;
+        margin-bottom: 11px !important;
+    }
+    h2.report_type_heading {
+        margin: 0 !important;
+        text-transform: uppercase !important;
+        font-size: 60px !important;
+        font-weight: 700 !important;
+        color: #d8d8d8 !important;
+    }
+    p.report_desc {
+        font-size: 14px !important;
+        margin: 8px auto !important;
+        color: #ababab !important;
+        max-width: 722px !important;
+    }
+    .table>tbody>tr>td,
+    .table>tbody>tr>th,
+    .table>tfoot>tr>td,
+    .table>tfoot>tr>th,
+    .table>thead>tr>td,
+    .table>thead>tr>th {
+        border-top: 0 !important;
+    }
+    .table>thead>tr>th {
+        border-bottom: 0px !important;
+    }
+    h3.campaign_name {
+        margin: 4px 0 6px 0 !important;
+        font-size: 30px !important;
+        font-weight: 600 !important;
+        color: #505050 !important;
+        text-transform: capitalize !important;
+        text-align: center !important;
+    }
+    span.type {
+        display: block;
+        color: rgb(104, 100, 100) !important;
+        font-size: 12px;
+        text-align: center;
+        padding: 4px;
+        text-transform: uppercase;
+    }
+    h4.channel_name {
+        margin: 0;
+        color: #337ab7 !important;
+        margin-bottom: 9px;
+    }
+    thead {
+        display: table-header-group !important;
+        background: #9F9F9F !important;
+        color: #ffffff !important;
+    }
+    table {
+        page-break-inside: auto !important;
+    }
+    tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto !important;
+    }
+    thead {
+        display: table-header-group !important;
+    }
+    tfoot {
+        display: table-footer-group !important;
+    }
+}

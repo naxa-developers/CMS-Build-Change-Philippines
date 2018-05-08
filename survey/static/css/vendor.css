@@ -1,0 +1,16 @@
+@import url("../bower_components/bootstrap/dist/css/bootstrap.css");
+@import url("../bower_components/font-awesome/css/font-awesome.min.css");
+@import url("../vendor/pace/pace.css");
+@import url("../bower_components/animate.css/animate.css");
+@import url("../vendor/pnotify/pnotify.custom.min.css");
+@import url("../vendor/vue-multiselect/vue-multiselect.min.css");
+@import url("../bower_components/owl.carousel/dist/assets/owl.carousel.min.css");
+@import url("~fullcalendar/dist/fullcalendar.css");
+/*
+@import url("../bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css");
+*/
+@import url("../vendor/daterangepicker/daterangepicker.css");
+
+@import url("~element-ui/lib/theme-chalk/index.css");
+
+/*@import '~fullcalendar/dist/fullcalendar.css';	*/
