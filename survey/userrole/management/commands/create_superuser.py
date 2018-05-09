@@ -21,4 +21,4 @@ class Command(BaseCommand):
             self.stdout.write('new super admin role created for email')
 
         else:
-            self.stdout.write('email not found.. "%s"', email_address)
+            self.stdout.write('email not found')

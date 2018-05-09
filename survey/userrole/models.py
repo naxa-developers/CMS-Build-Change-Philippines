@@ -6,7 +6,7 @@ from core.models import Project, Site
 
 class UserRole(models.Model):
     user = models.ForeignKey(User, related_name="user_roles", on_delete=models.CASCADE)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="group_roles")
     project = models.ForeignKey(Project, null=True, blank=True, related_name="project_roles", on_delete=models.SET_NULL)
     site = models.ForeignKey(Site, null=True, blank=True, related_name="site_roles", on_delete=models.SET_NULL)
 

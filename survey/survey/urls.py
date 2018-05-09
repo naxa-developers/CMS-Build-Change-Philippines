@@ -16,9 +16,13 @@ Including another URLconf
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-
+from django.views.generic import TemplateView
+from django.contrib import admin
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('admin/', admin.site.urls),
+    path('', TemplateView.as_view(template_name='home.html')),
     path('core/', include('core.urls', namespace="core")),
     path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),

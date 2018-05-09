@@ -1,23 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-{% for project in projects %}
+{% block content %}
+    {% for project in projects %}
 
     <a href="{% url 'core:project_detail' project.pk %}">{{ project }}</a>
         <a href="{% url 'core:project_update' project.pk %}">Edit</a>
         <a href="{% url 'core:project_delete' project.pk %}">Delete</a>
+
         <a href="{% url 'userrole:userrole_create' project.pk %}">Add Project Manager</a>
 
     <br>
 
-<p>
 {% endfor %}
-    <a href="{% url 'core:project_create' %}">Add Project</a>
+
+<p>
+
+    <a href="{% url 'core:project_create' %}">Add Project</a><br>
+    <a href="{% url 'core:user_create' %}">Create User</a>
+
 </p>
-</body>
-</html>
+{% endblock content %}

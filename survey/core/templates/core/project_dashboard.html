@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% for project in project %}
+    {{ project }}   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
+    {% for site in project.sites.all %}
+        {{ site }}<br>
+    {% endfor %}
+{% endfor %}
+{% endblock content %}

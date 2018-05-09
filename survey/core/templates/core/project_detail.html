@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
 {{ projects }}
 <p>
 Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user }} {% endfor %}
@@ -22,5 +18,4 @@ Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user
 
     {% endfor %}
 </p>
-</body>
-</html>
+{% endblock content %}

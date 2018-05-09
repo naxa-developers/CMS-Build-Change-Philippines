@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load filter_groups %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <p>This is a Home Page</p>
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+
+    {% if request.user|has_group:'Super Admin'%}
+        <p>
+        <a href="{% url 'core:admin_dashboard' %}">Dashboard</a>
+        </p>
+    {% endif %}
+
+    {% if request.user|has_group:'Project Manager'%}
+
+        <p>
+        <a href="{% url 'core:project_dashboard' %}">Project Dashboard</a>
+        </p>
+    {% endif %}
+    <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}
