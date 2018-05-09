@@ -3,3 +3,4 @@ db.sqlite3
 .idea/*
 migrations/*
 node_modules/
+survey/local_settings.py
