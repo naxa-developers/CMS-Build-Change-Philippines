@@ -1,4 +1,6 @@
-{% load static %}
+{% load staticfiles %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,15 +8,18 @@
     <meta charset="UTF-8">
         <title>{% block title %}School{% endblock title %}</title>
 
+    {% render_bundle 'vendor_stylesheets' 'css'  %}
+    {% render_bundle 'main' 'css'  %}
+
 {% block extra_css %}
 {% endblock extra_css %}
 </head>
 <body>
 
  {% block content %}
-
  {% endblock content %}
 
+    {% render_bundle 'main' 'js' %}
 
 {% block extra_script %}
 {% endblock extra_script %}
