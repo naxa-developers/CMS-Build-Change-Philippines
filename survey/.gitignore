@@ -1,7 +1,6 @@
 db.sqlite3
 *.pyc
 .idea/*
-migrations/*
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/dictionaries
@@ -150,7 +149,8 @@ coverage.xml
 
 # Django stuff:
 *.log
-local_settings.py
+survey/local_settings.py
+
 
 # Flask stuff:
 instance/
@@ -199,7 +199,3 @@ package-lock.json
 
 
 webpack-stats-local.json
-=======
-node_modules/
-survey/local_settings.py
->>>>>>> 59e918aae70d277fdec5ab8dcd4a300eacde16e2
