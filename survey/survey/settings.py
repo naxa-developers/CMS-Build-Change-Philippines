@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # local apps
     'core',
     'userrole',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +146,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': False,
+        # 'BUNDLE_DIR_NAME': '/dist/',#('/build/' if DEBUG else '/dist/'),
+        'BUNDLE_DIR_NAME': '/build/',#('/build/' if DEBUG else '/dist/'),
+        # 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-local.json'),
+    }
 }
 
 try:
