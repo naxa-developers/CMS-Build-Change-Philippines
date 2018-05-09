@@ -15,7 +15,7 @@ const channels = require('../vendor/js/websocket.js')
 
 
 
-window.Rare = new Vue({
+window.Survey = new Vue({
   el: '#app',
   template:`
             <div> {{message}}</div>

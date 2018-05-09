@@ -17,9 +17,10 @@
 <body>
 
  {% block content %}
+ <div id="app"></div>
+ {% render_bundle 'main' 'js' %}
  {% endblock content %}
 
-    {% render_bundle 'main' 'js' %}
 
 {% block extra_script %}
 {% endblock extra_script %}
