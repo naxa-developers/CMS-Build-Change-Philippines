@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Site Steps</h3>
+<h4>{{data}}</h4>
+<p>
+
+    <a href="{% url 'core:site_detail' pk %}">Site Detail</a><br>
+
+</p>
+{% endblock content %}

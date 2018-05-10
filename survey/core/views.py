@@ -220,3 +220,14 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             success_url = reverse_lazy('core:project_dashboard')
             return success_url
+
+
+class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
+    """
+    Site Steps View
+    """
+    template_name = "core/site_steps.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(SiteStepsView, self).get_context_data(**kwargs)
+        return data
