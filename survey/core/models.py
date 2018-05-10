@@ -23,5 +23,8 @@ class Step(models.Model):
     order = models.IntegerField()
     checklist = JSONField()
 
+    def project(self):
+        return self.sites.project.id
+
     def __str__(self):
         return self.name

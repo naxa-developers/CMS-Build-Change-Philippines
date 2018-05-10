@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 
 router.register(r'users', viewset.UserViewSet)
 router.register(r'project', viewset.ProjectViewSet, base_name='project-list')
+router.register(r'steps', viewset.StepsViewSet, base_name='steps-list')
 
 urlpatterns = [
     path('', include(router.urls)),
