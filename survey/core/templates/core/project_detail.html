@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{ projects }}
+<h3>{{ projects }}</h3>
 <p>
 Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user }} {% endfor %}
 </p>
 <p>
     {% for site in projects.sites.all  %}
-    {{ site }}--
+    {{ site }}--<a href="{% url 'core:site_update' site.pk %}">Update Site</a>
+
+    <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
+        <input type="submit" value="Delete {{site}}" />
+    </form>
+
     {% for step in site.steps.all %}
         Steps:
         name :{{ step.name }},
@@ -18,4 +23,5 @@ Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user
 
     {% endfor %}
 </p>
+<a href="{% url 'core:site_create' projects.pk %}">Create New Site</a>
 {% endblock content %}

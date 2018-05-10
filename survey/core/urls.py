@@ -12,5 +12,8 @@ urlpatterns = [
     path('user-create/', views.UserCreateView.as_view(), name="user_create"),
     path('dashboard/', views.Dashboard.as_view(), name="admin_dashboard"),
     path('project-dashboard/', views.ProjectDashboard.as_view(), name="project_dashboard"),
-
+    path('site-create/<int:pk>/', views.SiteCreateView.as_view(), name="site_create"),
+    path('site-update/<int:pk>/', views.SiteUpdateView.as_view(), name="site_update"),
+    path('site-list/', views.SiteListView.as_view(), name="site_list"),
+    path('site-delete/<int:pk>/', views.SiteDeleteView.as_view(), name="site_delete")
 ]
