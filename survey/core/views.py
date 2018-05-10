@@ -148,7 +148,7 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
 
     template_name = "core/site_create.html"
     model = Site
-    fields = ['name']
+    fields = '__all__'
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['pk'])
@@ -188,7 +188,7 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
     template_name = "core/site_create.html"
     model = Site
-    fields = ['name']
+    fields = '__all__'
 
     def form_valid(self, form):
         form.instance.site = get_object_or_404(Site, pk=self.kwargs['pk'])

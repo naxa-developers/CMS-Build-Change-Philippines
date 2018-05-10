@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # third party apps
     'rest_framework',
+    'phonenumber_field',
 
     # local apps
     'core',
