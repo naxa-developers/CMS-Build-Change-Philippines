@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
 {% block content %}
 <h3>Site Steps</h3>
@@ -8,4 +10,12 @@
     <a href="{% url 'core:site_detail' pk %}">Site Detail</a><br>
 
 </p>
+
+<div id="app"></div>
+
+
 {% endblock content %}
+
+{% block extra_script %}
+{% render_bundle 'steps' 'js' %}
+{% endblock extra_script %}
