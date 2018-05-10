@@ -5,6 +5,7 @@
 <p>
 Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user }} {% endfor %}
 </p>
+<h4>Sites:</h4>
 <p>
     {% for site in projects.sites.all  %}
     {{ site }}--<a href="{% url 'core:site_update' site.pk %}">Update Site</a>

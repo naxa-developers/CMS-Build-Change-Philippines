@@ -188,8 +188,13 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk, ))
-        return success_url
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
 
 
 class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
@@ -200,5 +205,10 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
     model = Site
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk, ))
-        return success_url
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
