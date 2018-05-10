@@ -5,7 +5,7 @@
 <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
 <h4>Sites:</h4>
     {% for site in project.sites.all %}
-        {{ site }}
+    <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
     <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
 
     <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}

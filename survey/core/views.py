@@ -174,6 +174,14 @@ class SiteListView(ManagerSuperAdminMixin, ListView):
     paginate_by = 100
 
 
+class SiteDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Site Detail View
+    """
+    template_name = "core/site_detail.html"
+    model = Site
+
+
 class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
     Site Update View
