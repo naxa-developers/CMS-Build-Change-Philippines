@@ -22,6 +22,7 @@ window.Steps = new Vue({
                 `,
   data: {
     message: 'Hello Vue!  Steps',
+    template_data : template_data,
   }
 })
 
