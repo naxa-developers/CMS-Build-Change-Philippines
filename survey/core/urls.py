@@ -17,5 +17,5 @@ urlpatterns = [
     path('site-list/', views.SiteListView.as_view(), name="site_list"),
     path('site-delete/<int:pk>/', views.SiteDeleteView.as_view(), name="site_delete"),
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_steps"),
-    path('site-steps/<int:pk>/', views.SiteStepsView.as_view(), name="site_detail")
+    path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site_detail")
 ]
