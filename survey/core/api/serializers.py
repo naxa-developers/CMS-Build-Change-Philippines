@@ -5,8 +5,7 @@ from core.models import Project, Site, Step
 
 class StepsSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source='sites.name', read_only=True)
-    # site_name = serializers.CharField(source='sites.name')
-    project_name = serializers.CharField(source='sites.project.name', read_only=True)
+    project_name = serializers.CharField(source='project.name', read_only=True)
 
     class Meta:
         model = Step
