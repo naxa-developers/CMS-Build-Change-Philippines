@@ -19,7 +19,8 @@ class Site(models.Model):
 
 class Step(models.Model):
     name = models.CharField(max_length=250)
-    sites = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE)
+    sites = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
+    project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, )
     order = models.IntegerField()
     checklist = JSONField()
 
