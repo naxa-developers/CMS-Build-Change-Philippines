@@ -9,11 +9,13 @@ router = routers.DefaultRouter()
 
 router.register(r'users', viewset.UserViewSet)
 router.register(r'project', viewset.ProjectViewSet, base_name='project-list')
+router.register(r'steps', viewset.StepsViewSet, base_name='steps-list')
+
 
 urlpatterns = [
     path('', include(router.urls)),
     path('api-token-auth/', views.token),
-    path('<int:is_project>/steps/<int:pk>/', viewset.StepsViewSet.as_view({'get': 'list'}))
+    path('<int:is_project>/steps/<int:pk>/', viewset.ProjectSiteStepsViewSet.as_view({'get': 'list'}))
 
 
 ]

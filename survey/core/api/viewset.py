@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets, serializers, mixins
 
 from core.models import Project, Step
 from .serializers import ProjectSerializer, StepsSerializer
@@ -23,7 +23,7 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Project.objects.prefetch_related('sites', 'sites__steps')
 
 
-class StepsViewSet(viewsets.ReadOnlyModelViewSet):
+class ProjectSiteStepsViewSet(viewsets.ReadOnlyModelViewSet):
 
     serializer_class = StepsSerializer
     queryset = Step.objects.all()
@@ -33,8 +33,15 @@ class StepsViewSet(viewsets.ReadOnlyModelViewSet):
         pk = self.kwargs['pk']
 
         if is_project is 0:
-            return self.queryset.filter(sites__project__id=pk)
+            return self.queryset.filter(project__id=pk)
 
         elif is_project is 1:
             return self.queryset.filter(sites__id=pk)
+
+
+class StepsViewSet(viewsets.ModelViewSet):
+
+    serializer_class = StepsSerializer
+    queryset = Step.objects.all()
+
 
