@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'core',
     'userrole',
     'webpack_loader',
+    'modeltranslation',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +126,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('en', gettext('English')),
+    ('de', gettext('German')),
+)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
