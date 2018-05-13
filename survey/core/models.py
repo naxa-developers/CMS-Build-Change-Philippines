@@ -52,8 +52,24 @@ class Step(models.Model):
     order = models.IntegerField()
     checklist = JSONField()
 
-    def project(self):
-        return self.sites.project.id
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=250)
 
     def __str__(self):
         return self.name
+
+
+class Material(models.Model):
+    title = models.CharField(max_length=250)
+    project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
+    description = models.TextField(max_length=300)
+    good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/")
+    bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/")
+
+    def __str__(self):
+        return self.title
