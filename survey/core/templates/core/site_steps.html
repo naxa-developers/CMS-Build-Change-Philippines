@@ -3,6 +3,7 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
+{% csrf_token %}
 <h3> Steps</h3>
 <p>
     {% if is_project == "0" %}
