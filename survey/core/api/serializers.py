@@ -4,6 +4,15 @@ from core.models import Project, Site, Step
 
 
 class StepsSerializer(serializers.ModelSerializer):
+    site_name = serializers.CharField(source='sites.name', read_only=True)
+    project_name = serializers.CharField(source='project.name', read_only=True)
+
+    class Meta:
+        model = Step
+        fields = ('id', 'name', 'order', 'checklist', 'site_name', 'sites', 'project', 'project_name')
+
+
+class ProjectStepsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
@@ -11,7 +20,7 @@ class StepsSerializer(serializers.ModelSerializer):
 
 
 class SitesSerializer(serializers.ModelSerializer):
-    steps = StepsSerializer(many=True)
+    steps = ProjectStepsSerializer(many=True)
 
     class Meta:
         model = Site

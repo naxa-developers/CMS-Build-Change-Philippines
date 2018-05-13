@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+<h3>Site Steps</h3>
+<p>
+    <a href="{% url 'core:site_detail' is_project pk %}"> Detail</a><br>
+</p>
+
+<div id="app"></div>
+
+
+{% endblock content %}
+
+{% block extra_script %}
+<script>
+    var template_data = template_data ||  {};
+    template_data.is_project={{is_project}};
+    template_data.pk={{pk}};
+
+</script>
+{% render_bundle 'steps' 'js' %}
+{% endblock extra_script %}

@@ -197,5 +197,7 @@ node_modules/
 package-lock.json
 .vscode/
 
+#mediafiles
+media/
 
 webpack-stats-local.json

@@ -12,6 +12,7 @@ module.exports = {
     // rare: './static/css/style.css',
     vendor_stylesheets: ['./static/css/vendor.css'],
     main: ['./static/js/survey'], // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
+    steps: ['./static/js/steps'],
 //    dashboard: ['./static/js/dashboard-report.js'],
 
   },

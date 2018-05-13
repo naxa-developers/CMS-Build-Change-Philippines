@@ -2,9 +2,17 @@
 
 {% block content %}
 {% for project in project %}
-    {{ project }}   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
+<h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
+<h4>Sites:</h4>
     {% for site in project.sites.all %}
-        {{ site }}<br>
+    <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
+    <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
+
+    <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
+        <input type="submit" value="Delete {{site}}" />
+    </form><br>
     {% endfor %}
+<a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
 {% endfor %}
+
 {% endblock content %}
