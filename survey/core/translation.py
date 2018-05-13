@@ -3,5 +3,5 @@ from .models import Step
 
 @register(Step)
 class StepTranslationOptions(TranslationOptions):
-    fields = ('name', 'checklist')
+    fields = ('name',)
 

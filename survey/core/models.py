@@ -44,13 +44,17 @@ class Site(models.Model):
     def __str__(self):
         return self.name
 
-
+# class Questions(models.Model):
+#     name = models.CharField(max_length=250)
+#     step = models.ForeignKey(Step, related_name="steps", on_delete=models.CASCADE)
+#     education_material = models.CharField(max_length=250)
+    
 class Step(models.Model):
     name = models.CharField(max_length=250)
     sites = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
     project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField()
-    checklist = JSONField()
+    
 
     def __str__(self):
         return self.name
