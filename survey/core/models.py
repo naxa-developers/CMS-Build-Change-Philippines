@@ -58,6 +58,7 @@ class Step(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=250)
+    project = models.ForeignKey(Project, related_name="category", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

@@ -231,6 +231,3 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
     def get_context_data(self, **kwargs):
         data = super(SiteStepsView, self).get_context_data(**kwargs)
         return data
-
-
-class Category(M)
