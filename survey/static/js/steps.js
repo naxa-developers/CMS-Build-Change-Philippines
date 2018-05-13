@@ -25,9 +25,9 @@ window.Steps = new Vue({
   el: '#app',
   template:`
 <div>
-    <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="show_form=true"><i class="la la-plus"></i> New Step</a>
+    <a href="javascript:void(0)"  title="" class="btn btn-sm btn-info" @click="newStep()"><i class="la la-plus"></i> New Step</a>
     <div v-for="s  in steps" v-if="!loading">
-        {{s.name}}
+     <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="getStep(s)"><i class="la la-plus"></i> {{s.name}}</a>
     </div>
 
     <div v-if="!loading && steps.length<1">
@@ -51,9 +51,11 @@ window.Steps = new Vue({
               <div class="form-group">
                 <label for="checklist">New Checklist Item</label>
                 <input type="text" v-model="checklist_item" class="form-control" id="checklist" placeholder="Checklist Item">
-                <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="adChecklist()"><i class="la la-plus"></i> Add  to Checklist</a>
+                <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="adChecklist()" v-show="checklist_item.length>0">
+                <i class="la la-plus"></i> Add  to Checklist</a>
               </div>
                <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="saveStep()" v-show="step.name.length>0"><i class="la la-plus"></i> Save Step</a>
+               <a href="javascript:void(0)"  title="" class="btn btn-sm btn-warning" @click="show_form=false" v-show="step.name.length>0"><i class="la la-plus"></i> Close</a>
             </form>
     </div>
 
@@ -63,14 +65,15 @@ window.Steps = new Vue({
     message: 'Hello Vue!  Steps',
     template_data : template_data,
     steps:[],
-    step:{'name':'', checklist:[]},
+    step:{},
     checklist_item: '',
     isButtonDisabled: true,
     show_form:false,
     loading: false,
+    error: '',
   },
   methods: {
-    loadSteps: function () {
+    getSteps: function () {
 
        var self = this;
        self.loading =  true;
@@ -91,19 +94,48 @@ window.Steps = new Vue({
         }).then(successCallback, errorCallback);
 
     },
+    getStep: function (step) {
+
+       var self = this;
+       self.loading =  true;
+        function successCallback(response) {
+          self.step = response.body;
+          self.show_form = true;
+          self.loading =  false;
+        }
+
+        function errorCallback() {
+          console.log('failed');
+          self.loading = false;
+        }
+
+        self.$http.get('/core/api/steps/' +
+        step.id + '/' , {
+          params: {}
+        }).then(successCallback, errorCallback);
+
+    },
+    newStep: function(){
+        var self = this;
+        self.step = {'name':'', checklist:[]},
+        self.checklist_item = '';
+        self.show_form = true;
+    },
 
     saveStep: function () {
         var self = this;
         let csrf = $('[name = "csrfmiddlewaretoken"]').val();
         let options = {headers: {'X-CSRFToken':csrf}};
-        if (self.template_data.is_project == 1){
-            self.step.project = self.template_data.pk;
-        }
-        if (self.template_data.is_project == 0){
-            self.step.sites = self.template_data.pk;
-        }
-        self.step.order = self.steps.length +1;
-        function successCallback (response){
+        if(!self.step.hasOwnProperty("id")){
+
+            if (self.template_data.is_project == 1){
+                self.step.project = self.template_data.pk;
+            }
+            if (self.template_data.is_project == 0){
+                self.step.sites = self.template_data.pk;
+            }
+            self.step.order = self.steps.length +1;
+            function successCallback (response){
 
         self.error = "";
             new PNotify({
@@ -113,27 +145,51 @@ window.Steps = new Vue({
         console.log(response.body);
         self.steps.push(response.body);
         self.show_form = false;
-        self.step = {'name':'', checklist:[]};
+        self.step = response.body;
 //        self.heightLevel();
         }
 
-        function errorCallback (response){
-        console.log(response.body);
-          new PNotify({
-          title: 'failed',
-          text: 'Failed to Save Step',
-          type: 'error'
-        });
+            function errorCallback (response){
+            console.log(response.body);
+              new PNotify({
+              title: 'failed',
+              text: 'Failed to Save Step',
+              type: 'error'
+            });
+
+            }
+//            console.log(self.step);
+            console.log(options);
+       self.$http.post('/core/api/steps/', self.step, options).then(successCallback, errorCallback);
+        }
+        else{
+              function successCallback (response){
+                     let index = self.steps.findIndex(x => x.id==response.body.id);
+                     Vue.set(self.steps, index, response.body);
+
+                    self.error = "";
+                        new PNotify({
+                          title: 'Updated',
+                          text: 'Step '+ response.body.name + ' Updated'
+                        });
+                    self.show_form = false;
+                    self.step =response.body;
+            //        self.heightLevel();
+                    }
+
+            function errorCallback (response){
+            console.log(response.body);
+              new PNotify({
+              title: 'failed',
+              text: 'Failed to Update Step',
+              type: 'error'
+            });
+
+            }
+            self.$http.put('/core/api/steps/'+self.step.id+'/', self.step, options).then(successCallback, errorCallback);
 
         }
-        console.log(self.step);
-        console.log(options);
-       self.$http.post('/core/api/steps/', self.step, options).then(successCallback, errorCallback);
 
-
-    },
-    updateStep: function(step){
-        var self = this;
     },
     deleteStep: function(pk){
         var self = this;
@@ -159,7 +215,7 @@ window.Steps = new Vue({
 
     created: function () {
         var self = this;
-        self.loadSteps();
+        self.getSteps();
         }
 })
 
