@@ -24,5 +24,7 @@ Project Manager: {% for manager in projects.project_roles.all %} {{ manager.user
 
     {% endfor %}
 </p>
-<a href="{% url 'core:site_create' projects.pk %}">Create New Site</a>
+<a href="{% url 'core:site_create' projects.pk %}">Create New Site</a><br>
+<a href="{% url 'core:category_create' projects.pk %}">Create Category</a><br>
+    <a href="{% url 'core:material_create' projects.pk %}">Create Material</a>
 {% endblock content %}

@@ -15,8 +15,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.models import UserRole
 
-from .models import Project, Site
-from .forms import ProjectForm
+from .models import Project, Site, Category
+from .forms import ProjectForm, CategoryForm, MaterialForm
 
 
 @api_view(['POST'])
@@ -148,7 +148,7 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
 
     template_name = "core/site_create.html"
     model = Site
-    fields = '__all__'
+    fields = ('name', 'type', 'photo', 'address', 'latitude', 'longitude', 'contact_number',)
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['pk'])
@@ -233,4 +233,43 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         return data
 
 
-class Category(M)
+class CategoryFormView(ManagerSuperAdminMixin, FormView):
+    """
+    Category Form View
+    """
+    template_name = "core/category_create.html"
+    form_class = CategoryForm
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.kwargs['pk'],))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_detail')
+            return success_url
+
+
+class MaterialFormView(ManagerSuperAdminMixin, FormView):
+    """
+    Material From View
+    """
+    template_name = "core/material_form.html"
+    form_class = MaterialForm
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.kwargs['pk'],))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_detail')
+            return success_url
