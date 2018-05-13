@@ -35,19 +35,23 @@ window.Steps = new Vue({
     step:{},
     isButtonDisabled: true,
     show_form:false,
+    loading: false,
   },
   methods: {
     loadSteps: function () {
-      // `this` loads steps from server
 
        var self = this;
+       self.loading =  true;
         function successCallback(response) {
           self.steps = response.body;
+          self.loading =  false;
         }
 
         function errorCallback() {
           console.log('failed');
+          self.loading = false;
         }
+
         self.$http.get('/core/api/steps/' +
         self.template_data.is_project + '/' +
         self.template_data.pk+'/', {
