@@ -24,7 +24,7 @@ class Project(models.Model):
         return self.name
 
 
-class Settings(models.Model):
+class Setting(models.Model):
     language = models.CharField(max_length=250, null=True, blank=True)
     site_display = models.CharField(max_length=250, null=True, blank=True)    
 

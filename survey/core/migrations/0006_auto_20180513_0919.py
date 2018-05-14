@@ -32,9 +32,9 @@ class Migration(migrations.Migration):
             name='name_en',
             field=models.CharField(max_length=250, null=True),
         ),
-        migrations.AddField(
-            model_name='step',
-            name='project',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='steps', to='core.Project'),
-        ),
+        # migrations.AddField(
+        #     model_name='step',
+        #     name='project',
+        #     field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='steps', to='core.Project'),
+        # ),
     ]
