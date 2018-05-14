@@ -3,9 +3,12 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
-<h3>Site Steps</h3>
+{% csrf_token %}
+<h3> Steps</h3>
 <p>
-    <a href="{% url 'core:site_detail' is_project pk %}"> Detail</a><br>
+    {% if is_project == "0" %}
+    <a href="{% url 'core:site_detail'  pk %}">Site Detail</a><br>
+    {% endif %}
 </p>
 
 <div id="app"></div>

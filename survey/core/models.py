@@ -58,8 +58,29 @@ class Step(models.Model):
     def __str__(self):
         return self.name
 
+
 class Checklist(models.Model):
     Question = models.CharField(max_length=250)
     step = models.ForeignKey(Step, related_name="steps", on_delete=models.CASCADE)
     education_material = models.CharField(max_length=250)
     
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
+
+
+class Material(models.Model):
+    title = models.CharField(max_length=250)
+    project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
+    description = models.TextField(max_length=300)
+    good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/")
+    bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/")
+
+    def __str__(self):
+        return self.title
+

@@ -11,6 +11,15 @@ class StepsSerializer(serializers.ModelSerializer):
         model = Step
         fields = ('id', 'name', 'order', 'checklist', 'site_name', 'sites', 'project', 'project_name')
 
+    def create(self, validated_data):
+        sites = validated_data.pop('sites', None)
+        project = validated_data.pop('project', None)
+        step = Step.objects.create(**validated_data)
+        step.sites = sites
+        step.project = project
+        step.save()
+        return step
+
 
 class ProjectStepsSerializer(serializers.ModelSerializer):
 

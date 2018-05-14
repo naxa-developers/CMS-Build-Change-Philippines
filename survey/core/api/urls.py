@@ -15,7 +15,8 @@ router.register(r'steps', viewset.StepsViewSet, base_name='steps-list')
 urlpatterns = [
     path('', include(router.urls)),
     path('api-token-auth/', views.token),
-    path('<int:is_project>/steps/<int:pk>/', viewset.ProjectSiteStepsViewSet.as_view({'get': 'list'}))
+    path('list-steps/<int:is_project>/<int:pk>/',
+         viewset.ProjectSiteStepsViewSet.as_view({'get':  'list'}))
 
 
 ]

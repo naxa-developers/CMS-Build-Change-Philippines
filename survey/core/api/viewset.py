@@ -32,10 +32,10 @@ class ProjectSiteStepsViewSet(viewsets.ReadOnlyModelViewSet):
         is_project = self.kwargs['is_project']
         pk = self.kwargs['pk']
 
-        if is_project is 0:
+        if is_project == 1:
             return self.queryset.filter(project__id=pk)
 
-        elif is_project is 1:
+        elif is_project  == 0:
             return self.queryset.filter(sites__id=pk)
 
 
