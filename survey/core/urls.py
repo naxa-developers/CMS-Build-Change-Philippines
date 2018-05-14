@@ -18,6 +18,7 @@ urlpatterns = [
     path('site-delete/<int:pk>/', views.SiteDeleteView.as_view(), name="site_delete"),
 
     path('site/<int:pk>/steps/', StepViewset.StepViewset.as_view({'get': 'list', 'post':'create'}), name="api_steps"),
+    path('site/<int:site_id>/steps/<int:pk>/', StepViewset.ChecklistViewset.as_view({'get': 'list', 'post':'create'}), name="api_steps"),
 
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_detail"),
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps")
