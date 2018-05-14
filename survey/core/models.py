@@ -24,6 +24,10 @@ class Project(models.Model):
         return self.name
 
 
+class Settings(models.Model):
+    language = models.CharField(max_length=250, null=True, blank=True)
+    site_display = models.CharField(max_length=250, null=True, blank=True)    
+
 SITE_TYPES = (
     (0, 'First Type'),
     (1, 'Second Type'),
@@ -44,11 +48,6 @@ class Site(models.Model):
     def __str__(self):
         return self.name
 
-# class Questions(models.Model):
-#     name = models.CharField(max_length=250)
-#     step = models.ForeignKey(Step, related_name="steps", on_delete=models.CASCADE)
-#     education_material = models.CharField(max_length=250)
-    
 class Step(models.Model):
     name = models.CharField(max_length=250)
     sites = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
@@ -58,3 +57,9 @@ class Step(models.Model):
 
     def __str__(self):
         return self.name
+
+class Checklist(models.Model):
+    Question = models.CharField(max_length=250)
+    step = models.ForeignKey(Step, related_name="steps", on_delete=models.CASCADE)
+    education_material = models.CharField(max_length=250)
+    
