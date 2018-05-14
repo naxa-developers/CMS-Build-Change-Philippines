@@ -22,8 +22,8 @@ Vue.use(VueResource);
 
 
 window.Steps = new Vue({
-  el: '#app',
-  template:`
+    el: '#app',
+    template: `
 <div>
     <a href="javascript:void(0)"  title="" class="btn btn-sm btn-info" @click="newStep()"><i class="la la-plus"></i> New Step</a>
     <div v-for="s  in steps" v-if="!loading">
@@ -40,15 +40,21 @@ window.Steps = new Vue({
     <div v-if="show_form">
         <form>
               <div class="form-group">
-                <label for="name">Step Name</label>
+                <label for="name">Name(English)</label>
                 <input type="text" v-model="step.name" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter Step Name">
-                <small id="nameHelp" class="form-text text-muted"> Enter Step Name</small>
+                <small id="nameHelp" class="form-text text-muted"> Enter step name in english.</small>
               </div>
               <div class="form-group">
+                <label for="lname">Name(local)</label>
+                <input type="text" v-model="step.localName" class="form-control" id="lname" 
+                    aria-describedby="nameHelp" placeholder=" local Language step name">
+                <small id="nameHelp" class="form-text text-muted"> Enter step name in local Language</small>
+              </div>
+              <div class="form-group" v-show="false">
               <label> Checklists</label>
                 <li v-for ="ci in step.checklist">{{ci}}</li>
               </div>
-              <div class="form-group">
+              <div class="form-group" v-show="false">
                 <label for="checklist">New Checklist Item</label>
                 <input type="text" v-model="checklist_item" class="form-control" id="checklist" placeholder="Checklist Item">
                 <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="adChecklist()" v-show="checklist_item.length>0">
@@ -61,147 +67,151 @@ window.Steps = new Vue({
 
 </div>
                 `,
-  data: {
-    message: 'Hello Vue!  Steps',
-    template_data : template_data,
-    steps:[],
-    step:{},
-    checklist_item: '',
-    isButtonDisabled: true,
-    show_form:false,
-    loading: false,
-    error: '',
-  },
-  methods: {
-    getSteps: function () {
-
-       var self = this;
-       self.loading =  true;
-        function successCallback(response) {
-          self.steps = response.body;
-          self.loading =  false;
-        }
-
-        function errorCallback() {
-          console.log('failed');
-          self.loading = false;
-        }
-
-        self.$http.get('/core/api/list-steps/' +
-        self.template_data.is_project + '/' +
-        self.template_data.pk+'/', {
-          params: {}
-        }).then(successCallback, errorCallback);
-
+    data: {
+        message: 'Hello Vue!  Steps',
+        template_data: template_data,
+        steps: [],
+        step: {},
+        checklist_item: {},
+        isButtonDisabled: true,
+        show_form: false,
+        loading: false,
+        error: '',
     },
-    getStep: function (step) {
+    methods: {
+        getSteps: function () {
 
-       var self = this;
-       self.loading =  true;
-        function successCallback(response) {
-          self.step = response.body;
-          self.show_form = true;
-          self.loading =  false;
-        }
-
-        function errorCallback() {
-          console.log('failed');
-          self.loading = false;
-        }
-
-        self.$http.get('/core/api/steps/' +
-        step.id + '/' , {
-          params: {}
-        }).then(successCallback, errorCallback);
-
-    },
-    newStep: function(){
-        var self = this;
-        self.step = {'name':'', checklist:[]},
-        self.checklist_item = '';
-        self.show_form = true;
-    },
-
-    saveStep: function () {
-        var self = this;
-        let csrf = $('[name = "csrfmiddlewaretoken"]').val();
-        let options = {headers: {'X-CSRFToken':csrf}};
-        if(!self.step.hasOwnProperty("id")){
-
-            if (self.template_data.is_project == 1){
-                self.step.project = self.template_data.pk;
+            var self = this;
+            self.loading = true;
+            function successCallback(response) {
+                self.steps = response.body;
+                self.loading = false;
             }
-            if (self.template_data.is_project == 0){
-                self.step.sites = self.template_data.pk;
+
+            function errorCallback() {
+                console.log('failed');
+                self.loading = false;
             }
-            self.step.order = self.steps.length +1;
-            function successCallback (response){
 
-        self.error = "";
-            new PNotify({
-          title: 'Saved',
-          text: 'Step '+ response.body.name + ' Saved'
-        });
-        console.log(response.body);
-        self.steps.push(response.body);
-        self.show_form = false;
-        self.step = response.body;
-//        self.heightLevel();
-        }
+            self.$http.get('/core/api/list-steps/' +
+                self.template_data.is_project + '/' +
+                self.template_data.pk + '/', {
+                    params: {}
+                }).then(successCallback, errorCallback);
 
-            function errorCallback (response){
-            console.log(response.body);
-              new PNotify({
-              title: 'failed',
-              text: 'Failed to Save Step',
-              type: 'error'
-            });
+        },
+        getStep: function (step) {
 
+            var self = this;
+            self.loading = true;
+            function successCallback(response) {
+                self.step = response.body;
+                self.show_form = true;
+                self.loading = false;
             }
-//            console.log(self.step);
-            console.log(options);
-       self.$http.post('/core/api/steps/', self.step, options).then(successCallback, errorCallback);
-        }
-        else{
-              function successCallback (response){
-                     let index = self.steps.findIndex(x => x.id==response.body.id);
-                     Vue.set(self.steps, index, response.body);
+
+            function errorCallback() {
+                console.log('failed');
+                self.loading = false;
+            }
+
+            self.$http.get('/core/api/steps/' +
+                step.id + '/', {
+                    params: {}
+                }).then(successCallback, errorCallback);
+
+        },
+        newStep: function () {
+            var self = this;
+            self.step = {
+                name: '',
+                localName: '',
+                checklist: []
+            },
+                self.checklist_item = {};
+            self.show_form = true;
+        },
+
+        saveStep: function () {
+            var self = this;
+            let csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            let options = { headers: { 'X-CSRFToken': csrf } };
+            if (!self.step.hasOwnProperty("id")) {
+
+                if (self.template_data.is_project == 1) {
+                    self.step.project = self.template_data.pk;
+                }
+                if (self.template_data.is_project == 0) {
+                    self.step.sites = self.template_data.pk;
+                }
+                self.step.order = self.steps.length + 1;
+                function successCallback(response) {
 
                     self.error = "";
-                        new PNotify({
-                          title: 'Updated',
-                          text: 'Step '+ response.body.name + ' Updated'
-                        });
+                    new PNotify({
+                        title: 'Saved',
+                        text: 'Step ' + response.body.name + ' Saved'
+                    });
+                    console.log(response.body);
+                    self.steps.push(response.body);
                     self.show_form = false;
-                    self.step =response.body;
-            //        self.heightLevel();
-                    }
+                    self.step = response.body;
+                    //        self.heightLevel();
+                }
 
-            function errorCallback (response){
-            console.log(response.body);
-              new PNotify({
-              title: 'failed',
-              text: 'Failed to Update Step',
-              type: 'error'
-            });
+                function errorCallback(response) {
+                    console.log(response.body);
+                    new PNotify({
+                        title: 'failed',
+                        text: 'Failed to Save Step',
+                        type: 'error'
+                    });
+
+                }
+                //            console.log(self.step);
+                console.log(options);
+                self.$http.post('/core/api/steps/', self.step, options).then(successCallback, errorCallback);
+            }
+            else {
+                function successCallback(response) {
+                    let index = self.steps.findIndex(x => x.id == response.body.id);
+                    Vue.set(self.steps, index, response.body);
+
+                    self.error = "";
+                    new PNotify({
+                        title: 'Updated',
+                        text: 'Step ' + response.body.name + ' Updated'
+                    });
+                    self.show_form = false;
+                    self.step = response.body;
+                    //        self.heightLevel();
+                }
+
+                function errorCallback(response) {
+                    console.log(response.body);
+                    new PNotify({
+                        title: 'failed',
+                        text: 'Failed to Update Step',
+                        type: 'error'
+                    });
+
+                }
+                self.$http.put('/core/api/steps/' + self.step.id + '/', self.step, options).then(successCallback, errorCallback);
 
             }
-            self.$http.put('/core/api/steps/'+self.step.id+'/', self.step, options).then(successCallback, errorCallback);
 
-        }
+        },
+        deleteStep: function (pk) {
+            var self = this;
+        },
+        adChecklist: function () {
+            var self = this;
+            if (self.checklist_item.length > 0) {
+                self.step.checklist.push(self.checklist_item);
+                self.checklist_item = "";
 
-    },
-    deleteStep: function(pk){
-        var self = this;
-    },
-    adChecklist: function(){
-        var self = this;
-        if(self.checklist_item.length>0){
-            self.step.checklist.push(self.checklist_item);
-            self.checklist_item = "";
-
-        }
-    },
+            }
+        },
 
     },
 
@@ -209,14 +219,14 @@ window.Steps = new Vue({
         step: function (newVal, oldVal) {
             var self = this;
         },
-        },
+    },
 
     mixins: [],
 
     created: function () {
         var self = this;
         self.getSteps();
-        }
+    }
 })
 
 
