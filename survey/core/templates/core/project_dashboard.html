@@ -1,18 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for project in project %}
-<h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
-<h4>Sites:</h4>
-    {% for site in project.sites.all %}
-    <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
-    <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
+    {% for project in project %}
+        <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
+        <h4>Sites:</h4>
+        {% for site in project.sites.all %}
+            <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
+            <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
 
-    <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
-        <input type="submit" value="Delete {{site}}" />
-    </form><br>
+            <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
+                <input type="submit" value="Delete {{ site }}"/>
+            </form><br>
+        {% endfor %}
+        <h4>Category</h4>
+    {% for category in project.category.all %}
+        {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>
+        <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>
     {% endfor %}
-<a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
-{% endfor %}
+    <h4>Materials:</h4>
+    {% for material in project.material.all %}
+        {{ material.title }}<a href="{% url 'core:material_update' material.pk %}">Update</a>
+        <a href="{% url 'core:material_delete' material.pk %}"> Delete</a><br>
+    {% endfor %}
+        <a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
+        <a href="{% url 'core:category_create' project.pk %}">Create New Category</a><br>
+        <a href="{% url 'core:material_create' project.pk %}">Create New Material</a>
+    {% endfor %}
 
 {% endblock content %}
