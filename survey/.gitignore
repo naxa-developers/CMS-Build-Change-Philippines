@@ -1,4 +1,6 @@
 db.sqlite3
+/survey/local_settings_sample.py
+
 *.pyc
 .idea/*
 .idea/workspace.xml

@@ -9,7 +9,7 @@ require('../assets/css/style.css');
 //
 //require('../assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js');
 
-require('../../node_modules/popper.js/dist/popper.js');
+//require('../../node_modules/popper.js/dist/popper.js');
 //require('../assets/js/vendor/bootstrap.min.js');
 import 'bootstrap';
 require('../assets/js/vendor/jquery.nicescroll.min.js');

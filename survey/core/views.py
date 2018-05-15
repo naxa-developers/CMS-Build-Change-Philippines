@@ -15,8 +15,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.models import UserRole
 
-from .models import Project, Site
-from .forms import ProjectForm
+from .models import Project, Site, Category, Material
+from .forms import ProjectForm, CategoryForm, MaterialForm
 
 
 @api_view(['POST'])
@@ -44,7 +44,6 @@ class ProjectManagerMixin(LoginRequiredMixin):
 class SuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-
             if request.user.user_roles.filter(group__name="Super Admin"):
                 return super(SuperAdminMixin, self).dispatch(request, *args, **kwargs)
         raise PermissionDenied
@@ -53,8 +52,8 @@ class SuperAdminMixin(LoginRequiredMixin):
 class ManagerSuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-
-            if request.user.user_roles.filter(group__name="Super Admin") or request.user.user_roles.filter(group__name="Project Manager"):
+            if request.user.user_roles.filter(group__name="Super Admin")\
+                    or self.request.user.user_roles.filter(group__name="Project Manager"):
                 return super(ManagerSuperAdminMixin, self).dispatch(request, *args, **kwargs)
 
         raise PermissionDenied
@@ -93,7 +92,7 @@ class ProjectUpdateView(ProjectMixin, UpdateView):
             except UserRole.DoesNotExist:
                 raise PermissionDenied
         elif self.request.user.user_roles.filter(group__name="Super Admin"):
-           return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
+            return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
 
 
 class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
@@ -148,10 +147,10 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
 
     template_name = "core/site_create.html"
     model = Site
-    fields = '__all__'
+    fields = ('name', 'type', 'photo', 'address', 'latitude', 'longitude', 'contact_number',)
 
     def form_valid(self, form):
-        form.instance.project = get_object_or_404(Project, pk=self.kwargs['pk'])
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -226,8 +225,125 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
     """
     Site Steps View
     """
-    template_name = "_base.html"
+    template_name = "core/site_steps.html"
 
     def get_context_data(self, **kwargs):
         data = super(SiteStepsView, self).get_context_data(**kwargs)
         return data
+
+
+
+class CategoryFormView(ManagerSuperAdminMixin, FormView):
+    """
+    Category Form View
+    """
+    template_name = "core/category_create.html"
+    form_class = CategoryForm
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+
+
+class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
+    """
+    Category UpdateView
+    """
+    template_name = "core/category_create.html"
+    form_class = CategoryForm
+    model = Category
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+
+
+class CategoryDeleteView(ManagerSuperAdminMixin, DeleteView):
+    """
+    Category DeleteView
+    """
+    model = Category
+    template_name = "core/category_confirm_delete.html"
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+
+
+class MaterialFormView(ManagerSuperAdminMixin, FormView):
+    """
+    Material From View
+    """
+    template_name = "core/material_form.html"
+    form_class = MaterialForm
+
+    def get_form(self, form_class=None):
+        form = super(MaterialFormView, self).get_form(form_class=self.form_class)
+        form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
+        return form
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+
+
+class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
+    """
+    Category UpdateView
+    """
+    template_name = "core/material_form.html"
+    form_class = MaterialForm
+    model = Material
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+
+
+class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
+    """
+    Category DeleteView
+    """
+    model = Material
+    template_name = "core/material_confirm_delete.html"
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            return success_url
+
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            success_url = reverse_lazy('core:project_dashboard')
+            return success_url
+

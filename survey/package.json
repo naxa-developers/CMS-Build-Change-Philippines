@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "popper.js": "^1.14.3",
     "bootstrap": "^4.0.0-beta.2",
     "bootstrap-vue": "^1.4.1",
     "daterangepicker": "^2.1.25",
@@ -13,6 +12,7 @@
     "npm": "^5.4.2",
     "pjax-api": "^3.17.7",
     "pnotify": "^3.2.1",
+    "popper.js": "^1.14.3",
     "print-js": "^1.0.24",
     "quill-image-drop-module": "^1.0.3",
     "quill-image-resize-module": "^3.0.0",
