@@ -12,6 +12,7 @@
     "npm": "^5.4.2",
     "pjax-api": "^3.17.7",
     "pnotify": "^3.2.1",
+    "popper": "^1.0.1",
     "popper.js": "^1.14.3",
     "print-js": "^1.0.24",
     "quill-image-drop-module": "^1.0.3",
