@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 
@@ -96,6 +96,12 @@ class Checklist(models.Model):
     def __str__(self):
         return "step_id:" + str(self.step) + "------ id:" + str(self.id)
 
+    def get_materials(self):
+        if self.material_id:
+            return reverse('core:material_update', kwargs={'pk': self.material_id})
+        else:
+            return None
+            
     def get_localtext(self):
         try:
             if self.step.project.setting.local_language:
