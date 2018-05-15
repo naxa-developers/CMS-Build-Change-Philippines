@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets, serializers, mixins
-from core.models import Project, Step
-from .serializers import ProjectSerializer, StepsSerializer
+from core.models import Project, Step, Material
+from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project
 
@@ -75,4 +75,20 @@ class ChecklistViewset(viewsets.ModelViewSet):
         localtext = serializer.initial_data.get('localtext', '')
         data = serializer.save(localtext=localtext)
         return data
+
+
+class MaterialViewset(viewsets.ModelViewSet):
+    serializer_class = MaterialSerializer
+    queryset = Material.objects.all()
+
+    def get_queryset(self):
+        project = self.kwargs.get('project', False)
+        if project:
+            self.queryset = self.queryset.filter(project__id=project)
+        return self.queryset
+
+    # def perform_create(self, serializer, **kwargs):
+    #     localtext = serializer.initial_data.get('localtext', '')
+    #     data = serializer.save(localtext=localtext)
+    #     return data
 

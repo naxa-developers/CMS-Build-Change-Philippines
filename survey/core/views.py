@@ -229,6 +229,11 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super(SiteStepsView, self).get_context_data(**kwargs)
+        if data['is_project'] == 0:
+            project = Site.objects.get(pk=data['pk']).project.id
+            data['project'] = project
+        else:
+            data['project'] = data['pk']
         return data
 
 
