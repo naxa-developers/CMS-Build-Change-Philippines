@@ -130,7 +130,6 @@ USE_TZ = True
 
 gettext = lambda s: s
 LANGUAGES = (
-    ('en', gettext('English')),
     ('de', gettext('German')),
 )
 

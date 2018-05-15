@@ -5,6 +5,7 @@ from .models import Step, Checklist
 class StepTranslationOptions(TranslationOptions):
     fields = ('name',)
 
-class StepTranslationOptions(TranslationOptions):
+@register(Checklist)
+class ChecklistTranslationOptions(TranslationOptions):
     fields = ('text',)
 
