@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
-
 from rest_framework import viewsets, serializers, mixins
-
 from core.models import Project, Step
 from .serializers import ProjectSerializer, StepsSerializer
-
+from core.serializers.StepSerializer import StepSerializer, ChecklistSerializer
+from core.models import Checklist, Step, Project
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -44,4 +43,26 @@ class StepsViewSet(viewsets.ModelViewSet):
     serializer_class = StepsSerializer
     queryset = Step.objects.all()
 
+
+class StepViewset(viewsets.ModelViewSet):
+    serializer_class = StepSerializer
+    
+    def get_queryset(self):
+        return Step.objects.filter(site_id = self.kwargs.get('pk'))
+
+    def perform_create(self, serializer, **kwargs):
+        localname = serializer.initial_data.get('localname', '')
+        data = serializer.save(localname=localname)
+        return data
+
+class ChecklistViewset(viewsets.ModelViewSet):
+    serializer_class = ChecklistSerializer
+    
+    def get_queryset(self):
+        return Checklist.objects.filter(step_id = self.kwargs.get('pk'))
+
+    def perform_create(self, serializer, **kwargs):
+        localtext = serializer.initial_data.get('localtext', '')
+        data = serializer.save(localtext=localtext)
+        return data
 

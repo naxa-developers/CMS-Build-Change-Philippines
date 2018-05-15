@@ -1,6 +1,7 @@
 from django.urls import path
-from .viewsets import StepViewset
 from . import views
+
+
 app_name = 'core'
 
 urlpatterns = [
@@ -16,10 +17,6 @@ urlpatterns = [
     path('site-update/<int:pk>/', views.SiteUpdateView.as_view(), name="site_update"),
     path('site-list/', views.SiteListView.as_view(), name="site_list"),
     path('site-delete/<int:pk>/', views.SiteDeleteView.as_view(), name="site_delete"),
-
-    path('site/<int:pk>/steps/', StepViewset.StepViewset.as_view({'get': 'list', 'post':'create'}), name="api_steps"),
-    path('site/<int:site_id>/step/<int:pk>/checklists/', StepViewset.ChecklistViewset.as_view({'get': 'list', 'post':'create'}), name="api_steps"),
-
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_detail"),
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
