@@ -1,6 +1,6 @@
 from rest_framework import routers, serializers, viewsets
 from core.serializers.StepSerializer import StepSerializer, ChecklistSerializer
-from core.models import Step, Project
+from core.models import Checklist, Step, Project
 class StepViewset(viewsets.ModelViewSet):
     """
     A simple ViewSet for viewing and editing sites.

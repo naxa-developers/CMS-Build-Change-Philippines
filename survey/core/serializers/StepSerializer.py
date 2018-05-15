@@ -6,7 +6,7 @@ class StepSerializer(serializers.ModelSerializer):
     localname = serializers.ReadOnlyField(source="get_localname")
     class Meta:
         model = Step
-        fields = ('name', 'site', 'project', 'order','localname',)
+        fields = ('id','name', 'site', 'project', 'order','localname',)
 
     def create(self, validated_data):
         # import pdb; pdb.set_trace();
@@ -27,7 +27,7 @@ class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
     class Meta:
         model = Checklist
-        fields = ('text', )
+        fields = ('id', 'text', 'step', 'localtext', )
 
     def create(self, validated_data):
         # import pdb; pdb.set_trace();
