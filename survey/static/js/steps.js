@@ -95,19 +95,17 @@ window.Steps = new Vue({
                                                       </div>
                                                       <div class="form-group">
                                                                 <label>Material:</label>
-                                                                <span v-show="materials.length > 0" class=" text-muted btn btn-xs btn-secondary pull-left" @click="">
-                                                                <small><i class="fa fa-check-circle-o">&nbsp;</i>Select All</small></span>
-                                                                <vselect :options="materials" label="name" :value="''" v-model="material" :allow-empty="true"
+                                                                <vselect :options="materials" label="title" :value="''" v-model="material" :allow-empty="true"
                                                                  :select-label="''" :show-labels="false" :internal-search="true"  :placeholder="'Select Material'">
                                                                 <template slot="noResult">No such Material</template>
                                                                 </vselect>
                                                       </div>
                                                        <a href="javascript:void(0)"  title=""
-                                                       class="btn btn-sm btn-primary" @click="saveStep()" v-show="valid_checklist"><i class="la la-plus"></i> Save Checklist</a>
+                                                       class="btn btn-sm btn-primary" @click="saveChecklist()" v-show="valid_checklist"><i class="la la-plus"></i> Save Checklist</a>
                                                        <a href="javascript:void(0)"  title=""
                                                        class="btn btn-sm btn-warning" @click="show_checklist_form=false"><i class="la la-plus"></i> Close</a>
                                                     </form>
-                                                <div class="form-group" v-show="checklists.length>0 &&!show_checklist_form ">
+                                                <div class="form-group" v-show="checklists.length>0 && !show_checklist_form ">
                                                     <table class="table">
                                                               <thead>
                                                                 <tr>
@@ -115,27 +113,18 @@ window.Steps = new Vue({
                                                                   <th scope="col">Name</th>
                                                                   <th scope="col">Local Name</th>
                                                                   <th scope="col">Material</th>
+                                                                  <th scope="col">Actions</th>
                                                                 </tr>
                                                               </thead>
                                                               <tbody>
-                                                                <tr>
-                                                                  <th scope="row">1</th>
-                                                                  <td>Mark</td>
-                                                                  <td>Otto</td>
-                                                                  <td>@mdo</td>
-                                                                </tr>
-                                                                <tr>
-                                                                  <th scope="row">2</th>
-                                                                  <td>Jacob</td>
-                                                                  <td>Thornton</td>
-                                                                  <td>@fat</td>
-                                                                </tr>
-                                                                <tr>
-                                                                  <th scope="row">3</th>
-                                                                  <td>Larry</td>
-                                                                  <td>the Bird</td>
-                                                                  <td>@twitter</td>
-                                                                </tr>
+                                                                <tr v-for="c, index in checklists">
+                                                                  <th scope="row">{{index+1}}</th>
+                                                                  <td>{{c.text}}</td>
+                                                                  <td>{{c.localtext}}</td>
+                                                                  <td>{{c.material}}</td>
+                                                                  <td></td>
+                                                                  </tr>
+
                                                               </tbody>
                                                             </table>
                                                 </div>
@@ -162,6 +151,7 @@ window.Steps = new Vue({
         template_data: template_data,
         steps: [],
         step: {},
+
         checklists: [],
         checklist: {},
         materials: [],
@@ -192,6 +182,25 @@ window.Steps = new Vue({
             }
 
             self.$http.get('/core/api/step-list/'+ self.template_data.pk+'/' , {
+                    params: {}
+                }).then(successCallback, errorCallback);
+
+        },
+        getMaterials: function () {
+
+            var self = this;
+            self.loading = true;
+            function successCallback(response) {
+                self.materials = response.body;
+                self.loading = false;
+            }
+
+            function errorCallback() {
+                console.log('failed');
+                self.loading = false;
+            }
+
+            self.$http.get('/core/api/material-list/'+ self.template_data.project+'/' , {
                     params: {}
                 }).then(successCallback, errorCallback);
 
@@ -335,6 +344,74 @@ window.Steps = new Vue({
             }
 
         },
+        saveChecklist: function () {
+            var self = this;
+            let csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            let options = { headers: { 'X-CSRFToken': csrf } };
+            self.checklist.step = self.step.id;
+            if(self.material.hasOwnProperty('id')){
+                self.checklist.material = self.material.id;
+            }
+            if (!self.checklist.hasOwnProperty("id")) {
+
+
+                self.checklist.order = self.checklists.length + 1;
+                function successCallback(response) {
+
+                    self.error = "";
+                    new PNotify({
+                        title: 'Saved',
+                        text: 'Checklist ' + response.body.text + ' Saved'
+                    });
+                    self.checklists.push(response.body);
+                    self.checklist = response.body;
+                    self.show_checklist_form = false;
+                    self.show_checklist = true;
+                    //        self.heightLevel();
+                }
+
+                function errorCallback(response) {
+                    console.log(response.body);
+                    new PNotify({
+                        title: 'failed',
+                        text: 'Failed to Save Checklist',
+                        type: 'error'
+                    });
+
+                }
+                //            console.log(self.step);
+                self.$http.post('/core/api/checklist/', self.checklist, options).then(successCallback, errorCallback);
+            }
+            else {
+                function successCallback(response) {
+                    let index = self.checklists.findIndex(x => x.id == response.body.id);
+                    Vue.set(self.checklists, index, response.body);
+
+                    self.error = "";
+                    new PNotify({
+                        title: 'Updated',
+                        text: 'checklist ' + response.body.title + ' Updated'
+                    });
+                    self.show_checklist_form = false;
+                    self.checklist = response.body;
+                    self.show_checklist = true;
+                    //        self.heightLevel();
+                }
+
+                function errorCallback(response) {
+                    console.log(response.body);
+                    new PNotify({
+                        title: 'failed',
+                        text: 'Failed to Update Checklist',
+                        type: 'error'
+                    });
+
+                }
+                self.$http.put('/core/api/checklist/' + self.checklist.id + '/', self.step, options).then(successCallback, errorCallback);
+
+            }
+
+        },
         deleteStep: function (pk) {
             var self = this;
         },
@@ -350,6 +427,7 @@ window.Steps = new Vue({
                 self.checklist = {};
                 self.getChecklists();
                 self.show_content = true;
+                self.show_checklist_form = false;
 
             }
         },
@@ -363,6 +441,7 @@ window.Steps = new Vue({
     created: function () {
         var self = this;
         self.getSteps();
+        self.getMaterials();
     },
     computed: {
         valid_checklist: function () {
