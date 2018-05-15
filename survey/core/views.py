@@ -266,7 +266,7 @@ class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_detail')
+            success_url = reverse_lazy('core:project_dashboard')
             return success_url
 
 
