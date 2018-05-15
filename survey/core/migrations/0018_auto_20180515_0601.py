@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='material',
             name='checklist',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='checklist_material', to='core.Checklist'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='checklist_material', to='core.Checklist'),
             preserve_default=False,
         ),
         migrations.AlterField(

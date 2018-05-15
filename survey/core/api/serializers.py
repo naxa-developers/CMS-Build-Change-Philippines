@@ -69,14 +69,14 @@ class StepSerializer(serializers.ModelSerializer):
 
 class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
-    materials = serializers.SerializerMethodField()
+    materials = serializers.ReadOnlyField(source="get_materials")
     class Meta:
         model = Checklist
         fields = ('id', 'text', 'step', 'localtext', 'materials',)
 
-    def get_materials(self, obj):
-        serializer = MaterialSerializer(instance=obj.material, many=False)
-        return serializer.data 
+    # def get_materials(self, obj):
+    #     serializer = MaterialSerializer(instance=obj.material, many=False)
+    #     return serializer.data 
 
     def create(self, validated_data):
         localname = validated_data.pop('localtext') if 'localtext' in validated_data else ""
