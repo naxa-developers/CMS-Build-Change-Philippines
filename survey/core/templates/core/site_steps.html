@@ -1,15 +1,14 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 {% load render_bundle from webpack_loader %}
 {% load get_files from webpack_loader %}
 
 {% block content %}
 {% csrf_token %}
-<h3> Steps</h3>
-<p>
-    {% if is_project == "0" %}
-    <a href="{% url 'core:site_detail'  pk %}">Site Detail</a><br>
-    {% endif %}
-</p>
+<!--<p>-->
+    <!--{% if is_project == "0" %}-->
+    <!--<a href="{% url 'core:site_detail'  pk %}">Site Detail</a><br>-->
+    <!--{% endif %}-->
+<!--</p>-->
 
 <div id="app"></div>
 
