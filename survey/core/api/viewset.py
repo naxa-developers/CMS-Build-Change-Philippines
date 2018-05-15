@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets, serializers, mixins
 from core.models import Project, Step
 from .serializers import ProjectSerializer, StepsSerializer
-from core.serializers.StepSerializer import StepSerializer, ChecklistSerializer
+from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project
 
 # Serializers define the API representation.
