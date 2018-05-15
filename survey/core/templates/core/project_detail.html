@@ -24,12 +24,13 @@
             <br>
 
         {% endfor %}
+    <h4>Category:</h4>
     {% for category in projects.category.all %}
         {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>
         <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>
     {% endfor %}
+    <h4>Materials:</h4>
     {% for material in projects.material.all %}
-        <h4>Materials:</h4>
         {{ material.title }}<a href="{% url 'core:material_update' material.pk %}"> Update</a>
         <a href="{% url 'core:material_delete' material.pk %}">Delete</a>
     {% endfor %}
