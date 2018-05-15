@@ -4,7 +4,7 @@ import VueResource from 'vue-resource'
 import jQuery from 'jquery';
 // import PNotify from 'pnotify';
 import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
-//window.VueMultiselect = require('../../vendor/vue-multiselect/vue-multiselect.min.js')
+window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.js')
 // import printjs from 'print-js'
 //require('../components/daterangepicker.component.js')
 require('../css/style.css');
@@ -37,11 +37,9 @@ window.Steps = new Vue({
                                 </a>
                             </li>
                             <li v-for="s in steps">
-                                <a href="#" title="">
+                                <a href="javascript:void(0)"  title="" @click="step=s">
                                      <img  :src= 'img_url' class="school-logo" alt="">
                                     <h6>{{s.name}}</h6>
-                                    <span @click="getStep(s)">Detail</span>
-                                    <span @click="getStep(s)">Checklists</span>
                                 </a>
                             </li>
                         </ul>
@@ -58,12 +56,13 @@ window.Steps = new Vue({
                                     <span v-show="step.hasOwnProperty('id')"> {{step.name}}</span>
                                     <span v-show="!step.hasOwnProperty('id')"> New Step</span>
                                     </a></h4>
-                                    <a href="javascript:void(0)"  title="" @click="newStep()"  class="btn btn-sm btn-xs btn-primary" ><i class="la la-plus"></i>New  Checklist</a>
+                                    <a href="javascript:void(0)"  title="" @click="newChecklist()"  class="btn btn-sm btn-xs btn-primary" ><i class="la la-plus"></i>New  Checklist</a>
                                     <a href="javascript:void(0)"  title="" @click="editStep()"  class="btn btn-sm btn-xs btn-primary"
                                     v-show="step.hasOwnProperty('id')"><i class="la la-plus"></i>Edit Step</a>
                                 </div>
                                 <div class="widget-body" >
                                             <form v-if="show_form">
+                                            <legend>Step Form</legend>
                                                   <div class="form-group">
                                                     <label for="name">Name(English)</label>
                                                     <input type="text" v-model="step.name" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter Step Name">
@@ -71,24 +70,44 @@ window.Steps = new Vue({
                                                   </div>
                                                   <div class="form-group">
                                                     <label for="lname">Name(local)</label>
-                                                    <input type="text" v-model="step.localName" class="form-control" id="lname"
+                                                    <input type="text" v-model="step.localname" class="form-control" id="lname"
                                                         aria-describedby="nameHelp" placeholder=" local Language step name">
                                                     <small id="nameHelp" class="form-text text-muted"> Enter step name in local Language</small>
                                                   </div>
-                                                  <div class="form-group" v-show="false">
-                                                  <label> Checklists</label>
-                                                    <li v-for ="ci in step.checklist">{{ci}}</li>
-                                                  </div>
-                                                  <div class="form-group" v-show="false">
-                                                    <label for="checklist">New Checklist Item</label>
-                                                    <input type="text" v-model="checklist_item" class="form-control" id="checklist" placeholder="Checklist Item">
-                                                    <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="adChecklist()" v-show="checklist_item.length>0">
-                                                    <i class="la la-plus"></i> Add  to Checklist</a>
-                                                  </div>
-                                                   <a href="javascript:void(0)"  title="" class="btn btn-sm btn-primary" @click="saveStep()" v-show="step.name.length>0"><i class="la la-plus"></i> Save Step</a>
-                                                   <a href="javascript:void(0)"  title="" class="btn btn-sm btn-warning" @click="show_form=false" v-show="step.name.length>0"><i class="la la-plus"></i> Close</a>
+                                                   <a href="javascript:void(0)"  title=""
+                                                   class="btn btn-sm btn-primary" @click="saveStep()" v-show="step.name.length>0"><i class="la la-plus"></i> Save Step</a>
+                                                   <a href="javascript:void(0)"  title=""
+                                                   class="btn btn-sm btn-warning" @click="show_form=false" v-show="step.name.length>0"><i class="la la-plus"></i> Close</a>
                                                 </form>
-                                                <div class="form-group" v-show="show_checklist">
+                                                 <form v-show="show_checklist_form">
+                                                 <legend>Checklist Form</legend>
+                                                      <div class="form-group">
+                                                        <label for="name">Text(English)</label>
+                                                        <input type="text" v-model="checklist.text" class="form-control" id="name" aria-describedby="nameHelp"
+                                                        placeholder="Enter Checklist Text">
+                                                        <small id="nameHelp" class="form-text text-muted"> Enter step name in english.</small>
+                                                      </div>
+                                                      <div class="form-group">
+                                                        <label for="lname">Text(local)</label>
+                                                        <input type="text" v-model="checklist.localtext" class="form-control" id="lname"
+                                                            aria-describedby="nameHelp" placeholder=" local Language Checklist Text">
+                                                        <small id="nameHelp" class="form-text text-muted"> Enter Checklist Text in local Language</small>
+                                                      </div>
+                                                      <div class="form-group">
+                                                                <label>Material:</label>
+                                                                <span v-show="materials.length > 0" class=" text-muted btn btn-xs btn-secondary pull-left" @click="">
+                                                                <small><i class="fa fa-check-circle-o">&nbsp;</i>Select All</small></span>
+                                                                <vselect :options="materials" label="name" :value="''" v-model="material" :allow-empty="true"
+                                                                 :select-label="''" :show-labels="false" :internal-search="true"  :placeholder="'Select Material'">
+                                                                <template slot="noResult">No such Material</template>
+                                                                </vselect>
+                                                      </div>
+                                                       <a href="javascript:void(0)"  title=""
+                                                       class="btn btn-sm btn-primary" @click="saveStep()" v-show="valid_checklist"><i class="la la-plus"></i> Save Checklist</a>
+                                                       <a href="javascript:void(0)"  title=""
+                                                       class="btn btn-sm btn-warning" @click="show_checklist_form=false"><i class="la la-plus"></i> Close</a>
+                                                    </form>
+                                                <div class="form-group" v-show="checklists.length>0 &&!show_checklist_form ">
                                                     <table class="table">
                                                               <thead>
                                                                 <tr>
@@ -140,15 +159,19 @@ window.Steps = new Vue({
 </div>
                 `,
     data: {
-        message: 'Hello Vue!  Steps',
         template_data: template_data,
         steps: [],
         step: {},
-        checklist_item: {},
-        isButtonDisabled: true,
+        checklists: [],
+        checklist: {},
+        materials: [],
+        material: {},
+
         show_form: false,
         show_content: false,
         show_checklist: false,
+        show_checklist_form: false,
+
         loading: false,
         error: '',
         img_url: '/static/assets/img/img-school.png',
@@ -168,9 +191,29 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/list-steps/' +
-                self.template_data.is_project + '/' +
-                self.template_data.pk + '/', {
+            self.$http.get('/core/api/step-list/'+ self.template_data.pk+'/' , {
+                    params: {}
+                }).then(successCallback, errorCallback);
+
+        },
+        getChecklists: function () {
+
+            var self = this;
+            self.loading = true;
+            function successCallback(response) {
+                self.checklists = response.body;
+                if(response.body.length <= 0){
+                    self.show_checklist_form = true;
+                }
+                self.loading = false;
+            }
+
+            function errorCallback() {
+                console.log('failed');
+                self.loading = false;
+            }
+
+            self.$http.get('/core/api/checklist-list/'+ self.step.id+'/' , {
                     params: {}
                 }).then(successCallback, errorCallback);
 
@@ -197,7 +240,7 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/steps/' +
+            self.$http.get('/core/api/step/' +
                 step.id + '/', {
                     params: {}
                 }).then(successCallback, errorCallback);
@@ -207,13 +250,19 @@ window.Steps = new Vue({
             var self = this;
             self.step = {
                 name: '',
-                localName: '',
-                checklist: []
+                localname: '',
             },
-                self.checklist_item = {};
             self.show_form = true;
            self. show_content= true;
             self.show_checklist= false;
+        },
+        newChecklist: function () {
+            var self = this;
+            self.checklist = {
+                text: '',
+                localtext: '',
+            };
+            self.show_checklist_form = true;
         },
 
         saveStep: function () {
@@ -226,7 +275,7 @@ window.Steps = new Vue({
                     self.step.project = self.template_data.pk;
                 }
                 if (self.template_data.is_project == 0) {
-                    self.step.sites = self.template_data.pk;
+                    self.step.site = self.template_data.pk;
                 }
                 self.step.order = self.steps.length + 1;
                 function successCallback(response) {
@@ -254,8 +303,7 @@ window.Steps = new Vue({
 
                 }
                 //            console.log(self.step);
-                console.log(options);
-                self.$http.post('/core/api/steps/', self.step, options).then(successCallback, errorCallback);
+                self.$http.post('/core/api/step/', self.step, options).then(successCallback, errorCallback);
             }
             else {
                 function successCallback(response) {
@@ -282,7 +330,7 @@ window.Steps = new Vue({
                     });
 
                 }
-                self.$http.put('/core/api/steps/' + self.step.id + '/', self.step, options).then(successCallback, errorCallback);
+                self.$http.put('/core/api/step/' + self.step.id + '/', self.step, options).then(successCallback, errorCallback);
 
             }
 
@@ -290,29 +338,50 @@ window.Steps = new Vue({
         deleteStep: function (pk) {
             var self = this;
         },
-        adChecklist: function () {
-            var self = this;
-            if (self.checklist_item.length > 0) {
-                self.step.checklist.push(self.checklist_item);
-                self.checklist_item = "";
 
-            }
-        },
 
     },
 
     watch: {
         step: function (newVal, oldVal) {
             var self = this;
+            if(newVal.hasOwnProperty("id")){
+                self.checklists = [];
+                self.checklist = {};
+                self.getChecklists();
+                self.show_content = true;
+
+            }
         },
     },
 
     mixins: [],
+    components: {
+        'vselect': VueMultiselect.default,
+    },
 
     created: function () {
         var self = this;
         self.getSteps();
-    }
+    },
+    computed: {
+        valid_checklist: function () {
+            var self = this;
+            let valid = true;
+            if(!self.checklist.hasOwnProperty('text')){
+                return false;
+            }
+            if(!self.checklist.hasOwnProperty('localtext')){
+                return false;
+            }
+
+            if(self.checklist.localtext.length ==0 || self.checklist.text.length ==0){
+                return false;
+            }
+
+            return valid;
+    },
+  },
 })
 
 
