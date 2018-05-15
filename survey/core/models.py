@@ -73,9 +73,12 @@ class Step(models.Model):
 
 class Checklist(models.Model):
     text = models.TextField(blank=True)
-    step = models.ForeignKey(Step, related_name="checklists", on_delete=models.CASCADE)
-    education_material = models.CharField(max_length=250)
+    step = models.ForeignKey(Step, related_name="checklist_steps", on_delete=models.CASCADE)
     
+
+    def __str__(self):
+        return "step_id:" + str(self.step) + "------ id:" + str(self.id)
+
     def get_localtext(self):
         try:
             if self.step.project.setting.local_language:
@@ -85,8 +88,11 @@ class Checklist(models.Model):
         except:
             return "No language chosen yet."
 
+
+
 class Category(models.Model):
     name = models.CharField(max_length=250)
+    project = models.ForeignKey(Project, related_name="category", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -99,7 +105,8 @@ class Material(models.Model):
     description = models.TextField(max_length=300)
     good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/")
     bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/")
-
+    checklist = models.ForeignKey(Checklist, related_name="checklist_material", null=True, blank=True, on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.title
 

@@ -1,7 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from core.models import Step, Checklist
+from core.models import Step, Checklist, Material
 
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        exclude = ()
+
+    
 class StepSerializer(serializers.ModelSerializer):
     localname = serializers.ReadOnlyField(source="get_localname")
     class Meta:
@@ -25,9 +31,15 @@ class StepSerializer(serializers.ModelSerializer):
 
 class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
+    materials = serializers.SerializerMethodField()
     class Meta:
         model = Checklist
-        fields = ('id', 'text', 'step', 'localtext', )
+        fields = ('id', 'text', 'step', 'localtext', 'materials',)
+
+    def get_materials(self, obj):
+        materials = obj.checklist_material.all()
+        serializer = MaterialSerializer(instance=materials, many=True)
+        return serializer.data 
 
     def create(self, validated_data):
         # import pdb; pdb.set_trace();
