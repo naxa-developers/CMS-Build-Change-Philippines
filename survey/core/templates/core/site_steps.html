@@ -4,11 +4,6 @@
 
 {% block content %}
 {% csrf_token %}
-<!--<p>-->
-    <!--{% if is_project == "0" %}-->
-    <!--<a href="{% url 'core:site_detail'  pk %}">Site Detail</a><br>-->
-    <!--{% endif %}-->
-<!--</p>-->
 
 <div id="app"></div>
 
@@ -17,9 +12,9 @@
 
 {% block extra_script %}
 <script>
-    var template_data = template_data ||  {};
     template_data.is_project={{is_project}};
     template_data.pk={{pk}};
+    template_data.project={{project}};
 
 </script>
 {% render_bundle 'steps' 'js' %}

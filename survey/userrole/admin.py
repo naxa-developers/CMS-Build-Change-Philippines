@@ -9,10 +9,10 @@ from core.models import Project, Site, Step, Category, Material, Checklist, Sett
 class MyModelAdmin(admin.ModelAdmin):
     model = Material
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "category":
-            kwargs["queryset"] = Material.objects.filter(project=request.object.project.pk)
-        return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     if db_field.name == "category":
+    #         kwargs["queryset"] = Material.objects.filter(project=request.object.project.pk)
+    #     return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 admin.site.register(UserRole)

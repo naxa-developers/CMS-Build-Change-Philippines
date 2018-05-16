@@ -9,8 +9,6 @@ require('../assets/css/style.css');
 //
 //require('../assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js');
 
-//require('../../node_modules/popper.js/dist/popper.js');
-//require('../assets/js/vendor/bootstrap.min.js');
 import 'bootstrap';
 require('../assets/js/vendor/jquery.nicescroll.min.js');
 require('../assets/js/plugins.js');
@@ -33,3 +31,33 @@ const channels = require('../vendor/js/websocket.js')
 
 // The routing fires all common scripts, followed by the page specific scripts.
 // Add additional events for more control over timing e.g. a finalize event
+
+	$(document).ready(function(){
+        	console.log("hello");
+                //Height Fix
+                schoolWrapHeightFix();
+                window.onresize = function(event) {
+                    schoolWrapHeightFix();
+                }
+
+                function schoolWrapHeightFix() {
+                   var  vph = $(window).height();
+                    if($(document).width() > 479) {
+                        vph = vph - ($("#header").height() + 16);
+                        $(".school-wrap").height(vph);
+                    }else{
+                        vph = ( vph / 1.5 ) - ($("#header").height() + 16);
+                        $(".school-wrap").height(vph);
+                    }
+                }
+                //Make it scroll
+        		if ($.fn.niceScroll) {
+        		console.log("scroll");
+                    $(".school-wrap").niceScroll({
+                        cursorcolor: "#FFF",
+                        cursorborderradius: "0px",
+                        cursorborder:"",
+                        cursorwidth: "8px"
+                    });
+                }
+        	});
