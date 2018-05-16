@@ -26,6 +26,14 @@ window.Steps = new Vue({
     template: `
 <div>
     <div class="row no-gutters">
+             <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Steps</li>
+                  </ol>
+                </nav>
+            </div>
             <div class="col-md-4 col-lg-3">
                 <div class="module-school-list">
                     <div class="school-wrap">
@@ -121,7 +129,7 @@ window.Steps = new Vue({
                                                                   <th scope="row">{{index+1}}</th>
                                                                   <td>{{c.text}}</td>
                                                                   <td>{{c.localtext}}</td>
-                                                                  <td>{{c.material}}</td>
+                                                                  <td>{{c.materials.title}}</td>
                                                                   <td></td>
                                                                   </tr>
 
@@ -276,8 +284,8 @@ window.Steps = new Vue({
 
         saveStep: function () {
             var self = this;
-            let csrf = $('[name = "csrfmiddlewaretoken"]').val();
-            let options = { headers: { 'X-CSRFToken': csrf } };
+            var csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            var options = { headers: { 'X-CSRFToken': csrf } };
             if (!self.step.hasOwnProperty("id")) {
 
                 if (self.template_data.is_project == 1) {
@@ -316,7 +324,7 @@ window.Steps = new Vue({
             }
             else {
                 function successCallback(response) {
-                    let index = self.steps.findIndex(x => x.id == response.body.id);
+                    var index = self.steps.findIndex(x => x.id == response.body.id);
                     Vue.set(self.steps, index, response.body);
 
                     self.error = "";
@@ -346,8 +354,8 @@ window.Steps = new Vue({
         },
         saveChecklist: function () {
             var self = this;
-            let csrf = $('[name = "csrfmiddlewaretoken"]').val();
-            let options = { headers: { 'X-CSRFToken': csrf } };
+            var csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            var options = { headers: { 'X-CSRFToken': csrf } };
             self.checklist.step = self.step.id;
             if(self.material.hasOwnProperty('id')){
                 self.checklist.material = self.material.id;
@@ -384,7 +392,7 @@ window.Steps = new Vue({
             }
             else {
                 function successCallback(response) {
-                    let index = self.checklists.findIndex(x => x.id == response.body.id);
+                    var index = self.checklists.findIndex(x => x.id == response.body.id);
                     Vue.set(self.checklists, index, response.body);
 
                     self.error = "";
@@ -446,7 +454,7 @@ window.Steps = new Vue({
     computed: {
         valid_checklist: function () {
             var self = this;
-            let valid = true;
+            var valid = true;
             if(!self.checklist.hasOwnProperty('text')){
                 return false;
             }
