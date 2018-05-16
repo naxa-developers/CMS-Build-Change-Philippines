@@ -25,7 +25,7 @@ SECRET_KEY = ')fr_ek(mgen5_r!ra-jv^rhxt^!5dh3051cmumhdm31e8lak0('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
