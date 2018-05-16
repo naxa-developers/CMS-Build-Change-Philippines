@@ -226,6 +226,8 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
     Site Steps View
     """
     template_name = "core/site_steps.html"
+    # template_name = "_base.html"
+    # template_name = "_dashboard.html"
 
     def get_context_data(self, **kwargs):
         data = super(SiteStepsView, self).get_context_data(**kwargs)

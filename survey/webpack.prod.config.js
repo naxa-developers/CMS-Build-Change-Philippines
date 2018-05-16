@@ -60,12 +60,12 @@ config.plugins.concat([
 config.module.rules.push({
   test: /\.js$/,
   // exclude: /(node_modules|bower_components)/,
-  exclude: /(node_modules|bower_components)/,
+  exclude: /(node_modules|bower_components|assets) /,
   use: {
     loader: 'babel-loader',
-    //options: {
-    //  presets: ['es2015']
-    //}
+    options: {
+      presets: ['es2015']
+    }
   }
 })
 
