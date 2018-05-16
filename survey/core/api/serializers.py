@@ -23,24 +23,7 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('id', 'name', 'order', 'checklist')
-
-
-class SitesSerializer(serializers.ModelSerializer):
-    steps = ProjectStepsSerializer(many=True)
-
-    class Meta:
-        model = Site
-        fields = ('id', 'name', 'steps')
-
-
-class ProjectSerializer(serializers.ModelSerializer):
-    sites = SitesSerializer(many=True)
-
-    class Meta:
-        model = Project
-        fields = ('id', 'name', 'sites')
-
+        fields = ('id', 'name', 'order', )
 
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -70,14 +53,18 @@ class StepSerializer(serializers.ModelSerializer):
 class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
     materials = serializers.SerializerMethodField()
+    last_submission = serializers.SerializerMethodField()
     class Meta:
         model = Checklist
-        fields = ('id', 'text', 'step', 'localtext', 'materials','material')
+        fields = ('id', 'text', 'step', 'localtext', 'materials','material', 'last_submission')
 
     def get_materials(self, obj):
         if obj.material:
             serializer = MaterialSerializer(instance=obj.material, many=False)
             return serializer.data
+        return {}
+
+    def get_last_submission(self, obj):
         return {}
 
     def create(self, validated_data):
@@ -92,3 +79,32 @@ class ChecklistSerializer(serializers.ModelSerializer):
             pass
         instance.save()
         return instance
+
+
+class StepDetailSerializer(serializers.ModelSerializer):
+    localname = serializers.ReadOnlyField(source="get_localname")
+    checklists = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Step
+        fields = ('id','name', 'site', 'project', 'order','localname', 'checklists')
+
+    def get_checklists(self, obj):
+        qs = obj.checklist_steps.all()
+        return  ChecklistSerializer(qs, many=True).data
+
+
+class SitesSerializer(serializers.ModelSerializer):
+    steps = StepDetailSerializer(many=True)
+
+    class Meta:
+        model = Site
+        fields = ('id', 'name', 'steps')
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    sites = SitesSerializer(many=True)
+
+    class Meta:
+        model = Project
+        fields = ('id', 'name', 'sites')
