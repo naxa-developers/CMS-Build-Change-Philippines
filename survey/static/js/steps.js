@@ -460,7 +460,11 @@ window.Steps = new Vue({
             }
 
             function successCallback(response) {
-                console.log(response.body);
+                self.step = {};
+                self.show_content = false;
+                self.show_form = false;
+                var index = self.steps.findIndex(x => x.id==id);
+                self.steps.splice(index, 1);
                 new PNotify({
                     title: 'deleted',
                     text: 'Step deleted',
@@ -470,7 +474,7 @@ window.Steps = new Vue({
 
             self.$dialog.confirm(message)
                 .then(function () {
-                    self.$http.delete(url, { 'body': data, 'options': options }).then(successCallback, errorCallback);
+                    self.$http.delete(url, options).then(successCallback, errorCallback);
                 })
                 .catch(function () {
                     console.log('Clicked on cancel')
