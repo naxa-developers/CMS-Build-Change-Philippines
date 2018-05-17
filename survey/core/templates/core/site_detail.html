@@ -1,18 +1,235 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+
+{#{% block content %}#}
+{#<h3>{{object}}</h3>#}
+{#<h4>Under Project: {{object.project}}</h4>#}
+{#<h4>Type: {{object.type}}</h4>#}
+{#<h4>Photo: {{object.photo}}</h4>#}
+{#<h4>Address: {{object.address}}</h4>#}
+{#<h4>Latitude: {{object.latitude}}</h4>#}
+{#<h4>Longitude: {{object.longitude}}</h4>#}
+{#<h4>Contact Number: {{object.contact_number}}</h4>#}
+{#<p>#}
+{#    <a href="url 'core:site_steps">Site Steps</a><br/>#}
+{#    <a href="{% url 'core:project_create' %}">Add Project</a><br>#}
+{#    <a href="{% url 'core:user_create' %}">Create User</a>#}
+{##}
+{#</p>#}
+{#{% endblock content %}#}
 
 {% block content %}
-<h3>{{object}}</h3>
-<h4>Under Project: {{object.project}}</h4>
-<h4>Type: {{object.type}}</h4>
-<h4>Photo: {{object.photo}}</h4>
-<h4>Address: {{object.address}}</h4>
-<h4>Latitude: {{object.latitude}}</h4>
-<h4>Longitude: {{object.longitude}}</h4>
-<h4>Contact Number: {{object.contact_number}}</h4>
-<p>
-    <a href="url 'core:site_steps">Site Steps</a><br/>
-    <a href="{% url 'core:project_create' %}">Add Project</a><br>
-    <a href="{% url 'core:user_create' %}">Create User</a>
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="school-profile bg-white">
+                <div class="profile-head">
+                    <img src="assets/img/img-school.png" class="school-logo" alt="">
+                    <h4>{{ object }}</h4>
+                    <span>{{ object.address }}</span>
+                    <div class="text-center margin-top">
+                        <div class="btn-group" role="group">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="#" id="btnGroupDrop1" class="btn btn-secondary dropdown-toggle"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="la la-file-text"></i> Data
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
+                                    <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
+                                </div>
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a href="#" id="btnGroupDrop2" class="btn btn-secondary dropdown-toggle"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="la la-cogs"></i> Manage
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                                    <a class="dropdown-item" href="#"><i class="la la-user"></i> People</a>
+                                    <a class="dropdown-item" href="#"><i class="la la-tasks"></i> Forms</a>
+                                    <a class="dropdown-item" href="#"><i class="la la-cog"></i> Settings</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%;" aria-valuenow="25"
+                             aria-valuemin="0" aria-valuemax="100">
+                            <span class="popOver" data-toggle="tooltip" data-placement="top" title="25%"> </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-body">
+                    <div class="about-wrap">
+                        <p>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Details </a></h4>
+                                <a href="{% url 'core:site-steps' 0 object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Add New Step</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    <li>
+                                        <strong>Address: {{ object.address }}</strong>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <strong>Latitude: {{ object.latitude }}</strong>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <strong>Longitude: {{ object.longitude }}</strong>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li><strong>Photo: </strong><br>
+                                        <img alt="hello" src="{{ MEDIA_URL }}{{ object.photo }}" height="300" width="300" class="option1" id="incorrect_answer1">
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <a title="View submission detail"
+                                           href="#"><strong>Contact Number: {{ object.contact_number }}</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Public Reports</a></h4>
+                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                        class="la la-caret-right"></i> More</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    <li>
+                                        <img src="assets/img/img-school.png" alt="">
+                                        <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी
+                                            सर्वेक्षण)</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी
+                                            सर्वेक्षण)</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <img src="assets/img/img-school.png" alt="">
+                                        <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी
+                                            सर्वेक्षण)</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                    <li>
+                                        <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी
+                                            सर्वेक्षण)</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>chapakot</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i> 2 hours, 47
+                                            minutes ago
+                                        </small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-</p>
+                    <!--Pictures-->
+                    <div class="col-md-12">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Recent Pictures</a></h4>
+                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                        class="la la-caret-right"></i> More</a>
+                            </div>
+                            <div class="widget-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

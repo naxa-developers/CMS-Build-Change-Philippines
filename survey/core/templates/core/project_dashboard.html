@@ -1,30 +1,163 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+{##}
+{#{% block content %}#}
+{#    {% for project in project %}#}
+{#        <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>#}
+{#        <h4>Sites:</h4>#}
+{#        {% for site in project.sites.all %}#}
+{#            <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>#}
+{#            <a href="{% url 'core:site_update' site.pk %}">Update Site</a>#}
+{##}
+{#            <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}#}
+{#                <input type="submit" value="Delete {{ site }}"/>#}
+{#            </form><br>#}
+{#        {% endfor %}#}
+{#        <h4>Category:</h4>#}
+{#    {% for category in project.category.all %}#}
+{#        {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>#}
+{#        <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>#}
+{#    {% endfor %}#}
+{#    <h4>Materials:</h4>#}
+{#    {% for material in project.material.all %}#}
+{#        {{ material.title }}<a href="{% url 'core:material_update' material.pk %}">Update</a>#}
+{#        <a href="{% url 'core:material_delete' material.pk %}"> Delete</a><br>#}
+{#    {% endfor %}#}
+{#        <a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>#}
+{#        <a href="{% url 'core:category_create' project.pk %}">Create New Category</a><br>#}
+{#        <a href="{% url 'core:material_create' project.pk %}">Create New Material</a>#}
+{#    {% endfor %}#}
+{##}
+{#{% endblock content %}#}
 
 {% block content %}
-    {% for project in project %}
-        <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
-        <h4>Sites:</h4>
-        {% for site in project.sites.all %}
-            <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
-            <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
-
-            <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
-                <input type="submit" value="Delete {{ site }}"/>
-            </form><br>
-        {% endfor %}
-        <h4>Category:</h4>
-    {% for category in project.category.all %}
-        {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>
-        <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>
-    {% endfor %}
-    <h4>Materials:</h4>
-    {% for material in project.material.all %}
-        {{ material.title }}<a href="{% url 'core:material_update' material.pk %}">Update</a>
-        <a href="{% url 'core:material_delete' material.pk %}"> Delete</a><br>
-    {% endfor %}
-        <a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
-        <a href="{% url 'core:category_create' project.pk %}">Create New Category</a><br>
-        <a href="{% url 'core:material_create' project.pk %}">Create New Material</a>
-    {% endfor %}
-
+<div class="row no-gutters">
+            <div class="col-md-4 col-lg-3">
+                <div class="module-school-list">
+                    <div class="school-wrap">
+                        <ul class="school-list">
+                            {% for project in project %}
+                                {% for site in  project.sites.all %}
+                            <li>
+                                <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                    <img src="assets/img/img-school.png" class="school-logo" alt="">
+                                    <h6>{{ site }}</h6>
+                                    <span>{{ site.address }}</span>
+                                </a>
+                            </li>{% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="dash-right">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Name</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.name }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Organization</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.organization }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Logo</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}<img src="{{ MEDIA_URL }}{{ project.logo }}">
+                                         {% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Type</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.type }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Address</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.address }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Short Description</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.short_description }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Email Address</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.email_address }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Contact</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                </div>
+                                <div class="widget-body">
+                                     <p>{% for project in project %}
+                                         {{ project.phone_number }}{% endfor %}
+                                     </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock content %}
