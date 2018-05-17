@@ -141,9 +141,9 @@ window.Steps = new Vue({
                                                                   </td>
                                                                   <td>
                                                                   <a href="javascript:void(0)"  title=""
-                                                       class="btn btn-sm btn-primary" @click=""><i class="la la-edit"></i>  </a>
+                                                       class="btn btn-sm btn-primary" @click="editChecklist(c)"><i class="la la-edit"></i>  </a>
                                                         <a href="javascript:void(0)"  title=""
-                                                       class="btn btn-sm btn-danger" @click=""><i class="la la-trash"></i>  </a>
+                                                       class="btn btn-sm btn-danger" @click="deleteChecklist(c.id)"><i class="la la-trash"></i>  </a>
 
                                                                   </td>
                                                                   </tr>
@@ -299,6 +299,20 @@ window.Steps = new Vue({
             self.show_checklist_form = true;
             self.show_form = false;
         },
+         editChecklist: function (c) {
+            var self = this;
+            self.checklist = c;
+            self.show_checklist_form = true;
+            self.show_form = false;
+            if(self.checklist.material){
+                console.log(self.checklist);
+                var material = self.materials.filter(x => x.id === self.checklist.material)[0];
+
+                self.material = material;
+            }else{
+            self.material  = {};
+            }
+        },
 
         saveStep: function () {
             var self = this;
@@ -405,7 +419,7 @@ window.Steps = new Vue({
                     });
 
                 }
-                //            console.log(self.step);
+                            console.log(self.checklist);
                 self.$http.post('/core/api/checklist/', self.checklist, options).then(successCallback, errorCallback);
             }
             else {
@@ -416,7 +430,7 @@ window.Steps = new Vue({
                     self.error = "";
                     new PNotify({
                         title: 'Updated',
-                        text: 'checklist ' + response.body.title + ' Updated'
+                        text: 'checklist ' + response.body.text + ' Updated'
                     });
                     self.show_checklist_form = false;
                     self.checklist = response.body;
@@ -433,12 +447,12 @@ window.Steps = new Vue({
                     });
 
                 }
-                self.$http.put('/core/api/checklist/' + self.checklist.id + '/', self.step, options).then(successCallback, errorCallback);
+                self.$http.put('/core/api/checklist/' + self.checklist.id + '/', self.checklist, options).then(successCallback, errorCallback);
 
             }
 
         },
-        deleteStep: function (pk) {
+        deleteStep: function () {
             var self = this;
             var csrf = $('[name = "csrfmiddlewaretoken"]').val();
             var options = { headers: { 'X-CSRFToken': csrf } };
@@ -468,6 +482,45 @@ window.Steps = new Vue({
                 new PNotify({
                     title: 'deleted',
                     text: 'Step deleted',
+                });
+
+            }
+
+            self.$dialog.confirm(message)
+                .then(function () {
+                    self.$http.delete(url, options).then(successCallback, errorCallback);
+                })
+                .catch(function () {
+                    console.log('Clicked on cancel')
+                });
+        },
+        deleteChecklist: function (id) {
+            var self = this;
+            var csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            var options = { headers: { 'X-CSRFToken': csrf } };
+            var message = {
+                'title': 'Please Confirm Deletion',
+                'body': 'Deleting  checklist  deletes its  Submission'
+            }
+            var url = "/core/api/checklist/" + id + "/";
+            var data = options;
+
+            function errorCallback(response) {
+                console.log(response.body);
+                new PNotify({
+                    title: 'failed',
+                    text: 'Failed to delete checklist',
+                    type: 'error'
+                });
+            }
+
+            function successCallback(response) {
+                self.step = {};
+                var index = self.checklists.findIndex(x => x.id==id);
+                self.checklists.splice(index, 1);
+                new PNotify({
+                    title: 'deleted',
+                    text: 'checklist deleted',
                 });
 
             }

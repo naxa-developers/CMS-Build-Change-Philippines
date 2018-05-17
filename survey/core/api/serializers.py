@@ -88,7 +88,9 @@ class ChecklistSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         localname = validated_data.pop('localtext') if 'localtext' in validated_data else ""
         instance = Checklist.objects.create(**validated_data)
-        project = instance.step.project
+        project = instance.step.site.project
+        print(project)
+        print(project.setting.local_language)
 
         try:
             if project.setting.local_language:

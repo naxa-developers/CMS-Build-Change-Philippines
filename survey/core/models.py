@@ -107,8 +107,8 @@ class Checklist(models.Model):
             
     def get_localtext(self):
         try:
-            if self.step.project.setting.local_language:
-                return getattr(self, 'text_'+self.step.project.setting.local_language)
+            if self.step.site.project.setting.local_language:
+                return getattr(self, 'text_'+self.step.site.project.setting.local_language)
             else:
                 return "No language chosen yet."
         except:
