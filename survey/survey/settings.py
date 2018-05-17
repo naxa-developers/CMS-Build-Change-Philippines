@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # third party apps
     'rest_framework',
     'phonenumber_field',
+    'rest_framework.authtoken',
 
     # local apps
     'core',
