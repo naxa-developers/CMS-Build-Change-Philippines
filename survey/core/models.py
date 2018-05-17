@@ -55,6 +55,9 @@ class Step(models.Model):
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
     project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField()
+
+    class Meta:
+        ordering = ['order']
     
 
     def __str__(self):
