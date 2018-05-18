@@ -318,6 +318,7 @@ window.Steps = new Vue({
             var self = this;
             var csrf = $('[name = "csrfmiddlewaretoken"]').val();
             var options = { headers: { 'X-CSRFToken': csrf } };
+            console.log(self.step);
             if (!self.step.hasOwnProperty("id")) {
 
                 if (self.template_data.is_project == 1) {
@@ -328,6 +329,7 @@ window.Steps = new Vue({
                 }
                 self.step.order = self.steps.length + 1;
                 function successCallback(response) {
+                console.log(response.body);
 
                     self.error = "";
                     new PNotify({
@@ -356,6 +358,7 @@ window.Steps = new Vue({
             }
             else {
                 function successCallback(response) {
+                console.log(response.body);
                     var index = self.steps.findIndex(x => x.id == response.body.id);
                     Vue.set(self.steps, index, response.body);
 
