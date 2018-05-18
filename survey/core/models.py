@@ -11,7 +11,6 @@ PROJECT_TYPES = (
 )
 
 
-
 class Project(models.Model):
     name = models.CharField(max_length=250)
     organization = models.CharField(max_length=250, null=True, blank=True)
@@ -21,8 +20,10 @@ class Project(models.Model):
     phone_number = PhoneNumberField(null=True, blank=True)
     email_address = models.EmailField(max_length=250, null=True, blank=True)
     short_description = models.TextField(max_length=300, null=True, blank=True)
+
     def __str__(self):
         return self.name
+
 
 class Setting(models.Model):
     local_language = models.CharField(choices=settings.LANGUAGES, max_length=2, null=True, blank=True)
@@ -50,6 +51,7 @@ class Site(models.Model):
     def __str__(self):
         return self.name
 
+
 class Step(models.Model):
     name = models.CharField(max_length=250)
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
@@ -58,7 +60,6 @@ class Step(models.Model):
 
     class Meta:
         ordering = ['order']
-    
 
     def __str__(self):
         return self.name
@@ -72,12 +73,14 @@ class Step(models.Model):
         except:
             return "No language chosen yet."
 
+
 class Category(models.Model):
     name = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="category", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
 
 class Material(models.Model):
     title = models.CharField(max_length=250)
@@ -90,11 +93,11 @@ class Material(models.Model):
     def __str__(self):
         return self.title
 
+
 class Checklist(models.Model):
     text = models.TextField(blank=True)
     step = models.ForeignKey(Step, related_name="checklist_steps", on_delete=models.CASCADE)
     material = models.ForeignKey(Material, related_name="checklist_material", null=True, blank=True, on_delete=models.SET_NULL)
-    
 
     def __str__(self):
         return "step_id:" + str(self.step) + "------ id:" + str(self.id)

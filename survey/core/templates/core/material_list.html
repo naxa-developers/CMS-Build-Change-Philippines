@@ -1,0 +1,45 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<div class="row no-gutters">
+            <div class="col-md-4 col-lg-3">
+                <div class="module-school-list">
+                    <div class="school-wrap">
+                        <ul class="school-list">
+                            {% for project in projects %}
+                            <li>
+                                <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                    <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
+                                    <h6>{{ project }}</h6>
+                                    <span>{{ project.address }}</span>
+                                </a>
+                            </li>{% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="dash-left">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Materials</a></h4>
+                                </div>
+                                <div class="widget-body">
+                                    {% if if_material %}
+                                    {% for material in materials_list %}
+                                        <a href="{% url 'core:material_detail' material.pk %}"><h5>
+                                            {{ material }}</h5></a><br>
+                                        {% endfor %}<strong><a href="{% url 'core:material_create' project_id %}">Create New</a></strong>
+                                    {% else %}<p>Not materials Found.</p><br><strong><a href="{% url 'core:material_create' project_id %}">Create New</a></strong>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}

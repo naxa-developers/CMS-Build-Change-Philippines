@@ -35,16 +35,15 @@
                 <div class="module-school-list">
                     <div class="school-wrap">
                         <ul class="school-list">
-                            {% for project in project %}
-                                {% for site in  project.sites.all %}
+                        {% for project in project %}
+                                {% for site in project.sites.all %}
                             <li>
                                 <a href="{% url 'core:site_detail' site.pk %}" title="">
                                     <img src="assets/img/img-school.png" class="school-logo" alt="">
                                     <h6>{{ site }}</h6>
                                     <span>{{ site.address }}</span>
                                 </a>
-                            </li>{% endfor %}
-                            {% endfor %}
+                            </li>{% endfor %}{% endfor %}
                         </ul>
                     </div>
                 </div>

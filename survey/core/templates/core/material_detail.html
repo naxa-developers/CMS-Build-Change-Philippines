@@ -20,41 +20,33 @@
                 </div>
             </div>
             <div class="col-md-8 col-lg-9">
-                <div class="dash-right">
+                <div class="dash-left">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
-                                    <h4><a href="#" title="">Project Info</a></h4>
+                                    <h4><a href="#" title="">Materials</a></h4>
                                 </div>
                                 <div class="widget-body">
                                     <h5>Name</h5><br>
                                      <p>
-                                         {{ latest_project.name }}
+                                         {{ object.title }}
                                      </p><br>
                                     <h5>Organization</h5><br>
                                      <p>
-                                         {{ latest_project.organization }}
+                                         {{ object.organization }}
                                      </p><br>
-                                    <h5>Logo</h5><br>
+                                    <h5>Good Photo</h5><br>
                                      <p>
-                                         <img src="{{ MEDIA_URL }}{{ latest_project.logo }}">
+                                         <img src="{{ MEDIA_URL }}{{ object.good_photo }}">
                                      </p><br>
-                                    <h5>Type</h5><br>
+                                    <h5>Bad Photo</h5><br>
                                      <p>
-                                         {{ latest_project.address }}
+                                         <img src="{{ MEDIA_URL }}{{ object.bad_photo }}">
                                      </p><br>
-                                    <h5>Short Description</h5><br>
+                                    <h5>Description</h5><br>
                                      <p>
-                                         {{ latest_project.short_description }}
-                                     </p><br>
-                                    <h5>Phone</h5><br>
-                                     <p>
-                                         {{ latest_project.phone_number }}
-                                     </p><br>
-                                    <h5>Email Address</h5><br>
-                                     <p>
-                                         {{ latest_project.email_address }}
+                                         {{ object.description }}
                                      </p><br>
                                 </div>
                             </div>

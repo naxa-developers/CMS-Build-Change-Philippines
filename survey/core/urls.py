@@ -25,4 +25,6 @@ urlpatterns = [
     path('material-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
     path('material-update/<int:pk>/', views.MaterialUpdateView.as_view(), name="material_update"),
     path('material-delete/<int:pk>/', views.MaterialDeleteView.as_view(), name="material_delete"),
+    path('material-detail/<int:pk>', views.MaterialDetailView.as_view(), name="material_detail"),
+    path('material-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
 ]
