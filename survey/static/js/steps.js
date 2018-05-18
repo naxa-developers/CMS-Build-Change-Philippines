@@ -2,6 +2,7 @@ import Vue from 'vue';
 import moment from 'moment';
 import VueResource from 'vue-resource'
 import jQuery from 'jquery';
+import VuejsDialog from "vuejs-dialog"
 // import PNotify from 'pnotify';
 import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
 window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.js')
@@ -17,7 +18,9 @@ window.$ = jQuery;
 const channels = require('../vendor/js/websocket.js')
 
 Vue.use(VueResource);
+Vue.use(VuejsDialog);
 //Vue.use(VueMultiselect);
+
 
 
 
@@ -64,12 +67,13 @@ window.Steps = new Vue({
                                     <span v-show="step.hasOwnProperty('id')"> {{step.name}}</span>
                                     <span v-show="!step.hasOwnProperty('id')"> New Step</span>
                                     </a></h4>
-                                    <a href="javascript:void(0)"  title="" @click="newChecklist()"  class="btn btn-sm btn-xs btn-primary" ><i class="la la-plus"></i>New  Checklist</a>
+                                    <a href="javascript:void(0)"  title="" @click="newChecklist()"  class="btn btn-sm btn-xs btn-primary"
+                                    v-show="step.hasOwnProperty('id')"><i class="la la-plus"></i>New  Checklist</a>
                                     <a href="javascript:void(0)"  title="" @click="editStep()"  class="btn btn-sm btn-xs btn-primary"
-                                    v-show="step.hasOwnProperty('id')"><i class="la la-plus"></i>Edit Step</a>
+                                    v-show="step.hasOwnProperty('id')"><i class="la la-edit"></i>Edit Step</a>
                                 </div>
                                 <div class="widget-body" >
-                                            <form v-if="show_form">
+                                            <form v-if="show_form && !show_checklist_form">
                                             <legend>Step Form</legend>
                                                   <div class="form-group">
                                                     <label for="name">Name(English)</label>
@@ -83,11 +87,13 @@ window.Steps = new Vue({
                                                     <small id="nameHelp" class="form-text text-muted"> Enter step name in local Language</small>
                                                   </div>
                                                    <a href="javascript:void(0)"  title=""
-                                                   class="btn btn-sm btn-primary" @click="saveStep()" v-show="step.name.length>0"><i class="la la-plus"></i> Save Step</a>
+                                                   class="btn btn-sm btn-primary" @click="saveStep()" v-show="valid_step"><i class="la la-plus"></i> Save Step</a>
                                                    <a href="javascript:void(0)"  title=""
-                                                   class="btn btn-sm btn-warning" @click="show_form=false" v-show="step.name.length>0"><i class="la la-plus"></i> Close</a>
+                                                   class="btn btn-sm btn-warning" @click="show_form=false" v-show="valid_step"><i class="la la-plus"></i> Close</a>
+                                                     <a href="javascript:void(0)"  title=""
+                                                   class="btn btn-sm btn-danger" @click="deleteStep()" v-show="step.hasOwnProperty('id')"><i class="la la-trash"></i> Delete</a>
                                                 </form>
-                                                 <form v-show="show_checklist_form">
+                                                 <form v-show="show_checklist_form && !show_form">
                                                  <legend>Checklist Form</legend>
                                                       <div class="form-group">
                                                         <label for="name">Text(English)</label>
@@ -113,7 +119,7 @@ window.Steps = new Vue({
                                                        <a href="javascript:void(0)"  title=""
                                                        class="btn btn-sm btn-warning" @click="show_checklist_form=false"><i class="la la-plus"></i> Close</a>
                                                     </form>
-                                                <div class="form-group" v-show="checklists.length>0 && !show_checklist_form ">
+                                                <div class="form-group" v-show="checklists.length>0 && !show_checklist_form  && !show_form">
                                                     <table class="table">
                                                               <thead>
                                                                 <tr>
@@ -129,8 +135,17 @@ window.Steps = new Vue({
                                                                   <th scope="row">{{index+1}}</th>
                                                                   <td>{{c.text}}</td>
                                                                   <td>{{c.localtext}}</td>
-                                                                  <td>{{c.materials.title}}</td>
-                                                                  <td></td>
+                                                                  <td>
+                                                                  <a href="javascript:void(0)"  title=""
+                                                                        class="btn btn-xs" @click="" v-show="c.material"><i class="la la-eye"></i> {{c.materials.title}} </a>
+                                                                  </td>
+                                                                  <td>
+                                                                  <a href="javascript:void(0)"  title=""
+                                                       class="btn btn-sm btn-primary" @click="editChecklist(c)"><i class="la la-edit"></i>  </a>
+                                                        <a href="javascript:void(0)"  title=""
+                                                       class="btn btn-sm btn-danger" @click="deleteChecklist(c.id)"><i class="la la-trash"></i>  </a>
+
+                                                                  </td>
                                                                   </tr>
 
                                                               </tbody>
@@ -189,9 +204,9 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/step-list/'+ self.template_data.pk+'/' , {
-                    params: {}
-                }).then(successCallback, errorCallback);
+            self.$http.get('/core/api/step-list/' + self.template_data.pk + '/', {
+                params: {}
+            }).then(successCallback, errorCallback);
 
         },
         getMaterials: function () {
@@ -208,9 +223,9 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/material-list/'+ self.template_data.project+'/' , {
-                    params: {}
-                }).then(successCallback, errorCallback);
+            self.$http.get('/core/api/material-list/' + self.template_data.project + '/', {
+                params: {}
+            }).then(successCallback, errorCallback);
 
         },
         getChecklists: function () {
@@ -219,7 +234,7 @@ window.Steps = new Vue({
             self.loading = true;
             function successCallback(response) {
                 self.checklists = response.body;
-                if(response.body.length <= 0){
+                if (response.body.length <= 0) {
                     self.show_checklist_form = true;
                 }
                 self.loading = false;
@@ -230,15 +245,16 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/checklist-list/'+ self.step.id+'/' , {
-                    params: {}
-                }).then(successCallback, errorCallback);
+            self.$http.get('/core/api/checklist-list/' + self.step.id + '/', {
+                params: {}
+            }).then(successCallback, errorCallback);
 
         },
-        editStep: function(){
+        editStep: function () {
             var self = this;
             self.show_form = true;
             self.show_checklist = false;
+            self.show_checklist_form = false;
         },
         getStep: function (step) {
 
@@ -269,9 +285,10 @@ window.Steps = new Vue({
                 name: '',
                 localname: '',
             },
-            self.show_form = true;
-           self. show_content= true;
-            self.show_checklist= false;
+                self.show_form = true;
+            self.show_content = true;
+            self.show_checklist = false;
+            self.show_checklist_form = false;
         },
         newChecklist: function () {
             var self = this;
@@ -280,12 +297,28 @@ window.Steps = new Vue({
                 localtext: '',
             };
             self.show_checklist_form = true;
+            self.show_form = false;
+        },
+         editChecklist: function (c) {
+            var self = this;
+            self.checklist = c;
+            self.show_checklist_form = true;
+            self.show_form = false;
+            if(self.checklist.material){
+                console.log(self.checklist);
+                var material = self.materials.filter(x => x.id === self.checklist.material)[0];
+
+                self.material = material;
+            }else{
+            self.material  = {};
+            }
         },
 
         saveStep: function () {
             var self = this;
             var csrf = $('[name = "csrfmiddlewaretoken"]').val();
             var options = { headers: { 'X-CSRFToken': csrf } };
+            console.log(self.step);
             if (!self.step.hasOwnProperty("id")) {
 
                 if (self.template_data.is_project == 1) {
@@ -296,6 +329,7 @@ window.Steps = new Vue({
                 }
                 self.step.order = self.steps.length + 1;
                 function successCallback(response) {
+                console.log(response.body);
 
                     self.error = "";
                     new PNotify({
@@ -324,6 +358,7 @@ window.Steps = new Vue({
             }
             else {
                 function successCallback(response) {
+                console.log(response.body);
                     var index = self.steps.findIndex(x => x.id == response.body.id);
                     Vue.set(self.steps, index, response.body);
 
@@ -357,7 +392,7 @@ window.Steps = new Vue({
             var csrf = $('[name = "csrfmiddlewaretoken"]').val();
             var options = { headers: { 'X-CSRFToken': csrf } };
             self.checklist.step = self.step.id;
-            if(self.material.hasOwnProperty('id')){
+            if (self.material.hasOwnProperty('id')) {
                 self.checklist.material = self.material.id;
             }
             if (!self.checklist.hasOwnProperty("id")) {
@@ -387,7 +422,7 @@ window.Steps = new Vue({
                     });
 
                 }
-                //            console.log(self.step);
+                            console.log(self.checklist);
                 self.$http.post('/core/api/checklist/', self.checklist, options).then(successCallback, errorCallback);
             }
             else {
@@ -398,7 +433,7 @@ window.Steps = new Vue({
                     self.error = "";
                     new PNotify({
                         title: 'Updated',
-                        text: 'checklist ' + response.body.title + ' Updated'
+                        text: 'checklist ' + response.body.text + ' Updated'
                     });
                     self.show_checklist_form = false;
                     self.checklist = response.body;
@@ -415,13 +450,91 @@ window.Steps = new Vue({
                     });
 
                 }
-                self.$http.put('/core/api/checklist/' + self.checklist.id + '/', self.step, options).then(successCallback, errorCallback);
+                self.$http.put('/core/api/checklist/' + self.checklist.id + '/', self.checklist, options).then(successCallback, errorCallback);
 
             }
 
         },
-        deleteStep: function (pk) {
+        deleteStep: function () {
             var self = this;
+            var csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            var options = { headers: { 'X-CSRFToken': csrf } };
+            var message = {
+                'title': 'Please Confirm Deletion',
+                'body': 'Deleting Steps will Delete All Checklist and its Submission'
+            }
+            var id = self.step.id;
+            var url = "/core/api/step/" + id + "/";
+            var data = options;
+
+            function errorCallback(response) {
+                console.log(response.body);
+                new PNotify({
+                    title: 'failed',
+                    text: 'Failed to delete step',
+                    type: 'error'
+                });
+            }
+
+            function successCallback(response) {
+                self.step = {};
+                self.show_content = false;
+                self.show_form = false;
+                var index = self.steps.findIndex(x => x.id==id);
+                self.steps.splice(index, 1);
+                new PNotify({
+                    title: 'deleted',
+                    text: 'Step deleted',
+                });
+
+            }
+
+            self.$dialog.confirm(message)
+                .then(function () {
+                    self.$http.delete(url, options).then(successCallback, errorCallback);
+                })
+                .catch(function () {
+                    console.log('Clicked on cancel')
+                });
+        },
+        deleteChecklist: function (id) {
+            var self = this;
+            var csrf = $('[name = "csrfmiddlewaretoken"]').val();
+            var options = { headers: { 'X-CSRFToken': csrf } };
+            var message = {
+                'title': 'Please Confirm Deletion',
+                'body': 'Deleting  checklist  deletes its  Submission'
+            }
+            var url = "/core/api/checklist/" + id + "/";
+            var data = options;
+
+            function errorCallback(response) {
+                console.log(response.body);
+                new PNotify({
+                    title: 'failed',
+                    text: 'Failed to delete checklist',
+                    type: 'error'
+                });
+            }
+
+            function successCallback(response) {
+                self.step = {};
+                var index = self.checklists.findIndex(x => x.id==id);
+                self.checklists.splice(index, 1);
+                new PNotify({
+                    title: 'deleted',
+                    text: 'checklist deleted',
+                });
+
+            }
+
+            self.$dialog.confirm(message)
+                .then(function () {
+                    self.$http.delete(url, options).then(successCallback, errorCallback);
+                })
+                .catch(function () {
+                    console.log('Clicked on cancel')
+                });
         },
 
 
@@ -430,7 +543,7 @@ window.Steps = new Vue({
     watch: {
         step: function (newVal, oldVal) {
             var self = this;
-            if(newVal.hasOwnProperty("id")){
+            if (newVal.hasOwnProperty("id")) {
                 self.checklists = [];
                 self.checklist = {};
                 self.getChecklists();
@@ -455,20 +568,36 @@ window.Steps = new Vue({
         valid_checklist: function () {
             var self = this;
             var valid = true;
-            if(!self.checklist.hasOwnProperty('text')){
+            if (!self.checklist.hasOwnProperty('text')) {
                 return false;
             }
-            if(!self.checklist.hasOwnProperty('localtext')){
+            if (!self.checklist.hasOwnProperty('localtext')) {
                 return false;
             }
 
-            if(self.checklist.localtext.length ==0 || self.checklist.text.length ==0){
+            if (self.checklist.localtext.length == 0 || self.checklist.text.length == 0) {
                 return false;
             }
 
             return valid;
+        },
+        valid_step: function () {
+            var self = this;
+            var valid = true;
+            if (!self.step.hasOwnProperty('name')) {
+                return false;
+            }
+            if (!self.step.hasOwnProperty('localname')) {
+                return false;
+            }
+
+            if (self.step.localname.length == 0 || self.step.name.length == 0) {
+                return false;
+            }
+
+            return valid;
+        },
     },
-  },
 })
 
 

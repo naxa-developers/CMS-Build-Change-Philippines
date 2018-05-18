@@ -55,6 +55,9 @@ class Step(models.Model):
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
     project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField()
+
+    class Meta:
+        ordering = ['order']
     
 
     def __str__(self):
@@ -104,8 +107,8 @@ class Checklist(models.Model):
             
     def get_localtext(self):
         try:
-            if self.step.project.setting.local_language:
-                return getattr(self, 'text_'+self.step.project.setting.local_language)
+            if self.step.site.project.setting.local_language:
+                return getattr(self, 'text_'+self.step.site.project.setting.local_language)
             else:
                 return "No language chosen yet."
         except:
