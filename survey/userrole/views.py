@@ -1,4 +1,5 @@
-from django.views.generic import CreateView
+from django.urls import reverse
+from django.views.generic import CreateView, RedirectView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 
@@ -7,6 +8,15 @@ from core.views import SuperAdminMixin
 
 from .models import UserRole
 from .forms import UserRoleForm
+
+
+class Redirection(RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        if self.request.user.user_roles.filter(group__name='Super Admin'):
+            return reverse("core:admin_dashboard")
+        elif self.request.user.user_roles.filter(group__name='Project Manager'):
+            return reverse("core:project_dashboard")
 
 
 class UserRoleCreateView(SuperAdminMixin, CreateView):

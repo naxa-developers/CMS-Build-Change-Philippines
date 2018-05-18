@@ -76,7 +76,15 @@ class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
 
 
 class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
-    pass
+    """
+    Project DetailView
+    """
+    template_name = "core/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.filter(pk=self.kwargs['pk'])
+        return context
 
 
 class ProjectUpdateView(ProjectMixin, UpdateView):
@@ -137,6 +145,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all()
+        context['latest_project'] = Project.objects.latest('id')
         return context
 
 

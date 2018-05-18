@@ -19,10 +19,12 @@ from django.conf import settings
 from django.views.generic import TemplateView
 from django.contrib import admin
 
+from userrole.views import Redirection
+
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html')),
+    path('', Redirection.as_view()),
     path('core/', include('core.urls', namespace="core")),
     path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),
