@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material
+from core.models import Project, Site, Step, Checklist, Material, Report
+
 
 class StepsSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source='sites.name', read_only=True)
@@ -42,7 +43,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'sites')
 
 
-
 class MaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Material
@@ -66,6 +66,7 @@ class StepSerializer(serializers.ModelSerializer):
             pass
         instance.save()
         return instance
+
 
 class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
@@ -128,3 +129,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', 'name', 'sites')
+
+
+class ReportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Report
+        fields = ('id', 'user_id', 'checklist_id', 'comment', 'photo', 'status')

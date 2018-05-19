@@ -1,11 +1,13 @@
 from django.contrib.auth.models import User
-from rest_framework import viewsets, serializers, mixins
-from core.models import Project, Step, Material
-from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer
-from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project
+
+from rest_framework import viewsets, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
+
+from core.api.serializers import StepSerializer, ChecklistSerializer
+from core.models import Checklist, Step, Project, Material, Report
+from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer
+
 # Serializers define the API representation.
 
 
@@ -58,7 +60,6 @@ class StepViewset(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(site__id=site)
         return self.queryset
 
-
     def perform_create(self, serializer, **kwargs):
         localname = serializer.initial_data.get('localname', '')
         data = serializer.save(localname=localname)
@@ -95,4 +96,9 @@ class MaterialViewset(viewsets.ModelViewSet):
     #     localtext = serializer.initial_data.get('localtext', '')
     #     data = serializer.save(localtext=localtext)
     #     return data
+
+
+class ReportViewset(viewsets.ModelViewSet):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
 

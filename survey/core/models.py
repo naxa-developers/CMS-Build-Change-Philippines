@@ -3,6 +3,10 @@ from django.contrib.postgres.fields import JSONField
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+from rest_framework.authtoken.models import Token
 
 PROJECT_TYPES = (
     (0, 'First Type'),
@@ -118,9 +122,17 @@ class Checklist(models.Model):
             return "No language chosen yet."
 
 
+class Report(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_report', on_delete=models.SET_NULL, null=True,
+                             blank=True)
+    checklist = models.ForeignKey(Checklist, related_name='checklist_report', on_delete=models.CASCADE)
+    comment = models.TextField()
+    photo = models.ImageField(upload_to='report/%Y/%m/%D/', null=True, blank=True)
+    status = models.BooleanField(default=0)
 
 
-
-
-
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 

@@ -12,6 +12,7 @@ router.register(r'project', viewset.ProjectViewSet, base_name='project-list')
 router.register(r'checklist', viewset.ChecklistViewset, base_name='checklist-api')
 router.register(r'step', viewset.StepViewset, base_name='step-api')
 router.register(r'material', viewset.MaterialViewset, base_name='material-api')
+router.register(r'report', viewset.ReportViewset, base_name='checklist-report')
 
 
 urlpatterns = [
