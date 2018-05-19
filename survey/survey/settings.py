@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'phonenumber_field',
     'rest_framework.authtoken',
+    'rest_framework_swagger',
 
     # local apps
     'core',

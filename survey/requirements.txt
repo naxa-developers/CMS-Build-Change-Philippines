@@ -10,3 +10,4 @@ Pillow==5.1.0
 psycopg2==2.7.4
 pytz==2018.4
 sqlparse==0.2.4
+django-rest-swagger==2.1.2
