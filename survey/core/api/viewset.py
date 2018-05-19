@@ -5,8 +5,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report
-from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer
+from core.models import Checklist, Step, Project, Material, Report, Category
+from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer
 
 # Serializers define the API representation.
 
@@ -102,3 +102,7 @@ class ReportViewset(viewsets.ModelViewSet):
     serializer_class = ReportSerializer
     queryset = Report.objects.all()
 
+
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.select_related()

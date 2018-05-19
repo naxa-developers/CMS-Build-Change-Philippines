@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report
+from core.models import Project, Site, Step, Checklist, Material, Report, Category
 
 
 class StepsSerializer(serializers.ModelSerializer):
@@ -137,3 +137,11 @@ class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('id', 'user', 'step_id', 'checklist', 'comment', 'photo', 'status')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    project_name = serializers.CharField(source='project.name')
+
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'project', 'project_name')

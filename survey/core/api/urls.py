@@ -21,8 +21,8 @@ urlpatterns = [
     path('list-steps/<int:is_project>/<int:pk>/',
          viewset.ProjectSiteStepsViewSet.as_view({'get':  'list'})),
     path('step-list/<int:site>/', viewset.StepViewset.as_view({'get': 'list',}), name="api_steps"),
-    path('checklist-list/<int:step>/', viewset.ChecklistViewset.as_view({'get': 'list',}), name="api_checklist"),
-    path('material-list/<int:project>/', viewset.MaterialViewset.as_view({'get': 'list',}), name="api_materials"),
-
+    path('checklist-list/<int:step>/', viewset.ChecklistViewset.as_view({'get': 'list', }), name="api_checklist"),
+    path('material-list/<int:project>/', viewset.MaterialViewset.as_view({'get': 'list', }), name="api_materials"),
+    path('category-list/', viewset.CategoryViewSet.as_view({'get': 'list'})),
 
 ]
