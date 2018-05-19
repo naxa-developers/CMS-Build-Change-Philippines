@@ -4,14 +4,18 @@ from core.models import Project, Step, Material
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project
-
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
 # Serializers define the API representation.
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'is_staff')
 
 
+@permission_classes((AllowAny, ))
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
