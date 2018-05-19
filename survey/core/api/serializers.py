@@ -132,8 +132,8 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ReportSerializer(serializers.ModelSerializer):
-    step_id = serializers.IntegerField(source='checklist.step.id')
+    step_id = serializers.IntegerField(source='checklist.step.id', read_only=True)
 
     class Meta:
         model = Report
-        fields = ('id', 'user_id', 'step_id', 'checklist_id', 'comment', 'photo', 'status')
+        fields = ('id', 'user', 'step_id', 'checklist', 'comment', 'photo', 'status')
