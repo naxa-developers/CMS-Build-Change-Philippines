@@ -23,7 +23,7 @@ from userrole.views import Redirection
 
 from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='DFID API DOCS')
+schema_view = get_swagger_view(title='CMS API DOCS')
 
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
