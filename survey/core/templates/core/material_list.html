@@ -2,44 +2,68 @@
 
 {% block content %}
 
-<div class="row no-gutters">
-            <div class="col-md-4 col-lg-3">
-                <div class="module-school-list">
-                    <div class="school-wrap">
-                        <ul class="school-list">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="module-school-list">
+                <div class="school-wrap">
+                    <ul class="school-list">
+                        {% if request.user.is_superuser %}
                             {% for project in projects %}
-                            <li>
-                                <a href="{% url 'core:project_detail' project.pk %}" title="">
-                                    <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
-                                    <h6>{{ project }}</h6>
-                                    <span>{{ project.address }}</span>
-                                </a>
-                            </li>{% endfor %}
-                        </ul>
-                    </div>
+                                <li>
+                                    <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                        <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
+                                        <h6>{{ project }}</h6>
+                                        <span>{{ project.address }}</span>
+                                    </a>
+                                </li>{% endfor %}{% else %}
+                            {% for project in project %}
+                                {% for site in project.sites.all %}
+                                    <li>
+                                        <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                            <img src="assets/img/img-school.png" class="school-logo" alt="">
+                                            <h6>{{ site }}</h6>
+                                            <span>{{ site.address }}</span>
+                                        </a>
+                                    </li>{% endfor %}
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-8 col-lg-9">
-                <div class="dash-left">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Materials</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                    {% if if_material %}
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-left">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Materials</a></h4>
+                            </div>
+                            <div class="widget-body">
+                                {% if if_material %}
                                     {% for material in materials_list %}
                                         <a href="{% url 'core:material_detail' material.pk %}"><h5>
                                             {{ material }}</h5></a><br>
-                                        {% endfor %}<strong><a href="{% url 'core:material_create' project_id %}">Create New</a></strong>
-                                    {% else %}<p>Not materials Found.</p><br><strong><a href="{% url 'core:material_create' project_id %}">Create New</a></strong>
-                                    {% endif %}
-                                </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>Not materials Found.
+                                    </p>
+                                {% endif %}<br>
+                                <strong><a href="{% url 'core:material_create' project_id %}">Create
+                                    New</a></strong>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 {% endblock content %}

@@ -140,6 +140,13 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+        context['materials_list'] = Project.objects.filter(project_roles__user=self.request.user)\
+                                .prefetch_related('material')\
+                                .values_list('material__id','material__title', 'material__category',\
+                                             'material__category__name',\
+                                             'material__good_photo', 'material__bad_photo')
+        project = Project.objects.filter(project_roles__user=self.request.user)
+        context['if_material'] = Material.objects.filter(project=project[0]).count()
         return context
 
 
@@ -407,9 +414,11 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
-            context['project_id'] = self.kwargs['pk']
             context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             return context
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
+            context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
+            context['project_id'] = self.kwargs['pk']
             return context
