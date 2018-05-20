@@ -102,6 +102,7 @@ class Checklist(models.Model):
     text = models.TextField(blank=True)
     step = models.ForeignKey(Step, related_name="checklist_steps", on_delete=models.CASCADE)
     material = models.ForeignKey(Material, related_name="checklist_material", null=True, blank=True, on_delete=models.SET_NULL)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return "step_id:" + str(self.step) + "------ id:" + str(self.id)
@@ -111,7 +112,7 @@ class Checklist(models.Model):
             return reverse('core:material_update', kwargs={'pk': self.material_id})
         else:
             return None
-            
+
     def get_localtext(self):
         try:
             if self.step.site.project.setting.local_language:
@@ -128,7 +129,16 @@ class Report(models.Model):
     checklist = models.ForeignKey(Checklist, related_name='checklist_report', on_delete=models.CASCADE)
     comment = models.TextField()
     photo = models.ImageField(upload_to='report/%Y/%m/%D/', null=True, blank=True)
-    status = models.BooleanField(default=0)
+    report_status = models.BooleanField(default=0)
+    date = models.DateTimeField(auto_now=True)
+
+
+class CheckListHistroy(models.Model):
+    user = models.ForeignKey()
+    checklist = models.ForeignKey(Checklist)
+    old_status = models.BooleanField()
+    new_status = models.BooleanField()
+    date = models.DateTimeField(auto_now=True)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

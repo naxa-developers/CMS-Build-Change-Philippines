@@ -23,6 +23,13 @@ class RoleMiddleware(object):
     def __call__(self, request):
         return self.get_response(request)
 
+    def process_view(self, request, view_func, *view_args, **view_kwargs):
+        if request.user.is_authenticated:
+            request.role = None
+            groups = request.user.user_roles.all()
+            if groups:
+                request.role = groups[0].group
+
     def process_request(self, request):
 
         if request.META.get('HTTP_AUTHORIZATION'):
