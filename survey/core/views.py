@@ -253,7 +253,6 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
     """
     Site Delete View
     """
-    template_name = "core/project_detail.html"
     model = Site
 
     def get_success_url(self):
@@ -520,6 +519,11 @@ class ReportListView(ManagerSuperAdminMixin, ListView):
     Report List
     """
     model = Report
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = Report.objects.filter(checklist__step__site=self.kwargs['site_pk'])
+        return context
 
 
 class ReportDetailView(ManagerSuperAdminMixin, DetailView):

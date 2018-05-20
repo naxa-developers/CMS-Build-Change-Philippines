@@ -7,7 +7,8 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Site Create</li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Site</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
                 </ol>
             </nav>
         </div>
@@ -45,11 +46,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
+
                             <div class="widget-head">
                                 <form method="post" enctype="multipart/form-data">{% csrf_token %}
                                     {{ form.as_p }}
                                     <input type="submit" value="Submit">
+
                                 </form>
+
                             </div>
                         </div>
                     </div>
@@ -57,10 +61,5 @@
             </div>
         </div>
     </div>
-    <p>
 
-        <a href="{% url 'core:project_create' %}">Add Project</a><br>
-        <a href="{% url 'core:user_create' %}">Create User</a>
-
-    </p>
 {% endblock content %}

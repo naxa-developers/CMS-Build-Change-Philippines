@@ -1,5 +1,4 @@
 {% extends '_base.html' %}
-
 {% block content %}
 
     <div class="row no-gutters">
@@ -7,8 +6,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-
-                    <li class="breadcrumb-item active" aria-current="page">People</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
                 </ol>
             </nav>
         </div>
@@ -24,7 +22,9 @@
                                         <h6>{{ project }}</h6>
                                         <span>{{ project.address }}</span>
                                     </a>
-                                </li>{% endfor %}{% else %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
                             {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
@@ -33,7 +33,8 @@
                                             <h6>{{ site }}</h6>
                                             <span>{{ site.address }}</span>
                                         </a>
-                                    </li>{% endfor %}
+                                    </li>
+                                {% endfor %}
                             {% endfor %}
                         {% endif %}
                     </ul>
@@ -45,16 +46,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
-                           <form action="" method="post">{% csrf_token %}
-                        {{ form.as_p }}
-                        <input type="submit">
-                    </form>
+                            <div class="widget-head">
+                                <form action="" method="post">{% csrf_token %}
+                                    Are you sure you want to delete {{ object }}
+                                    <input type="submit">
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock content %}
-
