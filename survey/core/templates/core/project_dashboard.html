@@ -11,7 +11,7 @@
                 </ol>
             </nav>
         </div>
-        <div class="col-md-4 col-lg-3">
+        <div class="col-md-4 col-lg-3"><a href="{% url 'core:site_create' project_id %}"><h5>Add New Site</h5>
             <div class="module-school-list">
                 <div class="school-wrap">
                     <ul class="school-list">
@@ -34,6 +34,9 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h3>Project Details</h3>
+                            </div>
                             <div class="widget-head">
                                 <h4><a href="#" title="">Name</a></h4>
                             </div>
@@ -102,7 +105,7 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Materials </a></h4>
+                                <h4>Materials</h4>
                                 {% if if_material %}
                                     {% for obj in project %}
                                         <a href="{% url 'core:material_list' obj.pk %}" title=""
@@ -120,14 +123,9 @@
                                                 <a title="View submission detail"
                                                    href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
                                                 <br>
-                                                <a href="#" title="View details of user">
+                                                <a href="{% url 'core:category_update' obj.2 %}" title="View details of user">
                                                     <small><i class="la la-user"></i>{{ obj.3 }}</small>
                                                 </a>
-                                                <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                           aria-hidden="true"></i> 2
-                                                    hours, 47
-                                                    minutes ago
-                                                </small>
                                             </li>{% else %}<p>No Materials Found.</p>
                                             {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
                                         {% endif %}{% endfor %}
@@ -136,7 +134,7 @@
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Graph </a></h4>
+                                <h4>Graph</h4>
                                 {% if if_material %}
                                     {% for obj in project %}
                                         <a href="{% url 'core:material_list' obj.pk %}" title=""
@@ -154,16 +152,34 @@
                                                 <a title="View submission detail"
                                                    href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
                                                 <br>
-                                                <a href="#" title="View details of user">
+                                                <a href="{% url 'core:category_update' obj.2 %}" title="View details of user">
                                                     <small><i class="la la-user"></i>{{ obj.3 }}</small>
                                                 </a>
-                                                <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                           aria-hidden="true"></i> 2
-                                                    hours, 47
-                                                    minutes ago
-                                                </small>
                                             </li>{% else %}<p>No Materials Found.</p>
                                             {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
+                                        {% endif %}{% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4>Category</h4>
+                                {% if if_category %}
+                                    {% for obj in project %}
+                                        <a href="{% url 'core:category_list' obj.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    {% for obj in category_list %}
+                                        {% if obj.0 %}
+                                            <li>
+                                                <a href="{% url 'core:category_update' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                            </li>{% else %}<p>No Categories Found.</p>
+                                            <strong><a href="{% url 'core:category_create' project.pk %}">Create New</a></strong>
                                         {% endif %}{% endfor %}
                                 </ul>
                             </div>

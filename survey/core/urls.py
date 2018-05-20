@@ -20,6 +20,7 @@ urlpatterns = [
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_detail"),
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
+    path('category-list/<int:pk>', views.CategoryListView.as_view(), name="category_list"),
     path('category-update/<int:pk>', views.CategoryUpdateView.as_view(), name="category_update"),
     path('category-delete/<int:pk>', views.CategoryDeleteView.as_view(), name="category_delete"),
     path('material-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
@@ -28,3 +29,5 @@ urlpatterns = [
     path('material-detail/<int:pk>', views.MaterialDetailView.as_view(), name="material_detail"),
     path('material-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
 ]
+
+
