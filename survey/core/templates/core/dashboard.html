@@ -15,6 +15,7 @@
                                     <span>{{ project.address }}</span>
                                 </a>
                             </li>{% endfor %}
+
                         </ul>
                     </div>
                 </div>
@@ -59,6 +60,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Manage User</a></h4>
+                                </div>
+                                <div class="widget-body">
+                                    <a href="{% url 'core:user_create' %}">Create User</a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

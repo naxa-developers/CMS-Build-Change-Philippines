@@ -134,30 +134,12 @@
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4>Graph</h4>
-                                {% if if_material %}
-                                    {% for obj in project %}
-                                        <a href="{% url 'core:material_list' obj.pk %}" title=""
-                                           class="btn btn-sm btn-xs btn-primary"><i
-                                                class="la la-caret-right"></i> More</a>
-                                    {% endfor %}
-                                {% endif %}
+                                <h4>Manage User</h4>
+
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for obj in materials_list %}
-                                        {% if obj.0 %}
-                                            <li>
-                                                <img src="assets/img/img-school.png" alt="">
-                                                <a title="View submission detail"
-                                                   href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
-                                                <br>
-                                                <a href="{% url 'core:category_update' obj.2 %}" title="View details of user">
-                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
-                                                </a>
-                                            </li>{% else %}<p>No Materials Found.</p>
-                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
-                                        {% endif %}{% endfor %}
+                                    <a href="{% url 'core:user_create' %}">Create User</a>
                                 </ul>
                             </div>
                         </div>
