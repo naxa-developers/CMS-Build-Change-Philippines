@@ -134,8 +134,9 @@ class Report(models.Model):
 
 
 class CheckListHistroy(models.Model):
-    user = models.ForeignKey()
-    checklist = models.ForeignKey(Checklist)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_checklist_history', on_delete=models.SET_NULL, null=True,
+                             blank=True)
+    checklist = models.ForeignKey(Checklist, related_name='checklist_history', on_delete=models.SET_NULL, null=True, blank=True)
     old_status = models.BooleanField()
     new_status = models.BooleanField()
     date = models.DateTimeField(auto_now=True)
