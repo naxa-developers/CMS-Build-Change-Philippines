@@ -329,7 +329,7 @@ window.Steps = new Vue({
                 }
                 self.step.order = self.steps.length + 1;
                 function successCallback(response) {
-                console.log(response.body);
+                console.log(response.body, "sucess  ");
 
                     self.error = "";
                     new PNotify({

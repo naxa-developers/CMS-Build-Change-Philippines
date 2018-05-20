@@ -70,8 +70,8 @@ class Step(models.Model):
 
     def get_localname(self):
         try:
-            if self.project.setting.local_language:
-                return getattr(self, 'name_'+self.project.setting.local_language)
+            if self.site.project.setting.local_language:
+                return getattr(self, 'name_'+self.site.project.setting.local_language)
             else:
                 return "No language chosen yet."
         except:

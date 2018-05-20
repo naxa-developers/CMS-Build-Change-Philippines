@@ -51,19 +51,24 @@ class MaterialSerializer(serializers.ModelSerializer):
     
 class StepSerializer(serializers.ModelSerializer):
     localname = serializers.ReadOnlyField(source="get_localname")
+
     class Meta:
         model = Step
-        fields = ('id','name', 'site', 'project', 'order','localname',)
+        fields = ('id','name', 'site', 'project', 'order','localname')
 
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
-        instance = Step.objects.create(**validated_data)
+        instance = super(StepSerializer, self).create(validated_data)
         project = instance.site.project
-        try:
-            if project.setting.local_language:
-                setattr(instance, 'name_'+project.setting.local_language, localname)
-        except:
-            pass
+        setattr(instance, 'name_'+project.setting.local_language, localname)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        localname = self.context['request'].data.get('localname', "")
+        instance =  super(StepSerializer, self).update(instance, validated_data)
+        project = instance.site.project
+        setattr(instance, 'name_' + project.setting.local_language, localname)
         instance.save()
         return instance
 
@@ -88,16 +93,18 @@ class ChecklistSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         localname = validated_data.pop('localtext') if 'localtext' in validated_data else ""
-        instance = Checklist.objects.create(**validated_data)
+        instance = super(ChecklistSerializer, self).create(validated_data)
         project = instance.step.site.project
-        print(project)
-        print(project.setting.local_language)
+        if project.setting.local_language:
+            setattr(instance, 'text_'+project.setting.local_language, localname)
+        instance.save()
+        return instance
 
-        try:
-            if project.setting.local_language:
-                setattr(instance, 'text_'+project.setting.local_language, localname)
-        except:
-            pass
+    def update(self, instance, validated_data):
+        localname = self.context['request'].data.get('localtext', "")
+        instance = super(ChecklistSerializer, self).update(instance, validated_data)
+        project = instance.step.site.project
+        setattr(instance, 'text_' + project.setting.local_language, localname)
         instance.save()
         return instance
 
