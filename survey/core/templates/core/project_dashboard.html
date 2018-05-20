@@ -15,7 +15,6 @@
             <div class="module-school-list">
                 <div class="school-wrap">
                     <ul class="school-list">
-                        {% for project in project %}
                             {% for site in project.sites.all %}
                                 <li>
                                     <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -23,8 +22,8 @@
                                         <h6>{{ site }}</h6>
                                         <span>{{ site.address }}</span>
                                     </a>
-                                </li>{% endfor %}
-                        {% endfor %}
+                                </li>
+                            {% endfor %}
                     </ul>
                 </div>
             </div>
@@ -40,64 +39,64 @@
                             <div class="widget-head">
                                 <h4><a href="#" title="">Name</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.name }}{% endfor %}
+                            <p>
+                                {{ project.name }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Organization</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.organization }}{% endfor %}
+                            <p>
+                                {{ project.organization }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Logo</a></h4>
                             </div>
-                            <p>{% for project in project %}<img src="{{ MEDIA_URL }}{{ project.logo }}">
-                            {% endfor %}
+                            <p><img src="{{ MEDIA_URL }}{{ project.logo }}">
+
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Type</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.type }}{% endfor %}
+                            <p>
+                                {{ project.type }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Address</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.address }}{% endfor %}
+                            <p>
+                                {{ project.address }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Short Description</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.short_description }}{% endfor %}
+                            <p>
+                                {{ project.short_description }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Email Address</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.email_address }}{% endfor %}
+                            <p>
+                                {{ project.email_address }}
                             </p>
                         </div>
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Contact</a></h4>
                             </div>
-                            <p>{% for project in project %}
-                                {{ project.phone_number }}{% endfor %}
+                            <p>
+                                {{ project.phone_number }}
                             </p>
                         </div>
                     </div>
@@ -107,11 +106,10 @@
                             <div class="widget-head">
                                 <h4>Materials</h4>
                                 {% if if_material %}
-                                    {% for obj in project %}
-                                        <a href="{% url 'core:material_list' obj.pk %}" title=""
+                                        <a href="{% url 'core:material_list' project.pk %}" title=""
                                            class="btn btn-sm btn-xs btn-primary"><i
                                                 class="la la-caret-right"></i> More</a>
-                                    {% endfor %}
+
                                 {% endif %}
                             </div>
                             <div class="widget-body">
@@ -128,7 +126,8 @@
                                                 </a>
                                             </li>{% else %}<p>No Materials Found.</p>
                                             {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
-                                        {% endif %}{% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>
@@ -136,11 +135,9 @@
                             <div class="widget-head">
                                 <h4>Graph</h4>
                                 {% if if_material %}
-                                    {% for obj in project %}
-                                        <a href="{% url 'core:material_list' obj.pk %}" title=""
+                                        <a href="{% url 'core:material_list' project.pk %}" title=""
                                            class="btn btn-sm btn-xs btn-primary"><i
                                                 class="la la-caret-right"></i> More</a>
-                                    {% endfor %}
                                 {% endif %}
                             </div>
                             <div class="widget-body">
@@ -157,7 +154,8 @@
                                                 </a>
                                             </li>{% else %}<p>No Materials Found.</p>
                                             {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
-                                        {% endif %}{% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>
@@ -165,22 +163,24 @@
                             <div class="widget-head">
                                 <h4>Category</h4>
                                 {% if if_category %}
-                                    {% for obj in project %}
-                                        <a href="{% url 'core:category_list' obj.pk %}" title=""
+                                        <a href="{% url 'core:category_list' project.pk %}" title=""
                                            class="btn btn-sm btn-xs btn-primary"><i
                                                 class="la la-caret-right"></i> More</a>
-                                    {% endfor %}
                                 {% endif %}
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
+                                {% if if_category %}
                                     {% for obj in category_list %}
-                                        {% if obj.0 %}
                                             <li>
                                                 <a href="{% url 'core:category_update' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
-                                            </li>{% else %}<p>No Categories Found.</p>
-                                            <strong><a href="{% url 'core:category_create' project_id %}">Create New</a></strong>
-                                        {% endif %}{% endfor %}
+                                            </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No Categories Found.</p>
+                                {% endif %}
+                                <strong><a href="{% url 'core:category_create' project.pk %}">Create New</a></strong>
+
                                 </ul>
                             </div>
                         </div>

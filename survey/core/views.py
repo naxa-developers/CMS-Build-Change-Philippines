@@ -165,7 +165,7 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+        context['project'] = Project.objects.get(project_roles__user=self.request.user)
         context['project_id'] = Project.objects.filter(project_roles__user=self.request.user).values_list('id',flat=True)[0]
         context['materials_list'] = Project.objects.filter(project_roles__user=self.request.user)\
                                 .prefetch_related('material')\
