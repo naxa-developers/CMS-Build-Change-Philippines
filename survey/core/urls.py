@@ -9,7 +9,6 @@ urlpatterns = [
     path('project-detail/<int:pk>/', views.ProjectDetailView.as_view(), name="project_detail"),
     path('project-update/<int:pk>/', views.ProjectUpdateView.as_view(), name="project_update"),
     path('project-delete/<int:pk>/', views.ProjectDeleteView.as_view(), name="project_delete"),
-
     path('user-create/', views.UserCreateView.as_view(), name="user_create"),
     path('dashboard/', views.Dashboard.as_view(), name="admin_dashboard"),
     path('project-dashboard/', views.ProjectDashboard.as_view(), name="project_dashboard"),
@@ -20,6 +19,7 @@ urlpatterns = [
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_detail"),
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
+    path('category-list/<int:pk>', views.CategoryListView.as_view(), name="category_list"),
     path('category-update/<int:pk>', views.CategoryUpdateView.as_view(), name="category_update"),
     path('category-delete/<int:pk>', views.CategoryDeleteView.as_view(), name="category_delete"),
     path('material-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
@@ -31,3 +31,4 @@ urlpatterns = [
     path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
 
 ]
+

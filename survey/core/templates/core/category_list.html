@@ -7,7 +7,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Site Create</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
                 </ol>
             </nav>
         </div>
@@ -23,8 +23,7 @@
                                         <h6>{{ project }}</h6>
                                         <span>{{ project.address }}</span>
                                     </a>
-                                </li>{% endfor %}
-                        {% else %}
+                                </li>{% endfor %}{% else %}
                             {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
@@ -46,10 +45,20 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <form method="post" enctype="multipart/form-data">{% csrf_token %}
-                                    {{ form.as_p }}
-                                    <input type="submit" value="Submit">
-                                </form>
+                                <h4><a href="#" title="">Category</a></h4>
+                            </div>
+                            <div class="widget-body">
+                                {% if if_category %}
+                                    {% for category in category_list %}
+                                        <a href="{% url 'core:category_update' category.pk %}"><h5>
+                                            {{ category }}</h5></a><br>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>Not Categories Found.
+                                    </p>
+                                {% endif %}<br>
+                                <strong><a href="{% url 'core:category_create' project_id %}">Create
+                                    New</a></strong>
                             </div>
                         </div>
                     </div>
@@ -57,10 +66,4 @@
             </div>
         </div>
     </div>
-    <p>
-
-        <a href="{% url 'core:project_create' %}">Add Project</a><br>
-        <a href="{% url 'core:user_create' %}">Create User</a>
-
-    </p>
 {% endblock content %}

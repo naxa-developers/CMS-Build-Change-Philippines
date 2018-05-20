@@ -3,6 +3,14 @@
 {% block content %}
 
 <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
+                </ol>
+            </nav>
+        </div>
             <div class="col-md-4 col-lg-3">
                 <div class="module-school-list">
                     <div class="school-wrap">
@@ -40,7 +48,9 @@
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
-                                    <h4><a href="#" title="">Materials</a></h4>
+                                    <h4><a href="#" title="">Materials &nbsp</a></h4>
+                                    <h4><a href="{% url 'core:material_update' object.id %}" title="">Edit &nbsp</a></h4>
+                                    <h4><a href="{% url 'core:material_delete' object.id %}" title="">Delete</a></h4>
                                 </div>
                                 <div class="widget-body">
                                     <h5>Name</h5><br>
