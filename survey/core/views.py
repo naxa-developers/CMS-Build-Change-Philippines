@@ -72,7 +72,20 @@ class ProjectMixin(object):
 
 
 class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
-    pass
+    """
+    Project CreateView
+    """
+    template_name = "core/project_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['project_id']
+            return context
 
 
 class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
@@ -95,6 +108,20 @@ class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
 
 
 class ProjectUpdateView(ProjectMixin, UpdateView):
+    """
+    Project UpdateView
+    """
+    template_name = "core/project_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['pk']
+            return context
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.user_roles.filter(group__name="Project Manager"):
