@@ -179,7 +179,7 @@
                                             <li>
                                                 <a href="{% url 'core:category_update' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
                                             </li>{% else %}<p>No Categories Found.</p>
-                                            <strong><a href="{% url 'core:category_create' project.pk %}">Create New</a></strong>
+                                            <strong><a href="{% url 'core:category_create' project_id %}">Create New</a></strong>
                                         {% endif %}{% endfor %}
                                 </ul>
                             </div>
