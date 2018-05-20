@@ -143,7 +143,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ('id', 'user', 'step_id', 'checklist', 'comment', 'photo', 'status')
+        fields = ('id', 'user', 'step_id', 'checklist', 'comment', 'photo', 'report_status', 'date')
 
 
 class CategorySerializer(serializers.ModelSerializer):

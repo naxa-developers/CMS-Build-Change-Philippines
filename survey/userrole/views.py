@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.core.exceptions import PermissionDenied
 
-from core.models import Project
+from core.models import Project, Site
 from core.views import SuperAdminMixin, ProjectManagerMixin
 
 from .models import UserRole
@@ -62,3 +62,12 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
             return redirect('core:project_dashboard')
 
         return render(request, self.template_name, {'form': form})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+        return context
