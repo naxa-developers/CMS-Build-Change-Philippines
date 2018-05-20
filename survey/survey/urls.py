@@ -21,6 +21,10 @@ from django.contrib import admin
 
 from userrole.views import Redirection
 
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='CMS API DOCS')
+
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
@@ -28,6 +32,7 @@ urlpatterns = [
     path('core/', include('core.urls', namespace="core")),
     path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),
+    path('core/api/docs/', schema_view),
     path('api-auth/', include('rest_framework.urls')),
 
 ]
