@@ -182,7 +182,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
     """
     dashboard for Super Admin
     """
-    template_name = "core/d.html"
+    template_name = "core/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
