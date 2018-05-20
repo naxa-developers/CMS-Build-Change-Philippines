@@ -182,7 +182,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
     """
     dashboard for Super Admin
     """
-    template_name = "core/dashboard.html"
+    template_name = "core/d.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -265,6 +265,16 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = Site.objects.filter(project=)
+            return context
+
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
@@ -280,6 +290,16 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
     Site Delete View
     """
     model = Site
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = Site.objects.filter(project=)
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):

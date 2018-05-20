@@ -9,9 +9,9 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 PROJECT_TYPES = (
-    (0, 'First Type'),
-    (1, 'Second Type'),
-    (2, 'Third Type'),
+    (0, 'School'),
+    (1, 'House'),
+    (2, 'Others'),
 )
 
 
