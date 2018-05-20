@@ -49,12 +49,6 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
     model = UserRole
     form_class = UserRoleForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
-
-        return context
-
     def post(self, request, *args, **kwargs):
 
         form = self.form_class(data=request.POST)
@@ -68,6 +62,8 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
+
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
             return context
