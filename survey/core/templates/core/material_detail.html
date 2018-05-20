@@ -7,14 +7,29 @@
                 <div class="module-school-list">
                     <div class="school-wrap">
                         <ul class="school-list">
+                        {% if request.user.is_superuser %}
                             {% for project in projects %}
-                            <li>
-                                <a href="{% url 'core:project_detail' project.pk %}" title="">
-                                    <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
-                                    <h6>{{ project }}</h6>
-                                    <span>{{ project.address }}</span>
-                                </a>
-                            </li>{% endfor %}
+                                <li>
+                                    <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                        <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
+                                        <h6>{{ project }}</h6>
+                                        <span>{{ project.address }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            {% for project in project %}
+                                {% for site in project.sites.all %}
+                                    <li>
+                                        <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                            <img src="assets/img/img-school.png" class="school-logo" alt="">
+                                            <h6>{{ site }}</h6>
+                                            <span>{{ site.address }}</span>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
                         </ul>
                     </div>
                 </div>

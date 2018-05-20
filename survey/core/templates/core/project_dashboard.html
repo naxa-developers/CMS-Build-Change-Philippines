@@ -1,154 +1,176 @@
 {% extends '_base.html' %}
-{##}
-{#{% block content %}#}
-{#    {% for project in project %}#}
-{#        <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>#}
-{#        <h4>Sites:</h4>#}
-{#        {% for site in project.sites.all %}#}
-{#            <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>#}
-{#            <a href="{% url 'core:site_update' site.pk %}">Update Site</a>#}
-{##}
-{#            <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}#}
-{#                <input type="submit" value="Delete {{ site }}"/>#}
-{#            </form><br>#}
-{#        {% endfor %}#}
-{#        <h4>Category:</h4>#}
-{#    {% for category in project.category.all %}#}
-{#        {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>#}
-{#        <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>#}
-{#    {% endfor %}#}
-{#    <h4>Materials:</h4>#}
-{#    {% for material in project.material.all %}#}
-{#        {{ material.title }}<a href="{% url 'core:material_update' material.pk %}">Update</a>#}
-{#        <a href="{% url 'core:material_delete' material.pk %}"> Delete</a><br>#}
-{#    {% endfor %}#}
-{#        <a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>#}
-{#        <a href="{% url 'core:category_create' project.pk %}">Create New Category</a><br>#}
-{#        <a href="{% url 'core:material_create' project.pk %}">Create New Material</a>#}
-{#    {% endfor %}#}
-{##}
-{#{% endblock content %}#}
+
 
 {% block content %}
-<div class="row no-gutters">
-            <div class="col-md-4 col-lg-3">
-                <div class="module-school-list">
-                    <div class="school-wrap">
-                        <ul class="school-list">
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="module-school-list">
+                <div class="school-wrap">
+                    <ul class="school-list">
                         {% for project in project %}
-                                {% for site in project.sites.all %}
-                            <li>
-                                <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                    <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                    <h6>{{ site }}</h6>
-                                    <span>{{ site.address }}</span>
-                                </a>
-                            </li>{% endfor %}{% endfor %}
-                        </ul>
-                    </div>
+                            {% for site in project.sites.all %}
+                                <li>
+                                    <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                        <img src="assets/img/img-school.png" class="school-logo" alt="">
+                                        <h6>{{ site }}</h6>
+                                        <span>{{ site.address }}</span>
+                                    </a>
+                                </li>{% endfor %}
+                        {% endfor %}
+                    </ul>
                 </div>
             </div>
-            <div class="col-md-8 col-lg-9">
-                <div class="dash-right">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Name</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.name }}{% endfor %}
-                                     </p>
-                                </div>
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Name</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.name }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Organization</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.organization }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Logo</a></h4>
+                            </div>
+                            <p>{% for project in project %}<img src="{{ MEDIA_URL }}{{ project.logo }}">
+                            {% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Type</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.type }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Address</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.address }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Short Description</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.short_description }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Email Address</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.email_address }}{% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Contact</a></h4>
+                            </div>
+                            <p>{% for project in project %}
+                                {{ project.phone_number }}{% endfor %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Materials </a></h4>
+                                {% if if_material %}
+                                    {% for obj in project %}
+                                        <a href="{% url 'core:material_list' obj.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    {% for obj in materials_list %}
+                                        {% if obj.0 %}
+                                            <li>
+                                                <img src="assets/img/img-school.png" alt="">
+                                                <a title="View submission detail"
+                                                   href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                                <br>
+                                                <a href="#" title="View details of user">
+                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
+                                                </a>
+                                                <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                           aria-hidden="true"></i> 2
+                                                    hours, 47
+                                                    minutes ago
+                                                </small>
+                                            </li>{% else %}<p>No Materials Found.</p>
+                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
+                                        {% endif %}{% endfor %}
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Organization</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.organization }}{% endfor %}
-                                     </p>
-                                </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Graph </a></h4>
+                                {% if if_material %}
+                                    {% for obj in project %}
+                                        <a href="{% url 'core:material_list' obj.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Logo</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}<img src="{{ MEDIA_URL }}{{ project.logo }}">
-                                         {% endfor %}
-                                     </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Type</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.type }}{% endfor %}
-                                     </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Address</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.address }}{% endfor %}
-                                     </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Short Description</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.short_description }}{% endfor %}
-                                     </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Email Address</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.email_address }}{% endfor %}
-                                     </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Contact</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                     <p>{% for project in project %}
-                                         {{ project.phone_number }}{% endfor %}
-                                     </p>
-                                </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    {% for obj in materials_list %}
+                                        {% if obj.0 %}
+                                            <li>
+                                                <img src="assets/img/img-school.png" alt="">
+                                                <a title="View submission detail"
+                                                   href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                                <br>
+                                                <a href="#" title="View details of user">
+                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
+                                                </a>
+                                                <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                           aria-hidden="true"></i> 2
+                                                    hours, 47
+                                                    minutes ago
+                                                </small>
+                                            </li>{% else %}<p>No Materials Found.</p>
+                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
+                                        {% endif %}{% endfor %}
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 {% endblock content %}
