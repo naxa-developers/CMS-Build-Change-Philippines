@@ -9,7 +9,7 @@ require('../assets/css/style.css');
 //
 //require('../assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js');
 
-//import 'bootstrap';
+import 'bootstrap';
 require('../assets/js/vendor/jquery.nicescroll.min.js');
 require('../assets/js/plugins.js');
 window.PNotify = PNotify;
