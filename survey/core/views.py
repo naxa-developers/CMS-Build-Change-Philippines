@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.models import UserRole
 
-from .models import Project, Site, Category, Material, Step
+from .models import Project, Site, Category, Material, Step, Report
 from .forms import ProjectForm, CategoryForm, MaterialForm
 
 
@@ -206,7 +206,8 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
         data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
-        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])
+        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
+        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
         data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
 
         return data
@@ -422,3 +423,18 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
             context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             context['project_id'] = self.kwargs['pk']
             return context
+
+
+class ReportListView(ManagerSuperAdminMixin, ListView):
+    """
+    Report List
+    """
+    model = Report
+
+
+class ReportDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Report detail
+    """
+    model = Report
+

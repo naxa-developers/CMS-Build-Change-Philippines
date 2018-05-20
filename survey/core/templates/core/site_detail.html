@@ -187,15 +187,15 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Reports</a></h4>
-                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                <a href="{% url 'core:report_list' object.pk %}" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for material in site_materials  %}
+                                    {% for report in site_reports  %}
                                     <li>
                                         <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="#"><strong>material</strong></a>
+                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>report</strong></a>
                                         <br>
                                         <a href="#" title="View details of user">
                                             <small><i class="la la-user"></i>chapakot</small>
@@ -210,8 +210,7 @@
 
                                 </ul>
                             </div>
-                             <a href="" title="" class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Add Report</a>
+
                         </div>
                     </div>
 
