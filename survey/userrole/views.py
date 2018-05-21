@@ -80,22 +80,25 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
         return context
 
+    # def get_form(self, form_class=None):
+    #     form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
+    #     form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id'])
+    #     return form
+
 
 class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
     model = User
     template_name = 'userrole/project_user_form.html'
     form_class = ProjectUserForm
 
-    # def form_valid(self, form):
-    #     form.instance.project_id =self.kwargs.get('project_id')
-    #     user = form.save()
+    def post(self, request, *args, **kwargs):
+        form = ProjectUserForm(data=request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
 
-    # def post(self, request, *args, **kwargs):
-    #
-    #     form = ProjectUserForm(request.POST)
-    #     if form.is_valid():
-    #         user_form = form.save(commit=False)
-    #         user_form.project = Project.objects.get(id=self.kwargs['project_id'])
-    #         user_form.save()
-    #
-    #     return render(request, self.template_name)
+            UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
+                                    project_id=self.kwargs['project_id'])
+            return redirect('core:project_dashboard')
+
+        return render(request, self.template_name, {'form': form})

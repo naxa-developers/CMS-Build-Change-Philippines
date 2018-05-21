@@ -223,9 +223,10 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
     template_name = "core/project_dashboard.html"
 
     def get_context_data(self, **kwargs):
+        project_id = Project.objects.filter(project_roles__user=self.request.user).values_list('id',flat=True)[0]
         context = super().get_context_data(**kwargs)
         context['project'] = Project.objects.get(project_roles__user=self.request.user)
-        context['project_id'] = Project.objects.filter(project_roles__user=self.request.user).values_list('id',flat=True)[0]
+        context['project_id'] = project_id
         context['materials_list'] = Project.objects.filter(project_roles__user=self.request.user)\
                                 .prefetch_related('material')\
                                 .values_list('material__id','material__title','material__category__id',\
@@ -236,6 +237,7 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
         context['if_category'] = Category.objects.filter(project=project[0]).count()
         context['category_list'] = Project.objects.filter(project_roles__user=self.request.user)\
                                     .prefetch_related('category').values_list('category__id', 'category__name')
+        context['users'] = User.objects.filter(user_roles__project=project_id)
         return context
 
 
@@ -388,28 +390,6 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         else:
             data['project'] = data['pk']
         return data
-
-
-class SiteStepsUpdateView(ManagerSuperAdminMixin, UpdateView):
-    """
-    Steps Update View
-    """
-    model = Step
-    template_name = "core/site_steps.html"
-
-
-class SiteStepsDetailView(ManagerSuperAdminMixin, DetailView):
-    """
-    Steps Update View
-    """
-    model = Step
-
-
-class SiteStepsDeleteView(ManagerSuperAdminMixin, DeleteView):
-    """
-    Steps Delete View
-    """
-    model = Step
 
 
 class CategoryFormView(ManagerSuperAdminMixin, FormView):

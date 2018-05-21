@@ -142,13 +142,17 @@
                                            class="btn btn-sm btn-xs btn-primary"><i
                                                 class="la la-caret-right"></i> More</a>
                                 {% endif %}
-                            <a href="{% url 'core:user_create' %}">Create User</a>
+                            <a href="{% url 'userrole:project_user_create' project_id %}">Create User</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
                                     <div class="widget-body">
                                         <ul class="submission-list">
-
+                                        {% for user in users %}
+                                            <li>
+                                               {{ forloop.counter }}. <a href=""><strong>{{ user}}</strong></a>
+                                            </li>
+                                            {% endfor %}
                                         </ul>
                                     </div>
                             </div>
