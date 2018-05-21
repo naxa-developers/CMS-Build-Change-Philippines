@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report
-from .forms import ProjectForm, CategoryForm, MaterialForm
+from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm
 
 
 @api_view(['POST'])
@@ -259,7 +259,7 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
 
     template_name = "core/site_create.html"
     model = Site
-    fields = ('name', 'type', 'photo', 'address', 'latitude', 'longitude', 'contact_number',)
+    form_class = SiteForm
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
@@ -318,7 +318,7 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
     template_name = "core/site_create.html"
     model = Site
-    fields = '__all__'
+    form_class = SiteForm
 
     def form_valid(self, form):
         form.instance.site = get_object_or_404(Site, pk=self.kwargs['pk'])
