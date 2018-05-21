@@ -57,58 +57,28 @@
                                     <li>
                                         <strong>Address: {{ object.address }}</strong>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                     <li>
                                         <strong>Latitude: {{ object.latitude }}</strong>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                     <li>
                                         <strong>Longitude: {{ object.longitude }}</strong>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                     <li><strong>Photo: </strong><br>
                                         <img alt="hello" src="{{ MEDIA_URL }}{{ object.photo }}" height="300" width="300" class="option1" id="incorrect_answer1">
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                     <li>
                                         <a title="View submission detail"
                                            href="#"><strong>Contact Number: {{ object.contact_number }}</strong></a>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                 </ul>
                             </div>
@@ -125,23 +95,18 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Step List</a></h4>
-                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
-                                        class="la la-caret-right"></i> More</a>
+                                <a href="{% url 'core:site-steps' 0 object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Add New Step</a>
+
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
                                     {% for step in step_list  %}
                                     <li>
                                         <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="#"><strong>step</strong></a>
+                                        <a title="View submission detail" href="#"><strong>{{ step }}</strong></a>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                         {% empty %}
                                         No steps Found.
@@ -150,8 +115,9 @@
 
                                 </ul>
                             </div>
-                             <a href="{% url 'core:site-steps' 0 object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Add New Step</a>
+
+                        <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                        class="la la-caret-right"></i> More</a>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -168,13 +134,7 @@
                                         <img src="assets/img/img-school.png" alt="">
                                         <a title="View submission detail" href="{% url 'core:material_detail' material.pk %}"><strong>material</strong></a>
                                         <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+
                                     </li>
                                    {% empty %}
                                         No Materials Found.
