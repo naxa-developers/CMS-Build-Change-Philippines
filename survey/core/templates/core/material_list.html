@@ -24,7 +24,6 @@
                                         <span>{{ project.address }}</span>
                                     </a>
                                 </li>{% endfor %}{% else %}
-                            {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
                                         <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -32,7 +31,7 @@
                                             <h6>{{ site }}</h6>
                                             <span>{{ site.address }}</span>
                                         </a>
-                                    </li>{% endfor %}
+                                    </li>
                             {% endfor %}
                         {% endif %}
                     </ul>
@@ -57,7 +56,7 @@
                                     <p>Not materials Found.
                                     </p>
                                 {% endif %}<br>
-                                <strong><a href="{% url 'core:material_create' project_id %}">Create
+                                <strong><a href="{% url 'core:material_create' this_project.pk %}">Create
                                     New</a></strong>
                             </div>
                         </div>

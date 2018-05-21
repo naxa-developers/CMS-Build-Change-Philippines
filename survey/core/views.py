@@ -550,11 +550,12 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
+            context['this_project'] = Project.objects.get(pk=self.kwargs['pk'])
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
             context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             return context
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project'] = Project.objects.get(project_roles__user=self.request.user)
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
             context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             context['project_id'] = self.kwargs['pk']
