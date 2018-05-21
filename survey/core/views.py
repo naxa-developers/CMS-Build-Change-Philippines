@@ -3,33 +3,54 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
+from rest_framework import status
 
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-
-from .models import Project, Site, Category, Material
-from .forms import ProjectForm, CategoryForm, MaterialForm
+from .models import Project, Site, Category, Material, Step, Report
+from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm
 
 
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([AllowAny])
 def token(request):
-    user = User.objects.first()
-    token, created = Token.objects.get_or_create(user=user)
-    return Response({
-        'token': token.key,
-        'user_id': user.pk,
-        'email': user.email
-    })
+
+    try:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = User.objects.get(username=username)
+        if user.check_password(password):
+            token, created = Token.objects.get_or_create(user=user)
+            project_id, role = user.user_roles.values_list('project_id', 'group__name')[0]
+            return Response({
+                'token': token.key,
+                'user_id': user.pk,
+                'email': user.email,
+                'project': project_id,
+                'group': role
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                 'error': 'Bad password',
+                 'msg': 'Invalid Password',
+                'data': request.POST
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'msg': 'Invalid Username and Password',
+            'data': request.POST
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectManagerMixin(LoginRequiredMixin):
@@ -72,14 +93,60 @@ class ProjectMixin(object):
 
 
 class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
-    pass
+    """
+    Project CreateView
+    """
+    template_name = "core/project_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['project_id']
+            return context
 
 
 class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
-    pass
+    """
+    Project DetailView
+    """
+    template_name = "core/project_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['projects'] = Project.objects.all()
+        context['project'] = Project.objects.get(pk=self.kwargs['pk'])
+        context['materials_list'] = Project.objects.filter(pk=self.kwargs['pk'])\
+                                .prefetch_related('material')\
+                                .values_list('material__id','material__title', 'material__category',\
+                                             'material__category__name',\
+                                             'material__good_photo', 'material__bad_photo')
+        context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
+        context['category_list'] = Project.objects.filter(pk=self.kwargs['pk'])\
+                                .prefetch_related('category')\
+                                .values_list('category', 'category__name')
+        context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
+        return context
 
 
 class ProjectUpdateView(ProjectMixin, UpdateView):
+    """
+    Project UpdateView
+    """
+    template_name = "core/project_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['pk']
+            return context
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.user_roles.filter(group__name="Project Manager"):
@@ -96,23 +163,56 @@ class ProjectUpdateView(ProjectMixin, UpdateView):
 
 
 class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
-    pass
+    """
+    Project DeleteView
+    """
+    template_name = "core/project_confirm_delete.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['pk']
+            return context
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            try:
+                obj = self.get_object()
+                user_role = self.request.user.user_roles.get(project_id=self.kwargs['pk'])
+                if obj.project_roles.values_list('project__name', flat=True)[0] == user_role.project:
+                    return self.get_success_url()
+                return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
+            except UserRole.DoesNotExist:
+                raise PermissionDenied
+        elif self.request.user.user_roles.filter(group__name="Super Admin"):
+            return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
 
 
-class UserCreateView(SuperAdminMixin, FormView):
+class UserCreateView(ManagerSuperAdminMixin, CreateView):
     """
-    User SignUp form for Super Admin
+    User SignUp form
     """
-    form_class = UserCreationForm
+    form_class = UserProfileForm
     template_name = 'registration/signup.html'
 
-    def form_valid(self, form):
-        form.save()
-        username = form.cleaned_data.get('username')
-        raw_password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=raw_password)
-        login(self.request, user)
-        return redirect('core:project_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            return context
+
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            return reverse('core:project_dashboard')
+        elif self.request.user.user_roles.filter(group__name="Super Admin"):
+            return reverse('core:admin_dashboard')
 
 
 class ProjectDashboard(ProjectManagerMixin, TemplateView):
@@ -124,7 +224,18 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+        context['project'] = Project.objects.get(project_roles__user=self.request.user)
+        context['project_id'] = Project.objects.filter(project_roles__user=self.request.user).values_list('id',flat=True)[0]
+        context['materials_list'] = Project.objects.filter(project_roles__user=self.request.user)\
+                                .prefetch_related('material')\
+                                .values_list('material__id','material__title','material__category__id',\
+                                             'material__category__name',\
+                                             'material__good_photo', 'material__bad_photo')
+        project = Project.objects.filter(project_roles__user=self.request.user)
+        context['if_material'] = Material.objects.filter(project=project[0]).count()
+        context['if_category'] = Category.objects.filter(project=project[0]).count()
+        context['category_list'] = Project.objects.filter(project_roles__user=self.request.user)\
+                                    .prefetch_related('category').values_list('category__id', 'category__name')
         return context
 
 
@@ -137,6 +248,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all()
+        context['latest_project'] = Project.objects.latest('id')
         return context
 
 
@@ -147,11 +259,21 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
 
     template_name = "core/site_create.html"
     model = Site
-    fields = ('name', 'type', 'photo', 'address', 'latitude', 'longitude', 'contact_number',)
+    form_class = SiteForm
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['project_id']
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
@@ -180,6 +302,15 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
     template_name = "core/site_detail.html"
     model = Site
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
+        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
+        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
+        data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
+
+        return data
+
 
 class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
@@ -187,12 +318,22 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
     template_name = "core/site_create.html"
     model = Site
-    fields = '__all__'
+    form_class = SiteForm
 
     def form_valid(self, form):
         form.instance.site = get_object_or_404(Site, pk=self.kwargs['pk'])
         form.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = Site.objects.filter(project=)
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
@@ -208,8 +349,17 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
     """
     Site Delete View
     """
-    template_name = "core/project_detail.html"
     model = Site
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = Site.objects.filter(project=)
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
@@ -234,10 +384,32 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         if data['is_project'] == 0:
             project = Site.objects.get(pk=data['pk']).project.id
             data['project'] = project
+            data['site'] = Site.objects.select_related().get(id=self.kwargs['pk'])
         else:
             data['project'] = data['pk']
         return data
 
+
+class SiteStepsUpdateView(ManagerSuperAdminMixin, UpdateView):
+    """
+    Steps Update View
+    """
+    model = Step
+    template_name = "core/site_steps.html"
+
+
+class SiteStepsDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Steps Update View
+    """
+    model = Step
+
+
+class SiteStepsDeleteView(ManagerSuperAdminMixin, DeleteView):
+    """
+    Steps Delete View
+    """
+    model = Step
 
 
 class CategoryFormView(ManagerSuperAdminMixin, FormView):
@@ -246,11 +418,22 @@ class CategoryFormView(ManagerSuperAdminMixin, FormView):
     """
     template_name = "core/category_create.html"
     form_class = CategoryForm
+    model = Category
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         form.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['project_id']
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
@@ -261,6 +444,26 @@ class CategoryFormView(ManagerSuperAdminMixin, FormView):
             return success_url
 
 
+class CategoryListView(ManagerSuperAdminMixin, ListView):
+    """
+    Category ListView
+    """
+    template_name = "core/category_list.html"
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project_id'] = self.kwargs['pk']
+        context['category_list'] = Category.objects.filter(project=self.kwargs['pk'])
+        context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            return context
+
+
 class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
     """
     Category UpdateView
@@ -268,6 +471,16 @@ class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
     template_name = "core/category_create.html"
     form_class = CategoryForm
     model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = self.kwargs['project_id']
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
@@ -312,6 +525,20 @@ class MaterialFormView(ManagerSuperAdminMixin, FormView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
+            context['if_material'] = Material.objects.filter(project=self.kwargs['project_id']).count()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
+            context['if_material'] = Material.objects.filter(project=self.kwargs['project_id']).count()
+            context['project_id'] = self.kwargs['project_id']
+            return context
+
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
@@ -329,6 +556,16 @@ class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
     form_class = MaterialForm
     model = Material
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = self.kwargs['project_id']
+            return context
+
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
@@ -345,6 +582,16 @@ class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
     model = Material
     template_name = "core/material_confirm_delete.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            # context['project_id'] = self.kwargs['project_id']
+            return context
+
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
@@ -353,4 +600,63 @@ class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             success_url = reverse_lazy('core:project_dashboard')
             return success_url
+
+
+class MaterialDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Category UpdateView
+    """
+    template_name = "core/material_detail.html"
+    model = Material
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            return context
+
+
+class MaterialListView(ManagerSuperAdminMixin, ListView):
+    """
+    Category UpdateView
+    """
+    template_name = "core/material_list.html"
+    model = Material
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            context['project'] = Project.objects.get(pk=self.kwargs['pk'])
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
+            context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.get(project_roles__user=self.request.user)
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
+            context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
+            context['project_id'] = self.kwargs['pk']
+            return context
+
+
+class ReportListView(ManagerSuperAdminMixin, ListView):
+    """
+    Report List
+    """
+    model = Report
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = Report.objects.filter(checklist__step__site=self.kwargs['site_pk'])
+        return context
+
+
+class ReportDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Report detail
+    """
+    model = Report
 

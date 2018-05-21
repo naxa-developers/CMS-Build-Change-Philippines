@@ -1,30 +1,185 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+
 
 {% block content %}
-    {% for project in project %}
-        <h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
-        <h4>Sites:</h4>
-        {% for site in project.sites.all %}
-            <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
-            <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 col-lg-3"><a href="{% url 'core:site_create' project_id %}"><h5>Add New Site</h5>
+            <div class="module-school-list">
+                <div class="school-wrap">
+                    <ul class="school-list">
+                            {% for site in project.sites.all %}
+                                <li>
+                                    <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                        <img src="assets/img/img-school.png" class="school-logo" alt="">
+                                        <h6>{{ site }}</h6>
+                                        <span>{{ site.address }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <a href="{% url 'core:project_update' project_id %}"><h4>Edit Project</h4></a>
+                                <h4>Project Details</h4>
+                            </div>
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Name</a></h4>
+                            </div>
+                            <p>
+                                {{ project.name }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Organization</a></h4>
+                            </div>
+                            <p>
+                                {{ project.organization }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Logo</a></h4>
+                            </div>
+                            <p><img src="{{ MEDIA_URL }}{{ project.logo }}">
 
-            <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
-                <input type="submit" value="Delete {{ site }}"/>
-            </form><br>
-        {% endfor %}
-        <h4>Category:</h4>
-    {% for category in project.category.all %}
-        {{ category }}<a href="{% url 'core:category_update' category.pk %}"> Update</a>
-        <a href="{% url 'core:category_delete' category.pk %}">Delete</a><br>
-    {% endfor %}
-    <h4>Materials:</h4>
-    {% for material in project.material.all %}
-        {{ material.title }}<a href="{% url 'core:material_update' material.pk %}">Update</a>
-        <a href="{% url 'core:material_delete' material.pk %}"> Delete</a><br>
-    {% endfor %}
-        <a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
-        <a href="{% url 'core:category_create' project.pk %}">Create New Category</a><br>
-        <a href="{% url 'core:material_create' project.pk %}">Create New Material</a>
-    {% endfor %}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Type</a></h4>
+                            </div>
+                            <p>
+                                {{ project.type }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Address</a></h4>
+                            </div>
+                            <p>
+                                {{ project.address }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Short Description</a></h4>
+                            </div>
+                            <p>
+                                {{ project.short_description }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Email Address</a></h4>
+                            </div>
+                            <p>
+                                {{ project.email_address }}
+                            </p>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Contact</a></h4>
+                            </div>
+                            <p>
+                                {{ project.phone_number }}
+                            </p>
+                        </div>
+                    </div>
 
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4>Materials</h4>
+                                {% if if_material %}
+                                        <a href="{% url 'core:material_list' project.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+
+                                {% endif %}
+                                <a href="{% url 'core:material_create' project.pk %}">Create New</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    {% for obj in materials_list %}
+                                        {% if obj.0 %}
+                                            <li>
+                                                <img src="assets/img/img-school.png" alt="">
+                                                <a title="View submission detail"
+                                                   href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                                <br>
+                                                <a href="{% url 'core:category_update' obj.2 %}" title="View details of user">
+                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
+                                                </a>
+                                            </li>{% else %}<p>No Materials Found.</p>
+                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4>Manage User</h4>
+                                {% if if_material %}
+                                        <a href="{% url 'core:material_list' project.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+                                {% endif %}
+                            <a href="{% url 'core:user_create' %}">Create User</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    <div class="widget-body">
+                                        <ul class="submission-list">
+
+                                        </ul>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4>Category</h4>
+                                {% if if_category %}
+                                        <a href="{% url 'core:category_list' project.pk %}" title=""
+                                           class="btn btn-sm btn-xs btn-primary"><i
+                                                class="la la-caret-right"></i> More</a>
+                                {% endif %}
+                            <a href="{% url 'core:category_create' project.pk %}">Create New</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                {% if if_category %}
+                                    {% for obj in category_list %}
+                                            <li>
+                                                <a href="{% url 'core:category_update' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                            </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No Categories Found.</p>
+                                {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

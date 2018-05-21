@@ -1,17 +1,23 @@
 from django.contrib.auth.models import User
-from rest_framework import viewsets, serializers, mixins
-from core.models import Project, Step, Material
-from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer
+
+from rest_framework import viewsets, serializers
+from rest_framework.permissions import AllowAny
+from rest_framework.decorators import permission_classes
+
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project
+from core.models import Checklist, Step, Project, Material, Report, Category
+from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer
 
 # Serializers define the API representation.
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ('url', 'username', 'email', 'is_staff')
 
 
+@permission_classes((AllowAny, ))
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -54,7 +60,6 @@ class StepViewset(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(site__id=site)
         return self.queryset
 
-
     def perform_create(self, serializer, **kwargs):
         localname = serializer.initial_data.get('localname', '')
         data = serializer.save(localname=localname)
@@ -92,3 +97,12 @@ class MaterialViewset(viewsets.ModelViewSet):
     #     data = serializer.save(localtext=localtext)
     #     return data
 
+
+class ReportViewset(viewsets.ModelViewSet):
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+
+
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.select_related()

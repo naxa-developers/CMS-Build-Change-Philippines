@@ -1,5 +1,7 @@
 {% extends '_base.html' %}
+
 {% block content %}
+
     <div class="row no-gutters">
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
@@ -43,13 +45,20 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Delete {{ object.name }}</a></h4>
+                                <h4><a href="#" title="">Materials</a></h4>
                             </div>
                             <div class="widget-body">
-                                <form action="" method="post">{% csrf_token %}
-                                    Are you sure you want to delete {{ object.name }} project?<br>
-                                    <input type="submit" value="Delete">
-                                </form>
+                                {% if if_material %}
+                                    {% for material in materials_list %}
+                                        <a href="{% url 'core:material_detail' material.pk %}"><h5>
+                                            {{ material }}</h5></a><br>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>Not materials Found.
+                                    </p>
+                                {% endif %}<br>
+                                <strong><a href="{% url 'core:material_create' project.pk %}">Create
+                                    New</a></strong>
                             </div>
                         </div>
                     </div>

@@ -1,22 +1,89 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 
 {% block content %}
-    {% for project in projects %}
 
-    <a href="{% url 'core:project_detail' project.pk %}">{{ project }}</a>
-        <a href="{% url 'core:project_update' project.pk %}">Edit</a>
-        <a href="{% url 'core:project_delete' project.pk %}">Delete</a>
+<div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page"></li>
+                </ol>
+            </nav>
+        </div>
+    <div class="col-md-4 col-lg-3"><a href="{% url 'core:project_create' %}"><h4>New Project</h4></a>
+                <div class="module-school-list">
+                    <div class="school-wrap">
+                        <ul class="school-list">
+                            {% for project in projects %}
+                            <li>
+                                <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                    <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
+                                    <h6>{{ project }}</h6>
+                                    <span>{{ project.address }}</span>
+                                </a>
+                            </li>{% endfor %}
 
-        <a href="{% url 'userrole:userrole_create' project.pk %}">Add Project Manager</a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="dash-right">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Project Info</a></h4>
+                                </div>
+                                <div class="widget-body">
+                                    <h5>Name</h5><br>
+                                     <p>
+                                         {{ latest_project.name }}
+                                     </p><br>
+                                    <h5>Organization</h5><br>
+                                     <p>
+                                         {{ latest_project.organization }}
+                                     </p><br>
+                                    <h5>Logo</h5><br>
+                                     <p>
+                                         <img src="{{ MEDIA_URL }}{{ latest_project.logo }}">
+                                     </p><br>
+                                    <h5>Type</h5><br>
+                                     <p>
+                                         {{ latest_project.address }}
+                                     </p><br>
+                                    <h5>Short Description</h5><br>
+                                     <p>
+                                         {{ latest_project.short_description }}
+                                     </p><br>
+                                    <h5>Phone</h5><br>
+                                     <p>
+                                         {{ latest_project.phone_number }}
+                                     </p><br>
+                                    <h5>Email Address</h5><br>
+                                     <p>
+                                         {{ latest_project.email_address }}
+                                     </p><br>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">Manage User</a></h4>
+                                </div>
+                                <div class="widget-body">
+                                    <a href="{% url 'core:user_create' %}">Create User</a>
+                                </div>
+                            </div>
+                        </div>
 
-    <br>
-
-{% endfor %}
-
-<br>
-
-    <a href="{% url 'core:project_create' %}">Add Project</a><br>
-    <a href="{% url 'core:user_create' %}">Create User</a></br>
-
-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock content %}

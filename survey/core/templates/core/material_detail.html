@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-                    {% endif %} <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
                 </ol>
             </nav>
         </div>
@@ -49,13 +49,32 @@
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
-                                    <h4><a href="#" title="">Category</a></h4>
+                                    <h4><a href="#" title="">Materials &nbsp</a></h4>
+                                    <a href="{% url 'core:material_delete' object.id %}" title=""><h4>Delete</h4></a>
+                                    <a href="{% url 'core:material_update' object.id %}" title=""><h4>Edit &nbsp</h4></a>
+
                                 </div>
                                 <div class="widget-body">
-                                    <form method="post">{% csrf_token %}
-                                        {{ form.as_p }}
-                                        <input type="submit" value="Submit">
-                                    </form>
+                                    <h5>Name</h5><br>
+                                     <p>
+                                         {{ object.title }}
+                                     </p><br>
+                                    <h5>Organization</h5><br>
+                                     <p>
+                                         {{ object.organization }}
+                                     </p><br>
+                                    <h5>Good Photo</h5><br>
+                                     <p>
+                                         <img src="{{ MEDIA_URL }}{{ object.good_photo }}">
+                                     </p><br>
+                                    <h5>Bad Photo</h5><br>
+                                     <p>
+                                         <img src="{{ MEDIA_URL }}{{ object.bad_photo }}">
+                                     </p><br>
+                                    <h5>Description</h5><br>
+                                     <p>
+                                         {{ object.description }}
+                                     </p><br>
                                 </div>
                             </div>
                         </div>

@@ -9,7 +9,6 @@ urlpatterns = [
     path('project-detail/<int:pk>/', views.ProjectDetailView.as_view(), name="project_detail"),
     path('project-update/<int:pk>/', views.ProjectUpdateView.as_view(), name="project_update"),
     path('project-delete/<int:pk>/', views.ProjectDeleteView.as_view(), name="project_delete"),
-
     path('user-create/', views.UserCreateView.as_view(), name="user_create"),
     path('dashboard/', views.Dashboard.as_view(), name="admin_dashboard"),
     path('project-dashboard/', views.ProjectDashboard.as_view(), name="project_dashboard"),
@@ -19,10 +18,20 @@ urlpatterns = [
     path('site-delete/<int:pk>/', views.SiteDeleteView.as_view(), name="site_delete"),
     path('site-detail/<int:pk>/', views.SiteDetailView.as_view(), name="site_detail"),
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
+    path('steps/update/<int:pk>', views.SiteStepsView.as_view(), name="step_update"),
+    path('steps/detail/<int:pk>', views.SiteStepsView.as_view(), name="step_detail"),
+    path('steps/delete/<int:pk>', views.SiteStepsDeleteView.as_view(), name="step_delete"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
+    path('category-list/<int:pk>', views.CategoryListView.as_view(), name="category_list"),
     path('category-update/<int:pk>', views.CategoryUpdateView.as_view(), name="category_update"),
     path('category-delete/<int:pk>', views.CategoryDeleteView.as_view(), name="category_delete"),
     path('material-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
     path('material-update/<int:pk>/', views.MaterialUpdateView.as_view(), name="material_update"),
     path('material-delete/<int:pk>/', views.MaterialDeleteView.as_view(), name="material_delete"),
+    path('material-detail/<int:pk>', views.MaterialDetailView.as_view(), name="material_detail"),
+    path('material-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
+    path('report-list/<int:site_pk>', views.ReportListView.as_view(), name="report_list"),
+    path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
+
 ]
+

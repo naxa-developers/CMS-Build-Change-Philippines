@@ -1,12 +1,14 @@
 {% extends '_base.html' %}
+
 {% block content %}
+
     <div class="row no-gutters">
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Material List</li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
                 </ol>
             </nav>
         </div>
@@ -23,6 +25,7 @@
                                         <span>{{ project.address }}</span>
                                     </a>
                                 </li>{% endfor %}{% else %}
+                            {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
                                         <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -30,7 +33,7 @@
                                             <h6>{{ site }}</h6>
                                             <span>{{ site.address }}</span>
                                         </a>
-                                    </li>
+                                    </li>{% endfor %}
                             {% endfor %}
                         {% endif %}
                     </ul>
@@ -43,13 +46,20 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Delete {{ object.name }}</a></h4>
+                                <h4><a href="#" title="">Category</a></h4>
                             </div>
                             <div class="widget-body">
-                                <form action="" method="post">{% csrf_token %}
-                                    Are you sure you want to delete {{ object.name }} project?<br>
-                                    <input type="submit" value="Delete">
-                                </form>
+                                {% if if_category %}
+                                    {% for category in category_list %}
+                                        <a href="{% url 'core:category_update' category.pk %}"><h5>
+                                            {{ category }}</h5></a><br>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>Not Categories Found.
+                                    </p>
+                                {% endif %}<br>
+                                <strong><a href="{% url 'core:category_create' project_id %}">Create
+                                    New</a></strong>
                             </div>
                         </div>
                     </div>

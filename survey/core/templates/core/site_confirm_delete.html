@@ -1,12 +1,14 @@
 {% extends '_base.html' %}
 {% block content %}
+
     <div class="row no-gutters">
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Material List</li>
+                    {% endif %}<li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Delete</li>
                 </ol>
             </nav>
         </div>
@@ -22,7 +24,10 @@
                                         <h6>{{ project }}</h6>
                                         <span>{{ project.address }}</span>
                                     </a>
-                                </li>{% endfor %}{% else %}
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
                                         <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -31,6 +36,7 @@
                                             <span>{{ site.address }}</span>
                                         </a>
                                     </li>
+                                {% endfor %}
                             {% endfor %}
                         {% endif %}
                     </ul>
@@ -43,12 +49,9 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Delete {{ object.name }}</a></h4>
-                            </div>
-                            <div class="widget-body">
                                 <form action="" method="post">{% csrf_token %}
-                                    Are you sure you want to delete {{ object.name }} project?<br>
-                                    <input type="submit" value="Delete">
+                                    Are you sure you want to delete {{ object }}
+                                    <input type="submit">
                                 </form>
                             </div>
                         </div>

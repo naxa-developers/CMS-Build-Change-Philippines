@@ -25,7 +25,7 @@ SECRET_KEY = ')fr_ek(mgen5_r!ra-jv^rhxt^!5dh3051cmumhdm31e8lak0('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # third party apps
     'rest_framework',
     'phonenumber_field',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
 
     # local apps
     'core',
@@ -73,6 +75,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -131,7 +134,10 @@ USE_TZ = True
 gettext = lambda s: s
 LANGUAGES = (
     ('de', gettext('German')),
+    ('en', gettext('English')),
 )
+
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/

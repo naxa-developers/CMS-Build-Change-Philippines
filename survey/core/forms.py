@@ -1,10 +1,19 @@
 from django import forms
 
+
 from .models import Project, Category, Material
 from modeltranslation.forms import TranslationModelForm
+from .models import Project, Category, Material, Site
 
 
 class ProjectForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
 
     class Meta:
         model = Project
@@ -14,6 +23,13 @@ class ProjectForm(forms.ModelForm):
 
 class CategoryForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Category
         fields = ('name',)
@@ -21,6 +37,26 @@ class CategoryForm(forms.ModelForm):
 
 class MaterialForm(TranslationModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Material
         exclude = ()
+
+class SiteForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
+    class Meta:
+        model = Site
+        exclude = ('project',)

@@ -27,7 +27,8 @@
     "vue-tree-menu": "^1.0.4",
     "vue2-highcharts": "^1.1.6",
     "vue2-timepicker": "^0.1.4",
-    "vuejs-datepicker": "^0.9.22"
+    "vuejs-datepicker": "^0.9.22",
+    "vuejs-dialog": "^0.9.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.3",
