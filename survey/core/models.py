@@ -36,9 +36,9 @@ class Setting(models.Model):
     
 
 SITE_TYPES = (
-    (0, 'First Type'),
-    (1, 'Second Type'),
-    (2, 'Third Type'),
+    (0, 'Type I'),
+    (1, 'Type II'),
+    (2, 'Type III'),
 )
 
 
@@ -91,8 +91,8 @@ class Material(models.Model):
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
     description = models.TextField(max_length=300)
-    good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/")
-    bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/")
+    good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/", blank=True, null=True)
+    bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/", blank=True, null=True)
     
     def __str__(self):
         return self.title

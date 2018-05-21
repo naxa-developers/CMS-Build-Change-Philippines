@@ -299,7 +299,6 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
         data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
         data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
         data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
-        print(Report.objects.filter(checklist__step__site=3))
         data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
 
         return data
