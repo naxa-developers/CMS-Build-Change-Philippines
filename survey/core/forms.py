@@ -1,10 +1,5 @@
 from django import forms
-
-
-from .models import Project, Category, Material
-from modeltranslation.forms import TranslationModelForm
 from .models import Project, Category, Material, Site
-
 
 class ProjectForm(forms.ModelForm):
 
@@ -35,7 +30,7 @@ class CategoryForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MaterialForm(TranslationModelForm):
+class MaterialForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
