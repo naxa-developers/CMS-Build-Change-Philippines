@@ -306,9 +306,9 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
-        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
-        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
+        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:5]
+        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:5]
+        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
         data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
 
         return data
@@ -631,6 +631,7 @@ class ReportListView(ManagerSuperAdminMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reports'] = Report.objects.filter(checklist__step__site=self.kwargs['site_pk'])
+        context['site'] = Site.objects.get(id=self.kwargs['site_pk'])
         return context
 
 
@@ -639,4 +640,6 @@ class ReportDetailView(ManagerSuperAdminMixin, DetailView):
     Report detail
     """
     model = Report
+    context_object_name = 'report'
+
 

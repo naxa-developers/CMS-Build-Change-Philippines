@@ -1,7 +1,40 @@
 {% extends '_base.html' %}
 
 {% block content %}
-{% for report in reports %}
-{{report}}
-{% endfor %}
+     <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Report List</li>
+                </ol>
+            </nav>
+        </div>
+    <div class="widget-body">
+        <ul class="submission-list">
+            {% for report in reports  %}
+            <li>
+                <img src="assets/img/img-school.png" alt="">
+                <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}">
+                    {{ forloop.counter }}. <strong>{{ report.checklist.text }}</strong></a>
+                <br>
+                <a href="#" title="View details of user">
+                    <small><i class="la la-user"></i>{{ report.user }}</small>
+                </a>
+                <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                           aria-hidden="true"></i>{{ report.date }}
+                </small><br>
+             <small class="site_icon_float" style="">{{ report.checklist.step}}</small>
+            </li>
+            {% empty %}
+                No Reports Found.
+
+           {% endfor %}
+
+        </ul>
+    </div>
+
 {% endblock content %}
