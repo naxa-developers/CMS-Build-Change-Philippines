@@ -237,7 +237,7 @@ class ProjectDashboard(ProjectManagerMixin, TemplateView):
         context['if_category'] = Category.objects.filter(project=project[0]).count()
         context['category_list'] = Project.objects.filter(project_roles__user=self.request.user)\
                                     .prefetch_related('category').values_list('category__id', 'category__name')
-        context['users'] = User.objects.filter(user_roles__project=project_id)
+        context['users'] = User.objects.filter(user_roles__project=project_id)[:5]
         return context
 
 

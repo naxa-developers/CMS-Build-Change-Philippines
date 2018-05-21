@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.views.generic import CreateView, RedirectView, FormView
+from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -83,7 +83,7 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
     def get_form(self, form_class=None):
         form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
         project_id = Project.objects.get(sites=self.kwargs.get('site_id'))
-        form.fields['user'].queryset = User.objects.filter(user_roles__project_id=project_id.id)
+        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=project_id.id)
         return form
 
 
@@ -103,3 +103,14 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
             return redirect('core:project_dashboard')
 
         return render(request, self.template_name, {'form': form})
+
+
+class ProjectUserListView(ManagerSuperAdminMixin, ListView):
+    model = User
+    template_name = 'userrole/project_user_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.filter(user_roles__project_id=self.kwargs.get('project_id'))
+        return context
+
