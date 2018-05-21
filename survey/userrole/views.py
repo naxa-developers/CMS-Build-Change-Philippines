@@ -80,10 +80,11 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
         return context
 
-    # def get_form(self, form_class=None):
-    #     form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
-    #     form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id'])
-    #     return form
+    def get_form(self, form_class=None):
+        form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
+        project_id = Project.objects.get(sites=self.kwargs.get('site_id'))
+        form.fields['user'].queryset = User.objects.filter(user_roles__project_id=project_id.id)
+        return form
 
 
 class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
