@@ -390,6 +390,28 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         return data
 
 
+class SiteStepsUpdateView(ManagerSuperAdminMixin, UpdateView):
+    """
+    Steps Update View
+    """
+    model = Step
+    template_name = "core/site_steps.html"
+
+
+class SiteStepsDetailView(ManagerSuperAdminMixin, DetailView):
+    """
+    Steps Update View
+    """
+    model = Step
+
+
+class SiteStepsDeleteView(ManagerSuperAdminMixin, DeleteView):
+    """
+    Steps Delete View
+    """
+    model = Step
+
+
 class CategoryFormView(ManagerSuperAdminMixin, FormView):
     """
     Category Form View
