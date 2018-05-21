@@ -517,6 +517,7 @@ class MaterialFormView(ManagerSuperAdminMixin, FormView):
 
     def get_form(self, form_class=None):
         form = super(MaterialFormView, self).get_form(form_class=self.form_class)
+        form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
         return form
 
     def form_valid(self, form):
