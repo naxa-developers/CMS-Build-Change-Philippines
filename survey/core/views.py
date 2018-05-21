@@ -642,4 +642,10 @@ class ReportDetailView(ManagerSuperAdminMixin, DetailView):
     model = Report
     context_object_name = 'report'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(steps__checklist_steps__checklist_report=self.kwargs['pk'])
+        return context
+
+
 
