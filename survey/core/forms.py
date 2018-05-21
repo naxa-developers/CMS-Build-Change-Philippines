@@ -1,7 +1,5 @@
 from django import forms
-
 from .models import Project, Category, Material, Site
-
 
 class ProjectForm(forms.ModelForm):
 
@@ -43,8 +41,7 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = Material
-        fields = ('title', 'category', 'description', 'good_photo', 'bad_photo')
-
+        exclude = ()
 
 class SiteForm(forms.ModelForm):
 
