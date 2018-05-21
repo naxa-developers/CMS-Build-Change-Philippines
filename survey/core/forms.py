@@ -1,9 +1,16 @@
 from django import forms
 
-from .models import Project, Category, Material
+from .models import Project, Category, Material, Site
 
 
 class ProjectForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
 
     class Meta:
         model = Project
@@ -13,6 +20,13 @@ class ProjectForm(forms.ModelForm):
 
 class CategoryForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Category
         fields = ('name',)
@@ -20,6 +34,27 @@ class CategoryForm(forms.ModelForm):
 
 class MaterialForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     class Meta:
         model = Material
         fields = ('title', 'category', 'description', 'good_photo', 'bad_photo')
+
+
+class SiteForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
+    class Meta:
+        model = Site
+        exclude = ('project',)
