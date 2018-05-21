@@ -3,7 +3,6 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
@@ -13,6 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report
 from .forms import ProjectForm, CategoryForm, MaterialForm
@@ -140,20 +140,18 @@ class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
     pass
 
 
-class UserCreateView(SuperAdminMixin, FormView):
+class UserCreateView(ManagerSuperAdminMixin, CreateView):
     """
-    User SignUp form for Super Admin
+    User SignUp form
     """
-    form_class = UserCreationForm
+    form_class = UserProfileForm
     template_name = 'registration/signup.html'
 
-    def form_valid(self, form):
-        form.save()
-        username = form.cleaned_data.get('username')
-        raw_password = form.cleaned_data.get('password1')
-        user = authenticate(username=username, password=raw_password)
-        login(self.request, user)
-        return redirect('core:project_list')
+    def get_success_url(self):
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            return reverse('core:project_dashboard')
+        elif self.request.user.user_roles.filter(group__name="Super Admin"):
+            return reverse('core:admin_dashboard')
 
 
 class ProjectDashboard(ProjectManagerMixin, TemplateView):
@@ -184,7 +182,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
     """
     dashboard for Super Admin
     """
-    template_name = "core/d.html"
+    template_name = "core/dashboard.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -248,6 +246,7 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
         data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
         data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
         data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
+        print(Report.objects.filter(checklist__step__site=3))
         data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
 
         return data
@@ -325,6 +324,7 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         if data['is_project'] == 0:
             project = Site.objects.get(pk=data['pk']).project.id
             data['project'] = project
+            data['site'] = Site.objects.select_related().get(id=self.kwargs['pk'])
         else:
             data['project'] = data['pk']
         return data

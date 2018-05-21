@@ -156,6 +156,12 @@
                                             {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
                                         {% endif %}
                                     {% endfor %}
+                                <h4>Manage User</h4>
+
+                            </div>
+                            <div class="widget-body">
+                                <ul class="submission-list">
+                                    <a href="{% url 'core:user_create' %}">Create User</a>
                                 </ul>
                             </div>
                         </div>

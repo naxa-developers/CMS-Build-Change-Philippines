@@ -1,9 +1,7 @@
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, RedirectView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
-from django.core.exceptions import PermissionDenied
 
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ProjectManagerMixin
@@ -57,7 +55,6 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
         if form.is_valid():
             group = Group.objects.get(name='Field Engineer')
             user = form.cleaned_data['user']
-            # project = Project.objects.get(id=kwargs['project_id'])
             UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'])
             return redirect('core:project_dashboard')
 
@@ -65,6 +62,8 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
+
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
             return context
