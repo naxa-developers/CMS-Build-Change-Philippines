@@ -44,9 +44,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class MaterialSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source='category.name')
+
     class Meta:
         model = Material
-        exclude = ()
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category')
 
     
 class StepSerializer(serializers.ModelSerializer):
