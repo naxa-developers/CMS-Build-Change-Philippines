@@ -1,13 +1,13 @@
 from django.urls import reverse
-from django.views.generic import CreateView, RedirectView
+from django.views.generic import CreateView, RedirectView, FormView
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from core.models import Project, Site
-from core.views import SuperAdminMixin, ProjectManagerMixin
+from core.views import SuperAdminMixin, ProjectManagerMixin, ManagerSuperAdminMixin
 
 from .models import UserRole
-from .forms import UserRoleForm
+from .forms import UserRoleForm, ProjectUserForm
 
 
 class Redirection(RedirectView):
@@ -79,3 +79,23 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
         return context
+
+
+class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
+    model = User
+    template_name = 'userrole/project_user_form.html'
+    form_class = ProjectUserForm
+
+    # def form_valid(self, form):
+    #     form.instance.project_id =self.kwargs.get('project_id')
+    #     user = form.save()
+
+    # def post(self, request, *args, **kwargs):
+    #
+    #     form = ProjectUserForm(request.POST)
+    #     if form.is_valid():
+    #         user_form = form.save(commit=False)
+    #         user_form.project = Project.objects.get(id=self.kwargs['project_id'])
+    #         user_form.save()
+    #
+    #     return render(request, self.template_name)
