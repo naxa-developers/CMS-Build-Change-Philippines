@@ -236,6 +236,8 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
             return context
+        return context
+
 
 class Dashboard(SuperAdminMixin, TemplateView):
     """
