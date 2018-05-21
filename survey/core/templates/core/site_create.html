@@ -7,7 +7,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
                     {% endif %}<li class="breadcrumb-item active" aria-current="page">Site Form</li>
                 </ol>
             </nav>
@@ -26,7 +26,6 @@
                                     </a>
                                 </li>{% endfor %}
                         {% else %}
-                            {% for project in project %}
                                 {% for site in project.sites.all %}
                                     <li>
                                         <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -35,7 +34,6 @@
                                             <span>{{ site.address }}</span>
                                         </a>
                                     </li>{% endfor %}
-                            {% endfor %}
                         {% endif %}
                     </ul>
                 </div>

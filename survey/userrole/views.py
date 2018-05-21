@@ -1,4 +1,4 @@
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, RedirectView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
@@ -17,7 +17,8 @@ class Redirection(RedirectView):
             if self.request.user.user_roles.filter(group__name='Super Admin'):
                 return reverse("core:admin_dashboard")
             elif self.request.user.user_roles.filter(group__name='Project Manager'):
-                return reverse("core:project_dashboard")
+                project_id = Project.objects.get(project_roles__user=self.request.user).pk
+                return reverse_lazy("core:project_dashboard", kwargs={'project_id': project_id})
         except:
             return reverse("login")
 

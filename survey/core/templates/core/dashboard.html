@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
                     {% endif %}
                     <li class="breadcrumb-item active" aria-current="page"></li>
                 </ol>
@@ -20,7 +20,7 @@
                         <ul class="school-list">
                             {% for project in projects %}
                             <li>
-                                <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                <a href="{% url 'core:project_dashboard' project.pk %}" title="">
                                     <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
                                     <h6>{{ project }}</h6>
                                     <span>{{ project.address }}</span>
