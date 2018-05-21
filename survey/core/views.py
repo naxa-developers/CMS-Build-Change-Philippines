@@ -96,13 +96,17 @@ class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all()
-        context['project'] = Project.objects.filter(pk=self.kwargs['pk'])
+        context['project'] = Project.objects.get(pk=self.kwargs['pk'])
         context['materials_list'] = Project.objects.filter(pk=self.kwargs['pk'])\
                                 .prefetch_related('material')\
                                 .values_list('material__id','material__title', 'material__category',\
                                              'material__category__name',\
                                              'material__good_photo', 'material__bad_photo')
         context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
+        context['category_list'] = Project.objects.filter(pk=self.kwargs['pk'])\
+                                .prefetch_related('category')\
+                                .values_list('category', 'category__name')
+        context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
         return context
 
 
@@ -137,7 +141,33 @@ class ProjectUpdateView(ProjectMixin, UpdateView):
 
 
 class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
-    pass
+    """
+    Project DeleteView
+    """
+    template_name = "core/project_confirm_delete.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project_id'] = self.kwargs['pk']
+            return context
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            try:
+                obj = self.get_object()
+                user_role = self.request.user.user_roles.get(project_id=self.kwargs['pk'])
+                if obj.project_roles.values_list('project__name', flat=True)[0] == user_role.project:
+                    return self.get_success_url()
+                return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
+            except UserRole.DoesNotExist:
+                raise PermissionDenied
+        elif self.request.user.user_roles.filter(group__name="Super Admin"):
+            return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
 
 
 class UserCreateView(ManagerSuperAdminMixin, CreateView):
@@ -146,6 +176,15 @@ class UserCreateView(ManagerSuperAdminMixin, CreateView):
     """
     form_class = UserProfileForm
     template_name = 'registration/signup.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            context['projects'] = Project.objects.all()
+            return context
+        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            return context
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Project Manager"):
@@ -371,16 +410,14 @@ class CategoryListView(ManagerSuperAdminMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['project_id'] = self.kwargs['pk']
+        context['category_list'] = Category.objects.filter(project=self.kwargs['pk'])
+        context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
-            context['category_list'] = Category.objects.filter(project=self.kwargs['pk'])
-            context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
             return context
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
-            context['category_list'] = Category.objects.filter(project=self.kwargs['pk'])
-            context['if_category'] = Category.objects.filter(project=self.kwargs['pk']).count()
-            context['project_id'] = self.kwargs['pk']
             return context
 
 
@@ -550,7 +587,7 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
-            context['this_project'] = Project.objects.get(pk=self.kwargs['pk'])
+            context['project'] = Project.objects.get(pk=self.kwargs['pk'])
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
             context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             return context
