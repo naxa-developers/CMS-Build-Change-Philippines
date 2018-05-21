@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
+from rest_framework import status
 
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -22,13 +23,26 @@ from .forms import ProjectForm, CategoryForm, MaterialForm
 @authentication_classes([])
 @permission_classes([AllowAny])
 def token(request):
-    user = User.objects.first()
-    token, created = Token.objects.get_or_create(user=user)
-    return Response({
-        'token': token.key,
-        'user_id': user.pk,
-        'email': user.email
-    })
+
+    try:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = User.objects.get(username=username)
+        if user.check_password(password):
+            token, created = Token.objects.get_or_create(user=user)
+            project_id, role = user.user_roles.values_list('project_id', 'group__name')[0]
+            return Response({
+                'token': token.key,
+                'user_id': user.pk,
+                'email': user.email,
+                'project': project_id,
+                'group': role
+            }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'msg': 'Invalid Username and Password'
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProjectManagerMixin(LoginRequiredMixin):
