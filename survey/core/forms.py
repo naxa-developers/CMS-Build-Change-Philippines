@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import Project, Category, Material
+from modeltranslation.forms import TranslationModelForm
 
 
 class ProjectForm(forms.ModelForm):
@@ -18,8 +19,8 @@ class CategoryForm(forms.ModelForm):
         fields = ('name',)
 
 
-class MaterialForm(forms.ModelForm):
+class MaterialForm(TranslationModelForm):
 
     class Meta:
         model = Material
-        fields = ('title', 'category', 'description', 'good_photo', 'bad_photo')
+        exclude = ()
