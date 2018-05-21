@@ -38,10 +38,18 @@ def token(request):
                 'project': project_id,
                 'group': role
             }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                 'error': 'Bad password',
+                 'msg': 'Invalid Password',
+                'data': request.POST
+            }, status=status.HTTP_400_BAD_REQUEST)
+
     except Exception as e:
         return Response({
             'error': str(e),
-            'msg': 'Invalid Username and Password'
+            'msg': 'Invalid Username and Password',
+            'data': request.POST
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
