@@ -27,8 +27,6 @@ def token(request):
     try:
         username = request.POST.get('username')
         password = request.POST.get('password')
-        import ipdb
-        ipdb.set_trace()
         user = User.objects.get(username=username)
         if user.check_password(password):
             token, created = Token.objects.get_or_create(user=user)
