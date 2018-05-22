@@ -18,7 +18,7 @@
                         {% if request.user.is_superuser %}
                             {% for project in projects %}
                                 <li>
-                                    <a href="{% url 'core:project_detail' project.pk %}" title="">
+                                    <a href="{% url 'core:project_dashboard' project.pk %}" title="">
                                         <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
                                         <h6>{{ project }}</h6>
                                         <span>{{ project.address }}</span>

@@ -137,15 +137,16 @@ class ProjectUpdateView(ProjectMixin, UpdateView):
     Project UpdateView
     """
     template_name = "core/project_form.html"
+    model = Project
+    context_object_name = 'project'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['projects'] = Project.objects.all()
-            return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.get(project_roles__user=self.request.user)
-            return context
+            if not self.kwargs['pk']:
+                context['projects'] = Project.objects.all()
+                return context
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.user_roles.filter(group__name="Project Manager"):
@@ -229,6 +230,8 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
                                              'material__good_photo', 'material__bad_photo')
         project = Project.objects.get(pk=self.kwargs['project_id'])
         context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
+        projec=Project.objects.get(pk=self.kwargs['project_id'])
+        print(projec.pk)
         context['if_material'] = Material.objects.filter(project=project).count()
         context['if_category'] = Category.objects.filter(project=project).count()
         context['category_list'] = Project.objects.filter(pk=self.kwargs['project_id'])\
@@ -269,6 +272,7 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
+            context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
             return context
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.get(project_roles__user=self.request.user)

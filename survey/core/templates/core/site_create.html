@@ -16,16 +16,6 @@
             <div class="module-school-list">
                 <div class="school-wrap">
                     <ul class="school-list">
-                        {% if request.user.is_superuser %}
-                            {% for project in projects %}
-                                <li>
-                                    <a href="{% url 'core:project_detail' project.pk %}" title="">
-                                        <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
-                                        <h6>{{ project }}</h6>
-                                        <span>{{ project.address }}</span>
-                                    </a>
-                                </li>{% endfor %}
-                        {% else %}
                                 {% for site in project.sites.all %}
                                     <li>
                                         <a href="{% url 'core:site_detail' site.pk %}" title="">
@@ -34,7 +24,7 @@
                                             <span>{{ site.address }}</span>
                                         </a>
                                     </li>{% endfor %}
-                        {% endif %}
+{#                        {% endif %}#}
                     </ul>
                 </div>
             </div>
