@@ -111,7 +111,7 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4>Materials</h4>
+                                <h4>Guidelines</h4>
                                 {% if if_material %}
                                     <a href="{% url 'core:material_list' project.pk %}" title=""
                                        class="btn btn-sm btn-xs btn-primary"><i
@@ -131,10 +131,9 @@
                                                 <br>
                                                 <a href="{% url 'core:category_update' obj.2 %}"
                                                    title="View details of user">
-                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
+                                                    <small> {{ obj.3 }}</small>
                                                 </a>
                                             </li>{% else %}<p>No Materials Found.</p>
-                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
@@ -154,8 +153,10 @@
                                         <ul class="submission-list">
                                         {% for user in users %}
                                             <li>
-                                               {{ forloop.counter }}. <a href=""><strong>{{ user}}</strong></a>
+                                               {{ forloop.counter }}. <strong>{{ user}}</strong>
                                             </li>
+                                            {% empty %}
+                                                No User Found.
                                             {% endfor %}
                                         </ul>
                                     </div>

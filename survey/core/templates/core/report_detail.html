@@ -6,10 +6,10 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
                     {% endif %}
                     <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Report Detail</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object.checklist }} Detail</li>
                 </ol>
             </nav>
         </div>
@@ -17,17 +17,17 @@
                 <ul class="submission-list">
                     <li>
                         <img src="assets/img/img-school.png" alt="">
-                     <strong>{{ report.checklist.text }}</strong>
+                     <strong>{{ object.checklist }}</strong>
                         <br>
                         <a href="#" title="View details of user">
-                            <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
+                            <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
                         </a>
                         <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                   aria-hidden="true"></i>{{ report.date }}
+                                                                   aria-hidden="true"></i>{{ object.date }}
                         </small><br>
-                     <small class="site_icon_float" style="">Step: {{ report.checklist.step}}</small><br>
-                     <small class="site_icon_float" style="">Comment: {{ report.comment}}</small><br>
-                    <small class="site_icon_float" style="">Photo: <img src="{{ MEDIA_URL }}{{ report.photo }}" class="report-photo" alt=""></small>
+                     <small class="site_icon_float" style="">Step: {{ object.checklist.step}}</small><br>
+                     <small class="site_icon_float" style="">Comment: {{ object.comment}}</small><br>
+                    <small class="site_icon_float" style="">Photo: <img src="{{ MEDIA_URL }}{{ object.photo }}" class="report-photo" alt=""></small>
 
                     </li>
 

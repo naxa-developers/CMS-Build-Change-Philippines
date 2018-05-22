@@ -52,7 +52,7 @@ class UserRoleCreateView(SuperAdminMixin, CreateView):
         return context
 
 
-class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
+class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     """
     Field Engineer
     """
@@ -73,12 +73,8 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.select_related().get(sites=self.kwargs['site_id'])
 
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['projects'] = Project.objects.all()
-            return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
         return context
 
     def get_form(self, form_class=None):
@@ -104,6 +100,11 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
             return redirect('core:project_dashboard')
 
         return render(request, self.template_name, {'form': form})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        return context
 
 
 class ProjectUserListView(ManagerSuperAdminMixin, ListView):

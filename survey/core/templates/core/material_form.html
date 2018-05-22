@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Material Create</li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
                 </ol>
             </nav>
         </div>

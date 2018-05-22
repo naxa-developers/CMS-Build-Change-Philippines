@@ -8,27 +8,12 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Site Form</li>
+                    {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">Site Form</li>
                 </ol>
             </nav>
         </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="module-school-list">
-                <div class="school-wrap">
-                    <ul class="school-list">
-                                {% for site in project.sites.all %}
-                                    <li>
-                                        <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                            <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                            <h6>{{ site }}</h6>
-                                            <span>{{ site.address }}</span>
-                                        </a>
-                                    </li>{% endfor %}
-{#                        {% endif %}#}
-                    </ul>
-                </div>
-            </div>
-        </div>
+
         <div class="col-md-8 col-lg-9">
             <div class="dash-left">
                 <div class="row">

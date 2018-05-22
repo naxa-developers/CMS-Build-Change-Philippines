@@ -14,43 +14,7 @@
                 </ol>
             </nav>
         </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="module-school-list">
-                <div class="school-wrap">
-                    <ul class="school-list">
-                        {% if request.user.is_superuser %}
-                            {% if projects %}
-                                {% for project in projects %}
-                                    <li>
-                                        <a href="{% url 'core:project_dashboard' project.pk %}" title="">
-                                            <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
-                                            <h6>{{ project }}</h6>
-                                            <span>{{ project.address }}</span>
-                                        </a>
-                                    </li>
-                                {% endfor %}{% elif project %}
-                                {% for site in project.sites.all %}
-                                    <li>
-                                        <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                            <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                            <h6>{{ site }}</h6>
-                                            <span>{{ site.address }}</span>
-                                        </a>
-                                    </li>{% endfor %}{% endif %}
-                        {% else %}
-                            {% for site in project.sites.all %}
-                                <li>
-                                    <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                        <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                        <h6>{{ site }}</h6>
-                                        <span>{{ site.address }}</span>
-                                    </a>
-                                </li>{% endfor %}
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+
         <div class="col-md-8 col-lg-9">
             <div class="dash-left">
                 <div class="row">
