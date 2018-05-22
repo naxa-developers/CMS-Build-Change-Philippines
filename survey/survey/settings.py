@@ -134,7 +134,9 @@ USE_TZ = True
 gettext = lambda s: s
 LANGUAGES = (
     ('de', gettext('German')),
+    ('en', gettext('English')),
 )
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
