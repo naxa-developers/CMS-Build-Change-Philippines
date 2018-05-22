@@ -45,10 +45,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class MaterialSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
+    local_title = serializers.SerializerMethodField()
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category')
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_title')
+
+    def get_local_title(self, obj):
+        return getattr(obj, 'title_'+obj.project.setting.local_language)
+
 
     
 class StepSerializer(serializers.ModelSerializer):

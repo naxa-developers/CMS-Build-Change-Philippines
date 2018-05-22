@@ -29,6 +29,6 @@ urlpatterns = [
     path('material-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
     path('report-list/<int:site_pk>', views.ReportListView.as_view(), name="report_list"),
     path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
-
+    path('user-profile/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
 ]
 
