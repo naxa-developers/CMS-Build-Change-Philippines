@@ -652,4 +652,17 @@ class ReportDetailView(ManagerSuperAdminMixin, DetailView):
         return context
 
 
+class UserProfileView(TemplateView):
+    
+    template_name = "core/user_profile.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs['pk'])
+        return context
+        
+
+
+
+
 
