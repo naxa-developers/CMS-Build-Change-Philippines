@@ -1,7 +1,7 @@
-from django.urls import reverse
+from django.urls import  reverse_lazy, reverse
 from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ProjectManagerMixin, ManagerSuperAdminMixin
@@ -17,7 +17,8 @@ class Redirection(RedirectView):
             if self.request.user.user_roles.filter(group__name='Super Admin'):
                 return reverse("core:admin_dashboard")
             elif self.request.user.user_roles.filter(group__name='Project Manager'):
-                return reverse("core:project_dashboard")
+                project_id = Project.objects.get(project_roles__user=self.request.user).pk
+                return reverse_lazy("core:project_dashboard", kwargs={'project_id': project_id})
         except:
             return reverse("login")
 
@@ -111,6 +112,11 @@ class ProjectUserListView(ManagerSuperAdminMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
         context['users'] = User.objects.filter(user_roles__project_id=self.kwargs.get('project_id'))
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            if not self.kwargs['project_id']:
+                context['projects'] = Project.objects.all()
+                return context
         return context
 
