@@ -230,8 +230,6 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
                                              'material__good_photo', 'material__bad_photo')
         project = Project.objects.get(pk=self.kwargs['project_id'])
         context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
-        projec=Project.objects.get(pk=self.kwargs['project_id'])
-        print(projec.pk)
         context['if_material'] = Material.objects.filter(project=project).count()
         context['if_category'] = Category.objects.filter(project=project).count()
         context['category_list'] = Project.objects.filter(pk=self.kwargs['project_id'])\
@@ -239,6 +237,7 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             context['projects'] = Project.objects.all()
             return context
+        context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
         return context
 
 
@@ -308,9 +307,9 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:2]
-        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:2]
-        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:2]
+        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:5]
+        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:5]
+        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
         data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
         if self.request.user.user_roles.filter(group__name="Super Admin"):
             data['projects'] = Project.objects.all()
@@ -396,28 +395,6 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         else:
             data['project'] = data['pk']
         return data
-
-
-class SiteStepsUpdateView(ManagerSuperAdminMixin, UpdateView):
-    """
-    Steps Update View
-    """
-    model = Step
-    template_name = "core/site_steps.html"
-
-
-class SiteStepsDetailView(ManagerSuperAdminMixin, DetailView):
-    """
-    Steps Update View
-    """
-    model = Step
-
-
-class SiteStepsDeleteView(ManagerSuperAdminMixin, DeleteView):
-    """
-    Steps Delete View
-    """
-    model = Step
 
 
 class CategoryFormView(ManagerSuperAdminMixin, FormView):
@@ -645,7 +622,6 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
-            context['if_material'] = Material.objects.filter(project=self.kwargs['pk']).count()
             context['project_id'] = self.kwargs['pk']
             return context
 
@@ -659,6 +635,7 @@ class ReportListView(ManagerSuperAdminMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['reports'] = Report.objects.filter(checklist__step__site=self.kwargs['site_pk'])
+        context['site'] = Site.objects.get(id=self.kwargs['site_pk'])
         return context
 
 
@@ -667,4 +644,12 @@ class ReportDetailView(ManagerSuperAdminMixin, DetailView):
     Report detail
     """
     model = Report
+    context_object_name = 'report'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(steps__checklist_steps__checklist_report=self.kwargs['pk'])
+        return context
+
+
 

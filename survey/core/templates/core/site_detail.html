@@ -161,15 +161,15 @@
                                     {% for report in site_reports  %}
                                     <li>
                                         <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>report</strong></a>
+                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.text }}</strong></a>
                                         <br>
                                         <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>chapakot</small>
+                                            <small><i class="la la-user"></i>{{ report.user }}</small>
                                         </a>
                                         <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i> 2 hours, 47
-                                            minutes ago
-                                        </small>
+                                                                                   aria-hidden="true"></i>{{ report.date }}
+                                        </small><br>
+                                     <small class="site_icon_float" style="">{{ report.checklist.step}}</small>
                                     </li>
                                     {% empty %}
                                         No Reports Found.

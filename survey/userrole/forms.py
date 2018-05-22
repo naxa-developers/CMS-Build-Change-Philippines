@@ -1,13 +1,14 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-
-from .models import UserRole
+from django.contrib.auth.models import User
+from .models import UserRole, Project
 
 
 class UserRoleForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
@@ -19,6 +20,18 @@ class UserRoleForm(forms.ModelForm):
 
 
 class UserProfileForm(UserCreationForm):
+    first_name = forms.CharField(required=True)
+    last_name = forms.CharField(required=True)
+    email = forms.CharField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name in ['username', 'password1', 'password2']:
+            self.fields[field_name].help_text = None
+
+
+class ProjectUserForm(UserCreationForm):
+
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.CharField(required=True)

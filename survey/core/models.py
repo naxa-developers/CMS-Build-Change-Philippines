@@ -90,7 +90,7 @@ class Material(models.Model):
     title = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
-    description = models.TextField(max_length=300)
+    description = models.TextField(max_length=300, blank=True, null=True)
     good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/", blank=True, null=True)
     bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/", blank=True, null=True)
     

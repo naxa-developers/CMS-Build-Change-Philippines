@@ -1,13 +1,13 @@
-from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, RedirectView
+from django.urls import  reverse_lazy, reverse
+from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
-
+from django.contrib.auth.models import User
 from core.models import Project, Site
-from core.views import SuperAdminMixin, ProjectManagerMixin
+from core.views import SuperAdminMixin, ProjectManagerMixin, ManagerSuperAdminMixin
 
 from .models import UserRole
-from .forms import UserRoleForm
+from .forms import UserRoleForm, ProjectUserForm
 
 
 class Redirection(RedirectView):
@@ -80,3 +80,43 @@ class FieldEngineerUserRoleFormView(ProjectManagerMixin, CreateView):
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.filter(project_roles__user=self.request.user)
         return context
+
+    def get_form(self, form_class=None):
+        form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
+        project_id = Project.objects.get(sites=self.kwargs.get('site_id'))
+        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=project_id.id)
+        return form
+
+
+class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
+    model = User
+    template_name = 'userrole/project_user_form.html'
+    form_class = ProjectUserForm
+
+    def post(self, request, *args, **kwargs):
+        form = ProjectUserForm(data=request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+
+            UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
+                                    project_id=self.kwargs['project_id'])
+            return redirect('core:project_dashboard')
+
+        return render(request, self.template_name, {'form': form})
+
+
+class ProjectUserListView(ManagerSuperAdminMixin, ListView):
+    model = User
+    template_name = 'userrole/project_user_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
+        context['users'] = User.objects.filter(user_roles__project_id=self.kwargs.get('project_id'))
+        if self.request.user.user_roles.filter(group__name="Super Admin"):
+            if not self.kwargs['project_id']:
+                context['projects'] = Project.objects.all()
+                return context
+        return context
+

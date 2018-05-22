@@ -1,5 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import Step, Checklist
+from .models import Step, Checklist, Material
 
 @register(Step)
 class StepTranslationOptions(TranslationOptions):
@@ -8,4 +8,8 @@ class StepTranslationOptions(TranslationOptions):
 @register(Checklist)
 class ChecklistTranslationOptions(TranslationOptions):
     fields = ('text',)
+
+@register(Material)
+class ChecklistTranslationOptions(TranslationOptions):
+    fields = ('title', 'description',)
 
