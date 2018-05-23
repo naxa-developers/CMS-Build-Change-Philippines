@@ -44,11 +44,8 @@ class UserRoleCreateView(SuperAdminMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['projects'] = Project.objects.all()
-            return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+
         return context
 
 
@@ -58,6 +55,10 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     """
     model = UserRole
     form_class = UserRoleForm
+    template_name = 'userrole/userrole_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('core:site_detail', args=(self.kwargs.get('site_id')))
 
     def post(self, request, *args, **kwargs):
 
@@ -66,14 +67,12 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
             group = Group.objects.get(name='Field Engineer')
             user = form.cleaned_data['user']
             UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'])
-            return redirect('core:project_dashboard')
-
         return render(request, self.template_name, {'form': form})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
-        context['project'] = Project.objects.select_related().get(sites=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
 
         return context
 

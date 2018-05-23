@@ -290,19 +290,16 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
     """
     template_name = "core/site_detail.html"
     model = Site
+    context_object_name = 'site'
 
     def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:5]
-        data['site_materials'] = Material.objects.filter(project__sites=self.kwargs['pk'])[:5]
-        data['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
-        data['project_id'] = Project.objects.filter(sites=self.kwargs['pk']).values_list('id', flat=True)[0]
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            data['projects'] = Project.objects.all()
-            return data
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            data['project'] = Project.objects.get(project_roles__user=self.request.user)
-            return data
+        context = super().get_context_data(**kwargs)
+        context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:5]
+        context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
+        context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
+        context['project'] = Project.objects.get(sites=self.kwargs['pk'])
+
+        return context
 
 
 class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
@@ -591,6 +588,15 @@ class SiteMaterialFormView(ManagerSuperAdminMixin, CreateView):
         form.save()
         return super().form_valid(form)
 
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail', args=(self.object.site.pk,))
+        return success_url
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
+
 
 class SiteMaterialListView(ManagerSuperAdminMixin, ListView):
     model = SiteMaterials
@@ -599,18 +605,24 @@ class SiteMaterialListView(ManagerSuperAdminMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['site_id'])
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
 
         return context
 
 
-class SiteMaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
+class SiteMaterialDetailView(ManagerSuperAdminMixin, DetailView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
+    context_object_name = 'site_material'
 
 
 class SiteMaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_material_list', args=(self.object.site.pk,))
+        return success_url
 
 
 class ReportListView(ManagerSuperAdminMixin, ListView):

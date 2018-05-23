@@ -1,22 +1,23 @@
 {% extends '_base.html' %}
 {% block content %}
-    <nav aria-label="breadcrumb">
+     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">{% if request.user.is_superuser %}
             <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
 
         {% endif %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-
-            <li class="breadcrumb-item active" aria-current="page"> Site Guideline List</li>
+            <li class="breadcrumb-item active" aria-current="page">{{ site_material }} Detail</li>
         </ol>
     </nav>
 <div class="d-flex justify-content-center">
         <div class="col-md-4 col-lg-6">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
-    {% for material in site_materials %}
-        {{ forloop.counter }}. <a href="{% url 'core:site_material_detail' material.pk %}">
-        {{ material }} </a>   <a href="{% url 'core:site_material_delete' material.pk %}"><span style="color:#000;">Delete</span></a><br>
+    {% for material in site_material.materials.all %}
+        Title: {{ material.title }}<br>
+        Category: {{ material.category }}<br>
+        Description: {{ material.description }}<br>
+        Good Photo: <p><img src="{{ MEDIA_URL }}{{ material.good_photo }}"></p><br>
+        Bad Photo: <p><img src="{{ MEDIA_URL }}{{ material.bad_photo }}"></p>
 
     {% endfor %}
                 </div></div></div></div>

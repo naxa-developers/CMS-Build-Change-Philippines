@@ -44,7 +44,10 @@
                             <div class="widget-head">
                                  <a href="{% url 'core:project_update' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Edit Project </a>
-
+                                 {% if request.user.is_superuser %}
+                                <a href="{% url 'userrole:userrole_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Assign Project Manager </a>
+                                  {% endif %}
                                 <h4>Project Details</h4>
                             </div>
                             <div class="widget-head">

@@ -1,7 +1,21 @@
 {% extends '_base.html' %}
 {% block content %}
+     <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            {% else %}
+             <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+        {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
+        </ol>
+    </nav>
+<div class="d-flex justify-content-center">
+        <div class="col-md-4 col-lg-6">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
 <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit">
+    <input type="submit" class="btn btn-primary">
 </form>
+                </div></div></div></div>
 {% endblock content %}
