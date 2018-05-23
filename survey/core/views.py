@@ -215,22 +215,27 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['materials_list'] = Project.objects.filter(pk=self.kwargs['project_id'])\
-                                .prefetch_related('material')\
-                                .values_list('material__id','material__title','material__category__id',\
-                                             'material__category__name',\
-                                             'material__good_photo', 'material__bad_photo')
-        project = Project.objects.get(pk=self.kwargs['project_id'])
-        context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
-        context['project'] = Project.objects.get(pk=self.kwargs['project_id'])
-        context['if_material'] = Material.objects.filter(project=project).count()
-        context['if_category'] = Category.objects.filter(project=project).count()
-        context['category_list'] = Project.objects.filter(pk=self.kwargs['project_id'])\
-                                    .prefetch_related('category').values_list('category__id', 'category__name')
+
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['projects'] = Project.objects.all()
+            context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
+            context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
+            context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+            context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])[:5]
+            if self.request.user.user_roles.filter(group__name="Super Admin"):
+                context['projects'] = Project.objects.all()
+                return context
             return context
-        return context
+
+        elif self.kwargs['project_id'] is self.request.user.user_roles.values_list('project_id', flat=True)[0]:
+            context['materials_list'] = Material.objects.filter(project__project_roles__user=self.request.user)
+            context['project'] = get_object_or_404(Project, project_roles__user=self.request.user)
+            context['category_list'] = Category.objects.filter(project__project_roles__user=self.request.user)[:5]
+            context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
+
+            return context
+
+        else:
+            raise PermissionDenied
 
 
 class Dashboard(SuperAdminMixin, TemplateView):

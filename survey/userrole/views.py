@@ -1,4 +1,4 @@
-from django.urls import  reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
@@ -57,9 +57,6 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     form_class = UserRoleForm
     template_name = 'userrole/userrole_form.html'
 
-    def get_success_url(self):
-        return reverse_lazy('core:site_detail', args=(self.kwargs.get('site_id')))
-
     def post(self, request, *args, **kwargs):
 
         form = self.form_class(data=request.POST)
@@ -67,11 +64,13 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
             group = Group.objects.get(name='Field Engineer')
             user = form.cleaned_data['user']
             UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'])
+            return redirect(reverse('core:site_detail', kwargs={'pk': self.kwargs['site_id']}))
+
         return render(request, self.template_name, {'form': form})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['site'] = Site.objects.select_related().get(id=self.kwargs['site_id'])
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
 
         return context
@@ -96,6 +95,7 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
 
             UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
                                     project_id=self.kwargs['project_id'])
+            return redirect(reverse('core:project_dashboard', kwargs={'project_id': self.kwargs['project_id']}))
 
         return render(request, self.template_name, {'form': form})
 
@@ -103,10 +103,6 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['project'] = Project.objects.get(id=self.kwargs['project_id'])
         return context
-
-    def get_success_url(self):
-
-        return redirect('core:project_dashboard', args=(self.kwargs['project_id'],))
 
 
 class ProjectUserListView(ManagerSuperAdminMixin, ListView):

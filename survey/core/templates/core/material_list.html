@@ -48,12 +48,12 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Materials</a></h4>
+                                <h4><a href="#" title="">Guidelines</a></h4>
                             </div>
                             <div class="widget-body">
                                 {% for material in materials_list %}
                                     <a href="{% url 'core:material_detail' material.pk %}">
-                                        {{ material }}</a><br>
+                                        {{ forloop.counter }}. {{ material }}</a><br>
                                 {% empty %}
                                     <p>Not materials Found.
                                     </p> {% endfor %}<br>

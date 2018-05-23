@@ -119,31 +119,25 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Guidelines</h4>
-                                {% if if_material %}
                                     <a href="{% url 'core:material_list' project.pk %}" title=""
                                        class="btn btn-sm btn-xs btn-primary"><i
                                             class="la la-caret-right"></i> More</a>
 
-                                {% endif %}
                                  <a href="{% url 'core:material_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Create Guidelines </a>
 
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for obj in materials_list %}
-                                        {% if obj.0 %}
+                                    {% for material in materials_list %}
                                             <li>
                                                 <img src="assets/img/img-school.png" alt="">
                                                 <a title="View submission detail"
-                                                   href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
-                                                <br>
-                                                <a href="{% url 'core:category_update' obj.2 %}"
-                                                   title="View details of category">
-                                                    <small> {{ obj.3 }}</small>
-                                                </a>
-                                            </li>{% else %}<p>No Materials Found.</p>
-                                        {% endif %}
+                                                   href="{% url 'core:material_detail' material.pk %}"><strong>{{ material }}</strong></a>
+
+                                            </li>
+                                        {% empty %}
+                                        <p>No Materials Found.</p>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -175,26 +169,23 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Category</h4>
-                                {% if if_category %}
                                     <a href="{% url 'core:category_list' project.pk %}" title=""
                                        class="btn btn-sm btn-xs btn-primary"><i
                                             class="la la-caret-right"></i> More</a>
-                                {% endif %}
 
                                 <a href="{% url 'core:category_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Create Category</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% if if_category %}
-                                        {% for obj in category_list %}
+                                        {% for category in category_list %}
                                             <li>
-                                                <a href="{% url 'core:category_update' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
+                                                <a href="{% url 'core:category_update' category.pk %}"><strong>{{ category }}</strong></a>
                                             </li>
+                                            {% empty %}
+                                            <p>No Categories Found.</p>
+
                                         {% endfor %}
-                                    {% else %}
-                                        <p>No Categories Found.</p>
-                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
