@@ -1,5 +1,6 @@
 from django import forms
-from .models import Project, Category, Material, Site
+from .models import Project, Category, Material, Site, SiteMaterials
+
 
 class ProjectForm(forms.ModelForm):
 
@@ -56,3 +57,16 @@ class SiteForm(forms.ModelForm):
     class Meta:
         model = Site
         exclude = ('project',)
+
+
+class SiteMaterialsForm(forms.ModelForm):
+
+    class Meta:
+        model = SiteMaterials
+        fields = ('materials',)
+
+        widgets = {
+            'materials': forms.CheckboxSelectMultiple()
+        }
+
+        # materials = forms.ModelMultipleChoiceField(queryset=Material.objects.all(), required=False)

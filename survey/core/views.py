@@ -15,8 +15,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report
-from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm
+from .models import Project, Site, Category, Material, Step, Report, SiteMaterials
+from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm
 
 
 @api_view(['POST'])
@@ -270,7 +270,7 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -329,7 +329,7 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -398,7 +398,7 @@ class CategoryFormView(ManagerSuperAdminMixin, FormView):
             success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -440,7 +440,7 @@ class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -457,7 +457,7 @@ class CategoryDeleteView(ManagerSuperAdminMixin, DeleteView):
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -488,7 +488,7 @@ class MaterialFormView(ManagerSuperAdminMixin, FormView):
             success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -515,7 +515,7 @@ class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
             success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -537,7 +537,7 @@ class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard')
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
@@ -575,6 +575,42 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
             context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
             context['project_id'] = self.kwargs['pk']
             return context
+
+
+class SiteMaterialFormView(ManagerSuperAdminMixin, CreateView):
+    model = SiteMaterials
+    form_class = SiteMaterialsForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=self.form_class)
+        form.fields['materials'].queryset = form.fields['materials'].queryset.filter(project__sites=self.kwargs['site_id'])
+        return form
+
+    def form_valid(self, form):
+        form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+        form.save()
+        return super().form_valid(form)
+
+
+class SiteMaterialListView(ManagerSuperAdminMixin, ListView):
+    model = SiteMaterials
+    form_class = SiteMaterialsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['site_id'])
+
+        return context
+
+
+class SiteMaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
+    model = SiteMaterials
+    form_class = SiteMaterialsForm
+
+
+class SiteMaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
+    model = SiteMaterials
+    form_class = SiteMaterialsForm
 
 
 class ReportListView(ManagerSuperAdminMixin, ListView):

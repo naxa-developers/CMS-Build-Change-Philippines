@@ -97,7 +97,6 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
 
             UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
                                     project_id=self.kwargs['project_id'])
-            return redirect('core:project_dashboard')
 
         return render(request, self.template_name, {'form': form})
 
@@ -105,6 +104,10 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['project'] = Project.objects.get(id=self.kwargs['project_id'])
         return context
+
+    def get_success_url(self):
+
+        return redirect('core:project_dashboard', args=(self.kwargs['project_id'],))
 
 
 class ProjectUserListView(ManagerSuperAdminMixin, ListView):
