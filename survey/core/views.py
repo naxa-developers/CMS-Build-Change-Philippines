@@ -242,7 +242,8 @@ class Dashboard(SuperAdminMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all()
-        context['latest_project'] = Project.objects.latest('id')
+        context['total_projects'] = Project.objects.all().count()
+        context['total_project_managers'] = User.objects.filter(user_roles__group__name='Project Manager').count()
         return context
 
 

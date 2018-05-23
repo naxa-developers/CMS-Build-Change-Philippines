@@ -5,6 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.gis.db.models import PointField
 
 from rest_framework.authtoken.models import Token
 
@@ -48,8 +49,7 @@ class Site(models.Model):
     type = models.IntegerField(choices=SITE_TYPES, default=0)
     photo = models.ImageField(upload_to="site/photo/", null=True, blank=True)
     address = models.CharField(max_length=250, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    location = PointField(srid=4326, null=True, blank=True)
     contact_number = PhoneNumberField(null=True, blank=True)
 
     def __str__(self):
