@@ -24,7 +24,8 @@
                             <div class="widget-body">
                                     {% for category in category_list %}
                                         <a href="{% url 'core:category_update' category.pk %}"><h5>
-                                            {{ category }}</h5></a><br>
+                                            {{ forloop.counter }}. {{ category }}</h5></a><a href="{% url 'core:category_delete' category.pk%}">Delete</a>
+                                        <br>
                                         {% empty %}
                                          <p>Not Categories Found.</p>
                                     {% endfor %}
