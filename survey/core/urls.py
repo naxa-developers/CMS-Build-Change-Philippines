@@ -31,7 +31,7 @@ urlpatterns = [
     path('site-guideline-list/<int:site_id>/', views.SiteMaterialListView.as_view(), name="site_material_list"),
     path('site-guideline-update/<int:pk>/', views.SiteMaterialUpdateView.as_view(), name="site_material_update"),
     path('site-guideline-delete/<int:pk>/', views.SiteMaterialDeleteView.as_view(), name="site_material_delete"),
-    path('site-report-list/<int:pk>', views.ReportListView.as_view(), name="report_list"),
+    path('site-report-list/<int:site_pk>', views.ReportListView.as_view(), name="report_list"),
     path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
     path('user-profile/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
 ]
