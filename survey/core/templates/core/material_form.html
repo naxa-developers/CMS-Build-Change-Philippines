@@ -8,7 +8,7 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Material Create</li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
                 </ol>
             </nav>
         </div>
@@ -39,9 +39,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 col-lg-9">
-            <div class="dash-left">
-                <div class="row">
+        <div class="d-flex justify-content-center">
+        <div class="col-md-2 col-lg-12">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for error in form.non_field_errors %}
                             <div class="form-group has-errors text-danger small">
@@ -52,7 +53,6 @@
                             <div class="form-group">
                                 {{ field.errors }}
                                 {{ field.label_tag }}
-                                {#                                <label for="exampleFormControlInput1">Email address</label>#}
                                 {{ field }}
                             </div>
                         {% endfor %}
@@ -62,6 +62,7 @@
                         </div>
                     </form>
                 </div>
+            </div>
             </div>
         </div>
     </div>

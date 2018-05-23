@@ -17,8 +17,10 @@
             </nav>
             </nav>
         </div>
-        <div class="col-md-4 col-lg-3"><a href="{% url 'core:site_create' project.pk %}"><h5>Add New Site</h5></a>
+        <div class="col-md-4 col-lg-3">
             <div class="module-school-list">
+            <p><a href="{% url 'core:site_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary btn-block"><i
+                                        class="la la-caret-right"></i> Create Site</a></p>
                 <div class="school-wrap">
                     <ul class="school-list">
                         {% for site in project.sites.all %}
@@ -40,7 +42,9 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <a href="{% url 'core:project_update' project.pk %}"><h4>Edit Project</h4></a>
+                                 <a href="{% url 'core:project_update' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Edit Project </a>
+
                                 <h4>Project Details</h4>
                             </div>
                             <div class="widget-head">
@@ -111,14 +115,16 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4>Materials</h4>
+                                <h4>Guidelines</h4>
                                 {% if if_material %}
                                     <a href="{% url 'core:material_list' project.pk %}" title=""
                                        class="btn btn-sm btn-xs btn-primary"><i
                                             class="la la-caret-right"></i> More</a>
 
                                 {% endif %}
-                                <a href="{% url 'core:material_create' project.pk %}">Create New</a>
+                                 <a href="{% url 'core:material_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Create Guidelines </a>
+
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
@@ -130,11 +136,10 @@
                                                    href="{% url 'core:material_detail' obj.0 %}"><strong>{{ obj.1 }}</strong></a>
                                                 <br>
                                                 <a href="{% url 'core:category_update' obj.2 %}"
-                                                   title="View details of user">
-                                                    <small><i class="la la-user"></i>{{ obj.3 }}</small>
+                                                   title="View details of category">
+                                                    <small> {{ obj.3 }}</small>
                                                 </a>
                                             </li>{% else %}<p>No Materials Found.</p>
-                                            {#                                    <strong><a href="{% url 'core:material_create' project.pk %}">Create New</a></strong>#}
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
@@ -146,7 +151,8 @@
                                         <a href="{% url 'userrole:project_user_list' project.pk %}" title=""
                                            class="btn btn-sm btn-xs btn-primary"><i
                                                 class="la la-caret-right"></i> More</a>
-                            <a href="{% url 'userrole:project_user_create' project.pk %}">Create User</a>
+                                 <a href="{% url 'userrole:project_user_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Create User</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
@@ -154,8 +160,10 @@
                                         <ul class="submission-list">
                                         {% for user in users %}
                                             <li>
-                                               {{ forloop.counter }}. <a href=""><strong>{{ user}}</strong></a>
+                                               {{ forloop.counter }}. <strong>{{ user}}</strong>
                                             </li>
+                                            {% empty %}
+                                                No User Found.
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -169,7 +177,9 @@
                                        class="btn btn-sm btn-xs btn-primary"><i
                                             class="la la-caret-right"></i> More</a>
                                 {% endif %}
-                                <a href="{% url 'core:category_create' project.pk %}">Create New</a>
+
+                                <a href="{% url 'core:category_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Create Category</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">

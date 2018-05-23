@@ -71,8 +71,7 @@
 
                                     </li>
                                     <li>
-                                        <a title="View submission detail"
-                                           href="#"><strong>Contact Number: {{ object.contact_number }}</strong></a>
+                                        <strong>Contact Number: {{ object.contact_number }}</strong>
                                         <br>
 
                                     </li>
@@ -90,7 +89,7 @@
                     <div class="col-md-4">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Step List</a></h4>
+                                <h4>Step List</h4>
                                 <a href="{% url 'core:site-steps' 0 object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Add New Step</a>
 
@@ -112,15 +111,15 @@
                                 </ul>
                             </div>
 
-                        <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                        <a href="#" title="" class="btn btn-sm btn-xs btn-primary" ><i
                                         class="la la-caret-right"></i> More</a>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Material List</a></h4>
-                                <a href="" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                <h4>Material List</h4>
+                                <a href="" title="" class="btn btn-sm btn-xs btn-primary" ><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body">
@@ -147,8 +146,8 @@
                                         <div class="col-md-4">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Reports</a></h4>
-                                <a href="{% url 'core:report_list' object.pk %}" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                <h4>Reports</h4>
+                                <a href="{% url 'core:report_list' object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body">
@@ -156,7 +155,7 @@
                                     {% for report in site_reports  %}
                                     <li>
                                         <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.text }}</strong></a>
+                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist }}</strong></a>
                                         <br>
                                         <a href="#" title="View details of user">
                                             <small><i class="la la-user"></i>{{ report.user }}</small>

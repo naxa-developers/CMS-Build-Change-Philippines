@@ -1,0 +1,52 @@
+{% extends '_base.html' %}
+
+
+{% block content %}
+    <div class="row no-gutters">
+            
+            <div class="col-md-12 col-lg-12">
+                <div class="dash-right">
+                    <div class="row">
+                        
+                        <div class="col-md-12">
+                            <div class="widget-info margin-top-large">
+                                <div class="widget-head">
+                                    <h4><a href="#" title="">My profile</a></h4>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Edit</a>
+                                </div>
+                                <div class="widget-body">
+                                    <table class="table">
+                                      <thead>
+                                        <tr>
+                                          <th scope="col">User Name</th>
+                                          <th scope="col">{{ user.username  }}</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr>
+                                          <td>first_name</td>
+                                          <td>{{ user.first_name }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>last_name</td>
+                                          <td>{{ user.last_name }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td> email</td>
+                                          <td>{{ user.email }}</td>
+                                        </tr>
+                                        <tr>
+                                          <td> date_joined</td>
+                                          <td>{{ user.date_joined }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+ {% endblock content %}

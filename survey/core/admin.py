@@ -1,4 +1,5 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Project
+from core.models import Project, Report
+admin.site.register(Report)

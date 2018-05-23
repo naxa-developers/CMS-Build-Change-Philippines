@@ -6,7 +6,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
                     {% endif %}
                     <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Report List</li>
@@ -19,11 +19,10 @@
             <li>
                 <img src="assets/img/img-school.png" alt="">
                 <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}">
-                    {{ forloop.counter }}. <strong>{{ report.checklist.text }}</strong></a>
+                    {{ forloop.counter }}. <strong>{{ report.checklist }}</strong></a>
                 <br>
-                <a href="#" title="View details of user">
+
                     <small><i class="la la-user"></i>{{ report.user }}</small>
-                </a>
                 <small class="site_icon_float" style=""><i class="la la-clock-o"
                                                            aria-hidden="true"></i>{{ report.date }}
                 </small><br>

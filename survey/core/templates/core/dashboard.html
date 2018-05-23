@@ -14,10 +14,16 @@
                 </ol>
             </nav>
         </div>
-    <div class="col-md-4 col-lg-3"><a href="{% url 'core:project_create' %}"><h4>New Project</h4></a>
+    <div class="col-md-4 col-lg-3">
+
                 <div class="module-school-list">
+                <p><a href="{% url 'core:project_create'%}" title="" class="btn btn-sm btn-xs btn-primary  btn-block"><i
+                                        class="la la-caret-right"></i> Add Project</a></p>
+
                     <div class="school-wrap">
+
                         <ul class="school-list">
+
                             {% for project in projects %}
                             <li>
                                 <a href="{% url 'core:project_dashboard' project.pk %}" title="">
@@ -54,10 +60,11 @@
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
-                                    <h4><a href="#" title="">Manage User</a></h4>
+                                    <h4><a href="#" title="">Manage User</a></h4> <a href="{% url 'core:user_create'%}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Create User</a>
                                 </div>
                                 <div class="widget-body">
-                                    <a href="{% url 'core:user_create' %}">Create User</a>
+
                                 </div>
                             </div>
                         </div>
