@@ -221,6 +221,7 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
             context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
             context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
             context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])[:5]
+            context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
             if self.request.user.user_roles.filter(group__name="Super Admin"):
                 context['projects'] = Project.objects.all()
                 return context

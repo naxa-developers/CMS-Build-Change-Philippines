@@ -19,8 +19,9 @@
         </div>
         <div class="col-md-4 col-lg-3">
             <div class="module-school-list">
-            <p><a href="{% url 'core:site_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary btn-block"><i
-                                        class="la la-caret-right"></i> Create Site</a></p>
+                <p><a href="{% url 'core:site_create' project.pk %}" title=""
+                      class="btn btn-sm btn-xs btn-primary btn-block"><i
+                        class="la la-caret-right"></i> Create Site</a></p>
                 <div class="school-wrap">
                     <ul class="school-list">
                         {% for site in project.sites.all %}
@@ -40,14 +41,21 @@
             <div class="dash-right">
                 <div class="row">
                     <div class="col-md-6">
+                        {% if request.user.is_superuser %}Assigned Project Manager: {{ assigned_manager }}{% endif %}
+
                         <div class="widget-info margin-top-large">
+
                             <div class="widget-head">
-                                 <a href="{% url 'core:project_update' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+
+                                <a href="{% url 'core:project_update' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Edit Project </a>
-                                 {% if request.user.is_superuser %}
-                                <a href="{% url 'userrole:userrole_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Assign Project Manager </a>
-                                  {% endif %}
+                                {% if request.user.is_superuser %}
+                                    <a href="{% url 'userrole:userrole_create' project.pk %}" title=""
+                                       class="btn btn-sm btn-xs btn-primary"><i
+                                            class="la la-caret-right"></i> Assign Project Manager </a>
+                                {% endif %}
+
                                 <h4>Project Details</h4>
                             </div>
                             <div class="widget-head">
@@ -119,24 +127,25 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Guidelines</h4>
-                                    <a href="{% url 'core:material_list' project.pk %}" title=""
-                                       class="btn btn-sm btn-xs btn-primary"><i
-                                            class="la la-caret-right"></i> More</a>
+                                <a href="{% url 'core:material_list' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> More</a>
 
-                                 <a href="{% url 'core:material_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'core:material_create' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Create Guidelines </a>
 
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
                                     {% for material in materials_list %}
-                                            <li>
-                                                <img src="assets/img/img-school.png" alt="">
-                                                <a title="View submission detail"
-                                                   href="{% url 'core:material_detail' material.pk %}"><strong>{{ material }}</strong></a>
+                                        <li>
+                                            <img src="assets/img/img-school.png" alt="">
+                                            <a title="View submission detail"
+                                               href="{% url 'core:material_detail' material.pk %}"><strong>{{ material }}</strong></a>
 
-                                            </li>
-                                        {% empty %}
+                                        </li>
+                                    {% empty %}
                                         <p>No Materials Found.</p>
                                     {% endfor %}
                                 </ul>
@@ -145,20 +154,21 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Manage User</h4>
-                                        <a href="{% url 'userrole:project_user_list' project.pk %}" title=""
-                                           class="btn btn-sm btn-xs btn-primary"><i
-                                                class="la la-caret-right"></i> More</a>
-                                 <a href="{% url 'userrole:project_user_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'userrole:project_user_list' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> More</a>
+                                <a href="{% url 'userrole:project_user_create' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Create User</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
                                     <div class="widget-body">
                                         <ul class="submission-list">
-                                        {% for user in users %}
-                                            <li>
-                                               {{ forloop.counter }}. <strong>{{ user}}</strong>
-                                            </li>
+                                            {% for user in users %}
+                                                <li>
+                                                    {{ forloop.counter }}. <strong>{{ user }}</strong>
+                                                </li>
                                             {% empty %}
                                                 No User Found.
                                             {% endfor %}
@@ -169,23 +179,24 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Category</h4>
-                                    <a href="{% url 'core:category_list' project.pk %}" title=""
-                                       class="btn btn-sm btn-xs btn-primary"><i
-                                            class="la la-caret-right"></i> More</a>
+                                <a href="{% url 'core:category_list' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> More</a>
 
-                                <a href="{% url 'core:category_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'core:category_create' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Create Category</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                        {% for category in category_list %}
-                                            <li>
-                                                <a href="{% url 'core:category_update' category.pk %}"><strong>{{ category }}</strong></a>
-                                            </li>
-                                            {% empty %}
-                                            <p>No Categories Found.</p>
+                                    {% for category in category_list %}
+                                        <li>
+                                            <a href="{% url 'core:category_update' category.pk %}"><strong>{{ category }}</strong></a>
+                                        </li>
+                                    {% empty %}
+                                        <p>No Categories Found.</p>
 
-                                        {% endfor %}
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>

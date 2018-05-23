@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report, Category
+from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials
 
 
 class StepsSerializer(serializers.ModelSerializer):
@@ -55,7 +55,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         return getattr(obj, 'title_'+obj.project.setting.local_language)
 
 
-    
 class StepSerializer(serializers.ModelSerializer):
     localname = serializers.ReadOnlyField(source="get_localname")
 
@@ -159,3 +158,12 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'name', 'project', 'project_name')
+
+
+class SiteMaterialSerializer(serializers.ModelSerializer):
+    site = serializers.CharField(source='site.name')
+    materials = MaterialSerializer(many=True)
+
+    class Meta:
+        model = SiteMaterials
+        fields = ('id', 'site', 'materials')
