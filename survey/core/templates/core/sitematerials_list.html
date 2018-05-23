@@ -18,6 +18,8 @@
     {% for material in site_materials %}
         {{ forloop.counter }}. <a href="{% url 'core:site_material_detail' material.pk %}">
         {{ material }} </a>   <a href="{% url 'core:site_material_delete' material.pk %}"><span style="color:#000;">Delete</span></a><br>
+    {% empty %}
+        No Guidelines Found.
 
     {% endfor %}
                 </div></div></div></div>

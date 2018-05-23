@@ -183,7 +183,7 @@ class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
             return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
 
 
-class UserCreateView(ManagerSuperAdminMixin, CreateView):
+class UserCreateView(SuperAdminMixin, CreateView):
     """
     User SignUp form
     """
@@ -192,18 +192,18 @@ class UserCreateView(ManagerSuperAdminMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['projects'] = Project.objects.all()
-            return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.get(project_roles__user=self.request.user)
-            return context
+        context['projects'] = Project.objects.all()
+        context['users'] = User.objects.all()
+        return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Project Manager"):
-            return reverse('core:project_dashboard')
-        elif self.request.user.user_roles.filter(group__name="Super Admin"):
-            return reverse('core:admin_dashboard')
+        return reverse('core:admin_dashboard')
+
+
+class UserListView(SuperAdminMixin, ListView):
+    model = User
+    template_name = 'registration/user_list.html'
+    context_object_name = "users"
 
 
 class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
@@ -249,6 +249,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['projects'] = Project.objects.all()
         context['total_projects'] = Project.objects.all().count()
+        context['users'] = User.objects.all()[:20]
         context['total_project_managers'] = User.objects.filter(user_roles__group__name='Project Manager').count()
         return context
 

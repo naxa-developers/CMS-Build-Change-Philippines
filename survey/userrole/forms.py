@@ -29,6 +29,11 @@ class UserProfileForm(UserCreationForm):
         for field_name in ['username', 'password1', 'password2']:
             self.fields[field_name].help_text = None
 
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+            })
+
 
 class ProjectUserForm(UserCreationForm):
 

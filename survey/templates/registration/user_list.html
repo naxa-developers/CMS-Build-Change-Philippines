@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+{% block content %}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">User List</li>
+                </ol>
+            </nav>
+    <div class="d-flex justify-content-center">
+        <div class="col-md-3 col-lg-6">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+    {% for user in users %}
+    {{ forloop.counter }}. {{ user }}<br>
+    {% endfor %}
+                </div></div></div></div>
+
+{% endblock content %}

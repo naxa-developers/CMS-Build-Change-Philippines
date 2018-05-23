@@ -146,9 +146,6 @@ class SiteMaterials(models.Model):
     site = models.ForeignKey(Site, related_name='site_site_materials', on_delete=models.CASCADE)
     materials = models.ManyToManyField(Material, related_name='site_materials')
 
-    # def __str__(self):
-    #     return self.materials
-
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

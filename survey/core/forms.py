@@ -68,5 +68,3 @@ class SiteMaterialsForm(forms.ModelForm):
         widgets = {
             'materials': forms.CheckboxSelectMultiple()
         }
-
-        # materials = forms.ModelMultipleChoiceField(queryset=Material.objects.all(), required=False)
