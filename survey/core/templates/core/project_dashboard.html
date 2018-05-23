@@ -55,24 +55,28 @@
                                        class="btn btn-sm btn-xs btn-primary"><i
                                             class="la la-caret-right"></i> Assign Project Manager </a>
                                 {% endif %}
+                                <div class="col-md-6">
 
                                 <h4>Project Details</h4>
-                            </div>
+                            </div>                                {% if project.name %}
+
                             <div class="widget-head">
                                 <h4><a href="#" title="">Name</a></h4>
                             </div>
                             <p>
                                 {{ project.name }}
                             </p>
-                        </div>
+                        </div>                               {% endif %}
+                {% if project.organization %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
+
                                 <h4><a href="#" title="">Organization</a></h4>
                             </div>
                             <p>
                                 {{ project.organization }}
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.logo %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Logo</a></h4>
@@ -80,7 +84,7 @@
                             <p><img src="{{ MEDIA_URL }}{{ project.logo }}">
 
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.type %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Type</a></h4>
@@ -88,7 +92,7 @@
                             <p>
                                 {{ project.type }}
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.address %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Address</a></h4>
@@ -96,7 +100,7 @@
                             <p>
                                 {{ project.address }}
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.short_description %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Short Description</a></h4>
@@ -104,7 +108,7 @@
                             <p>
                                 {{ project.short_description }}
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.email_address %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Email Address</a></h4>
@@ -112,7 +116,7 @@
                             <p>
                                 {{ project.email_address }}
                             </p>
-                        </div>
+                        </div>{% endif %}{% if project.phone_number %}
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Contact</a></h4>
@@ -120,7 +124,8 @@
                             <p>
                                 {{ project.phone_number }}
                             </p>
-                        </div>
+                        </div>{% endif %}
+                    </div>
                     </div>
 
                     <div class="col-md-6">

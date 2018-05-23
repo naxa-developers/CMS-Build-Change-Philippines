@@ -2,36 +2,40 @@
 
 {% block content %}
     <div class="row no-gutters">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">{% if request.user.is_superuser %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
 
-                    {% endif %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ object.checklist }} Detail</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="widget-body">
-                <ul class="submission-list">
-                    <li>
-                        <img src="assets/img/img-school.png" alt="">
-                     <strong>{{ object.checklist }}</strong>
-                        <br>
-                        <a href="#" title="View details of user">
-                            <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
-                        </a>
-                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                   aria-hidden="true"></i>{{ object.date }}
-                        </small><br>
-                     <small class="site_icon_float" style="">Step: {{ object.checklist.step}}</small><br>
-                     <small class="site_icon_float" style="">Comment: {{ object.comment}}</small><br>
-                    <small class="site_icon_float" style="">Photo: <img src="{{ MEDIA_URL }}{{ object.photo }}" class="report-photo" alt=""></small>
+            {% endif %}
+                <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ object.checklist }} Detail</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="widget-body">
+        <ul class="submission-list">
+            <li>
+                <img src="assets/img/img-school.png" alt="">
+                <strong>{{ object.checklist }}</strong>
+                <br>
+                {% if object.user %}
+                    <a href="#" title="View details of user">
+                        <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
+                    </a>{% endif %}{% if object.date %}
+                <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                           aria-hidden="true"></i>{{ object.date }}
+                </small><br>{% endif %}{% if object.checklist.step %}
+                <small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}
+                {% if object.comment %}
+                    <small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}
+                {% if object.photo %}
+                    <small class="site_icon_float" style="">Photo: <img src="{{ MEDIA_URL }}{{ object.photo }}"
+                                                                        class="report-photo" alt=""></small>{% endif %}
 
-                    </li>
+            </li>
 
 
-                </ul>
-            </div>
+        </ul>
+    </div>
 {% endblock content %} 

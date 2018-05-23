@@ -13,11 +13,15 @@
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
     {% for material in site_material.materials.all %}
-        Title: {{ material.title }}<br>
-        Category: {{ material.category }}<br>
-        Description: {{ material.description }}<br>
-        Good Photo: <p><img src="{{ MEDIA_URL }}{{ material.good_photo }}"></p><br>
-        Bad Photo: <p><img src="{{ MEDIA_URL }}{{ material.bad_photo }}"></p>
+        {% if material.title %}
+        Title: {{ material.title }}<br>{% endif %}
+        {% if material.category %}
+        Category: {{ material.category }}<br>{% endif %}
+        {% if material.description %}
+        Description: {{ material.description }}<br>{% endif %}{% if material.good_photo %}
+        Good Photo: <p><img src="{{ MEDIA_URL }}{{ material.good_photo }}"></p><br>{% endif %}
+        {% if material.bad_photo  %}
+        Bad Photo: <p><img src="{{ MEDIA_URL }}{{ material.bad_photo }}"></p>{% endif %}
 
     {% endfor %}
                 </div></div></div></div>

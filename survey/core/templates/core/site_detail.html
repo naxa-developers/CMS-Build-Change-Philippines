@@ -55,26 +55,34 @@
                         <p>
                                                        <div class="widget-body">
                                 <ul class="submission-list">
+                                    {% if object.address %}
                                     <li>
                                         <strong>Address: {{ object.address }}</strong>
                                         <br>
 
                                     </li>
+                                    {% endif %}
+                                {% if object.location.x or object.location.y %}
                                     <li>
                                         <strong>Location:<br><small>Latitude: {{ object.location.x }}<br> Longitude: {{object.location.y }}</bold></small></strong>
                                         <br>
 
                                     </li>
+                                {% endif %}
+                                {% if object.photo %}
                                     <li><strong>Photo: </strong><br>
                                         <img alt="hello" src="{{ MEDIA_URL }}{{ object.photo }}" height="300" width="300" class="option1" id="incorrect_answer1">
                                         <br>
 
                                     </li>
+                                {% endif %}
+                                {% if object.contact_number %}
                                     <li>
                                         <strong>Contact Number: {{ object.contact_number }}</strong>
                                         <br>
 
                                     </li>
+                                {% endif %}
                                 </ul>
                             </div>
 
