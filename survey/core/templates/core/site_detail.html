@@ -64,7 +64,7 @@
                                     {% endif %}
                                 {% if object.location.x or object.location.y %}
                                     <li>
-                                        <strong>Location:<br><small>Latitude: {{ object.location.x }}<br> Longitude: {{object.location.y }}</bold></small></strong>
+                                        <strong>Location:<br><small>Latitude: {{ object.get_latitude }}<br> Longitude: {{object.get_longitude }}</bold></small></strong>
                                         <br>
 
                                     </li>
