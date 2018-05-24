@@ -739,3 +739,11 @@ class SiteDocumentDeleteView(ManagerSuperAdminMixin, DeleteView):
         context['project'] = Project.objects.get(sites__site_document=self.kwargs['pk'])
         return context
 
+    
+class UserProfileUpdateView(UpdateView):
+
+    template_name = "core/user_profile_update.html"
+
+    model = User
+    fields = ['first_name', 'last_name'] 
+    success_url = reverse_lazy("home")
