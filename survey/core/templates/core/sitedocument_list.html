@@ -1,0 +1,52 @@
+{% extends '_base.html' %}
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+        {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+        {% endif %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ site }} Document List</li>
+        </ol>
+    </nav>
+    <div class="d-flex justify-content-center">
+        <div class="col-md-3 col-lg-8"> <a href="{% url 'core:document_create' site.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> Add Documents</a></p>
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+                    <table id="gallery" class="table table-bordered">
+                    <p>
+
+                        <thead>
+
+                        <tr>
+                            <th>S.N</th>
+
+                            <th>Site Documents</th>
+                            <th>Document Name</th>
+                            <th>Delete</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for document in documents %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ document.file }}</td>
+                                <td>{% if document.document_name %}{{ document.document_name }}{% endif %}</td>
+                                <td><a href="{% url 'core:document_delete' document.pk %}">Delete</a></td>
+                            </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

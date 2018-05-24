@@ -1,5 +1,5 @@
 from django import forms
-from .models import Project, Category, Material, Site, SiteMaterials
+from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument
 
 
 class ProjectForm(forms.ModelForm):
@@ -68,3 +68,11 @@ class SiteMaterialsForm(forms.ModelForm):
         widgets = {
             'materials': forms.CheckboxSelectMultiple()
         }
+
+
+class SiteDocumentForm(forms.ModelForm):
+    file = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
+    class Meta:
+        model = SiteDocument
+        fields = ('file', 'document_name')

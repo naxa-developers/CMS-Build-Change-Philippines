@@ -5,9 +5,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer
 
 # Serializers define the API representation.
 
@@ -15,7 +15,7 @@ from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer,
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+        fields = ('url', 'username', 'email')
 
 
 @permission_classes((AllowAny, ))
@@ -112,6 +112,17 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class SiteMaterialViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SiteMaterialSerializer
     queryset = SiteMaterials.objects.all()
+
+    def get_queryset(self):
+        site = self.kwargs.get('site', False)
+        if site:
+            self.queryset = self.queryset.filter(site=site)
+        return self.queryset
+
+
+class SiteDocumentViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SiteDocumentSerializer
+    queryset = SiteDocument.objects.all()
 
     def get_queryset(self):
         site = self.kwargs.get('site', False)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials
+from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument
 
 
 class StepsSerializer(serializers.ModelSerializer):
@@ -167,3 +167,10 @@ class SiteMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteMaterials
         fields = ('id', 'site', 'materials')
+
+
+class SiteDocumentSerializer(serializers.ModelSerializer):
+    site = serializers.CharField(source='site.name')
+    class Meta:
+        model = SiteDocument
+        fields = ('id', 'site', 'file', 'document_name')
