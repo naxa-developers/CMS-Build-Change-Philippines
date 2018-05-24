@@ -667,9 +667,3 @@ class UserProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=self.kwargs['pk'])
         return context
-        
-
-
-
-
-
