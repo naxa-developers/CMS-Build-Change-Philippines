@@ -27,7 +27,7 @@ schema_view = get_swagger_view(title='CMS API DOCS')
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
-    path('', Redirection.as_view()),
+    path('', Redirection.as_view(), name="home"),
     path('core/', include('core.urls', namespace="core")),
     path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),
