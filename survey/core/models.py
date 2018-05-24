@@ -99,8 +99,8 @@ class Material(models.Model):
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
     description = models.TextField(max_length=300, blank=True, null=True)
-    good_photo = models.ImageField(upload_to="material/good_photo/%Y/%m/%D/", blank=True, null=True)
-    bad_photo = models.ImageField(upload_to="material/bad_photo/%Y/%m/%D/", blank=True, null=True)
+    good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
+    bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
     
     def __str__(self):
         return self.title
@@ -153,6 +153,12 @@ class CheckListHistroy(models.Model):
 class SiteMaterials(models.Model):
     site = models.ForeignKey(Site, related_name='site_site_materials', on_delete=models.CASCADE)
     materials = models.ManyToManyField(Material, related_name='site_materials')
+
+
+class SiteDocument(models.Model):
+    site = models.ForeignKey(Site, related_name="site_document", on_delete=models.CASCADE)
+    file = models.FileField(upload_to='site/documents')
+    document_name = models.CharField(max_length=250, null=True, blank=True)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

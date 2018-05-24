@@ -7,10 +7,12 @@
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' object.project.pk %}">{{ object.project }} Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
                     {% else %}
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}
                     <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                    {% endif %}
+                {% endif %}
                 </ol>
             </nav>
         </div>
@@ -28,6 +30,7 @@
                                     <i class="la la-file-text"></i> Data
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" href="{% url 'core:document_list' site.pk %}"><i class="la la-reply"></i> Document</a>
                                     <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
                                     <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
                                 </div>
@@ -38,9 +41,13 @@
                                     <i class="la la-cogs"></i> Manage
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
-                                    <a class="dropdown-item" href="{% url 'userrole:field_engineer_create' object.pk %}"><i class="la la-user"></i> People</a>
-                                    <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i class="la la-cog"></i> Edit</a>
-                                    <a class="dropdown-item" href="{% url 'core:site_delete' object.pk %}"><i class="la la-cog"></i> Delete</a>
+                                    <a class="dropdown-item"
+                                       href="{% url 'userrole:field_engineer_create' object.pk %}"><i
+                                            class="la la-user"></i> People</a>
+                                    <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i
+                                            class="la la-cog"></i> Edit</a>
+                                    <a class="dropdown-item" href="{% url 'core:site_delete' object.pk %}"><i
+                                            class="la la-cog"></i> Delete</a>
 
                                 </div>
                             </div>
@@ -56,16 +63,16 @@
                 <div class="profile-body">
                     <div class="about-wrap">
                         <p>
-                                                       <div class="widget-body">
-                                <ul class="submission-list">
-                                    {% if object.address %}
+                        <div class="widget-body">
+                            <ul class="submission-list">
+                                {% if object.address %}
                                     <li>
                                         <strong>Address: {{ object.address }}</strong>
                                         <br>
 
                                     </li>
-                                    {% endif %}
-                                {% if object.location.x or object.location.y %}
+                                {% endif %}
+                                {% if object.get_latitude or object.get_longitude %}
                                     <li>
                                         <strong>Location:<br><small>Latitude: {{ object.get_latitude }}<br> Longitude: {{object.get_longitude }}</bold></small></strong>
                                         <br>
@@ -74,7 +81,8 @@
                                 {% endif %}
                                 {% if object.photo %}
                                     <li><strong>Photo: </strong><br>
-                                        <img alt="hello" src="{{ MEDIA_URL }}{{ object.photo }}" height="300" width="300" class="option1" id="incorrect_answer1">
+                                        <img alt="hello" src="{{ MEDIA_URL }}{{ object.photo }}" height="300"
+                                             width="300" class="option1" id="incorrect_answer1">
                                         <br>
 
                                     </li>
@@ -86,8 +94,8 @@
 
                                     </li>
                                 {% endif %}
-                                </ul>
-                            </div>
+                            </ul>
+                        </div>
 
                         </p>
                     </div>
@@ -101,94 +109,100 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Step List</h4>
-                                <a href="{% url 'core:site-steps' 0 object.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'core:site-steps' 0 object.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> Add New Step</a>
 
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for step in step_list  %}
-                                    <li>
-                                        <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="#"><strong>{{ step }}</strong></a>
-                                        <br>
+                                    {% for step in step_list %}
+                                        <li>
+                                            <img src="assets/img/img-school.png" alt="">
+                                            <a title="View submission detail" href="#"><strong>{{ step }}</strong></a>
+                                            <br>
 
-                                    </li>
-                                        {% empty %}
+                                        </li>
+                                    {% empty %}
                                         No steps Found.
 
-                                   {% endfor %}
+                                    {% endfor %}
 
                                 </ul>
                             </div>
 
-                        <a href="#" title="" class="btn btn-sm btn-xs btn-primary" ><i
-                                        class="la la-caret-right"></i> More</a>
+                            <a href="#" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-caret-right"></i> More</a>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Guidelines</h4>
-                                <a href="{% url 'core:site_material_list' site.pk %}" title="" class="btn btn-sm btn-xs btn-primary" ><i
+                                <a href="{% url 'core:site_material_list' site.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> More</a>
 
 
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for material in site_materials  %}
-                                    <li>
-                                        <img src="assets/img/img-school.png" alt="">
-                                        <a title="View guideline detail" href="{% url 'core:site_material_detail' material.pk %}"><strong>{{ material }}</strong></a>
-                                        <br>
+                                    {% for material in site_materials %}
+                                        <li>
+                                            <img src="assets/img/img-school.png" alt="">
+                                            <a title="View guideline detail"
+                                               href="{% url 'core:site_material_detail' material.pk %}"><strong>{{ material }}</strong></a>
+                                            <br>
 
-                                    </li>
-                                   {% empty %}
+                                        </li>
+                                    {% empty %}
                                         No Guidelines Found.
 
-                                   {% endfor %}
+                                    {% endfor %}
 
                                 </ul>
                             </div>
-                             <a href="{% url 'core:site_material_create' site.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Add Guidelines</a>
+                            <a href="{% url 'core:site_material_create' site.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-caret-right"></i> Add Guidelines</a>
                         </div>
                     </div>
 
-                                        <div class="col-md-4">
+                    <div class="col-md-4">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4>Reports</h4>
-                                <a href="{% url 'core:report_list' site.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'core:report_list' site.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body">
                                 <ul class="submission-list">
-                                    {% for report in site_reports  %}
-                                    <li>
-                                        <img src="assets/img/img-school.png" alt="">
-                                        <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist }}</strong></a>
-                                        <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>{{ report.user }}</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i>{{ report.date }}
-                                        </small><br>
-                                     <small class="site_icon_float" style="">{{ report.checklist.step}}</small>
-                                    </li>
+                                    {% for report in site_reports %}
+                                        <li>
+                                            <img src="assets/img/img-school.png" alt="">
+                                            <a title="View submission detail"
+                                               href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist }}</strong></a>
+                                            <br>
+                                            <a href="#" title="View details of user">
+                                                <small><i class="la la-user"></i>{{ report.user }}</small>
+                                            </a>
+                                            <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                       aria-hidden="true"></i>{{ report.date }}
+                                            </small>
+                                            <br>
+                                            <small class="site_icon_float" style="">{{ report.checklist.step }}</small>
+                                        </li>
                                     {% empty %}
                                         No Reports Found.
 
-                                   {% endfor %}
+                                    {% endfor %}
 
                                 </ul>
                             </div>
 
                         </div>
                     </div>
-
 
 
                 </div>

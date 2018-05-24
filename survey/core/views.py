@@ -1,13 +1,15 @@
+import os
+
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
-from django.shortcuts import reverse, redirect, get_object_or_404
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView, View
+from django.shortcuts import reverse, redirect, get_object_or_404, render
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
-from rest_framework import status
 
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -15,8 +17,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report, SiteMaterials
-from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm
+from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
+from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm
 
 
 @api_view(['POST'])
@@ -666,4 +668,73 @@ class UserProfileView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=self.kwargs['pk'])
+        return context
+        
+
+class SiteDocumentFormView(ManagerSuperAdminMixin, FormView):
+    """
+    Site Document Form
+    """
+    form_class = SiteDocumentForm
+    template_name = 'core/sitedocument_form.html'
+
+    def post(self, request, *args, **kwargs):
+        site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('file')
+        doc = request.POST.get('document_name')
+        if form.is_valid():
+            for file in files:
+                SiteDocument.objects.create(file=file, site=site, document_name=doc)
+
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:document_list', args=(self.kwargs['site_id'],))
+        return success_url
+
+
+class SiteDocumentListView(ManagerSuperAdminMixin, ListView):
+    """
+        List of Site Documents
+    """
+    model = SiteDocument
+    form_class = SiteDocumentForm
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        context['documents'] = SiteDocument.objects.filter(site=self.kwargs['site_id'])
+        return context
+
+
+class SiteDocumentDeleteView(ManagerSuperAdminMixin, DeleteView):
+    """
+        Delete Site Document
+    """
+    model = SiteDocument
+    form_class = SiteDocumentForm
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:document_list', args=(self.object.site.id,))
+        return success_url
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(site_document=self.kwargs['pk'])
+        context['project'] = Project.objects.get(sites__site_document=self.kwargs['pk'])
         return context
