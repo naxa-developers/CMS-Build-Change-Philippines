@@ -2,59 +2,76 @@
 
 {% block content %}
 
-    <div class="row no-gutters">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">{% if request.user.is_superuser %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="module-school-list">
-                <div class="school-wrap">
-                    <ul class="school-list">
-                        {% if request.user.is_superuser %}
-                            {% for project in projects %}
-                                <li>
-                                    <a href="{% url 'core:project_dashboard' project.pk %}" title="">
-                                        <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
-                                        <h6>{{ project }}</h6>
-                                        <span>{{ project.address }}</span>
-                                    </a>
-                                </li>{% endfor %}
-                        {% else %}
-                                {% for site in project.sites.all %}
-                                    <li>
-                                        <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                            <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                            <h6>{{ site }}</h6>
-                                            <span>{{ site.address }}</span>
-                                        </a>
-                                    </li>{% endfor %}
-                        {% endif %}
-                    </ul>
-                </div>
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% if project %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% if object %}
+                <li class="breadcrumb-item"><a href="{% url 'core:material_detail' object.pk %}">{{object}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit {{object}}</li>
+                {% endif %}{% else %}
+                <li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
+                {% endif %}
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% if object %}
+                <li class="breadcrumb-item"><a href="{% url 'core:material_detail' object.pk %}">{{object}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit {{object}}</li>
+                {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
+                {% endif %}
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="module-school-list">
+            <div class="school-wrap">
+                <ul class="school-list">
+                    {% if request.user.is_superuser %}
+                    {% for project in projects %}
+                    <li>
+                        <a href="{% url 'core:project_dashboard' project.pk %}" title="">
+                            <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
+                            <h6>{{ project }}</h6>
+                            <span>{{ project.address }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                    {% else %}
+                    {% for site in project.sites.all %}
+                    <li>
+                        <a href="{% url 'core:site_detail' site.pk %}" title="">
+                            <img src="assets/img/img-school.png" class="school-logo" alt="">
+                            <h6>{{ site }}</h6>
+                            <span>{{ site.address }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
             </div>
         </div>
-        <div class="d-flex justify-content-center">
+    </div>
+    <div class="d-flex justify-content-center">
         <div class="col-md-2 col-lg-12">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% for error in form.non_field_errors %}
-                            <div class="form-group has-errors text-danger small">
-                                {{ error }}
-                            </div>
+                        <div class="form-group has-errors text-danger small">
+                            {{ error }}
+                        </div>
                         {% endfor %}
                         {% for field in form %}
-                            <div class="form-group">
-                                {{ field.errors }}
-                                {{ field.label_tag }}
-                                {{ field }}
-                            </div>
+                        <div class="form-group">
+                            {{ field.errors }}
+                            {{ field.label_tag }}
+                            {{ field }}
+                        </div>
                         {% endfor %}
                         <div class="col-md-8">
                             <button type="submit" class="btn btn-primary">Submit
@@ -63,7 +80,7 @@
                     </form>
                 </div>
             </div>
-            </div>
         </div>
     </div>
+</div>
 {% endblock content %}

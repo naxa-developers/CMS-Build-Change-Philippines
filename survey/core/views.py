@@ -442,7 +442,7 @@ class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
@@ -458,7 +458,7 @@ class CategoryDeleteView(ManagerSuperAdminMixin, DeleteView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
@@ -490,7 +490,7 @@ class MaterialFormView(ManagerSuperAdminMixin, FormView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_detail', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
@@ -517,7 +517,7 @@ class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
@@ -538,7 +538,7 @@ class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_detail', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):

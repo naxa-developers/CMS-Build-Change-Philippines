@@ -1,6 +1,5 @@
 {% extends '_base.html' %}
 
-
 {% block content %}
     <div class="row no-gutters">
         <div class="col-md-12">
@@ -8,6 +7,7 @@
                 <ol class="breadcrumb">
                     {% if request.user.is_superuser %}
                         <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{project}} Dashboard</a></li>
                     {% else %}
                         <li class="breadcrumb-item"><a
                                 href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
