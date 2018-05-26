@@ -11,7 +11,7 @@
                         <div class="col-md-12">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
-                                    <h4><a href="#" title="">My profile</a></h4>
+                                    <h4><a href="{% 'core:user_profile' user.pk %}" title="">My profile</a></h4>
                                     <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> <a href="{% url 'core:user_profile_update' user.pk %}">Edit</a>
                                 </div>
                                 <div class="widget-body">
