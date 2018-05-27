@@ -6,13 +6,21 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    {% else %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
                     {% if object %}
                     <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+                    {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">New Site</li>
                     {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">Site Form</li>
+                    {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                    {% if object %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+                    {% else %}
+                    <li class="breadcrumb-item active" aria-current="page">New Site</li>{% endif %}
+                    {% endif %}
                 </ol>
             </nav>
         </div>

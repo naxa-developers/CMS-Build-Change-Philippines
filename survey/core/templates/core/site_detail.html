@@ -6,11 +6,12 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                {% else %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a>
-                    </li>
-                {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' object.project.pk %}">{{ object.project }} Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
+                    {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
+                    {% endif %}
                 </ol>
             </nav>
         </div>
@@ -70,12 +71,9 @@
 
                                     </li>
                                 {% endif %}
-                                {% if object.location.x or object.location.y %}
+                                {% if object.get_latitude or object.get_longitude %}
                                     <li>
-                                        <strong>Location:<br>
-                                            <small>Latitude: {{ object.location.x }}<br>
-                                                Longitude: {{ object.location.y }}</small>
-                                        </strong>
+                                        <strong>Location:<br><small>Latitude: {{ object.get_latitude }}<br> Longitude: {{object.get_longitude }}</bold></small></strong>
                                         <br>
 
                                     </li>
