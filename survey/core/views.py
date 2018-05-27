@@ -668,7 +668,7 @@ class UserProfileView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=self.kwargs['pk'])
         if self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            context['project'] = Project.objects.get(project_roles__user=self.request.user)
             return context
         return context
         
