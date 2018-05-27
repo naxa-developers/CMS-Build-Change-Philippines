@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.urls import reverse
@@ -151,6 +154,18 @@ class SiteDocument(models.Model):
     site = models.ForeignKey(Site, related_name="site_document", on_delete=models.CASCADE)
     file = models.FileField(upload_to='site/documents')
     document_name = models.CharField(max_length=250, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+
+        # print(os.system('chmod 777 -R media/site/documents/Personnell_Utilization_Share.xlsx'))
+        # print(os.path.basename(self.file.url))
+        # os.system('chmod 777 -R media/site/documents/' + str(self.file.name))
+        # os.system('chmod 777 -R media/site/documents/' + self.file.name)
+        # print(os.path.join(settings.BASE_DIR, "media"))
+        # print('chmod 777 -R ' + path + self.file.name)
+        # os.system('chmod 777 -R ' + path + self.file.name)
+
+        super().save(*args, **kwargs)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

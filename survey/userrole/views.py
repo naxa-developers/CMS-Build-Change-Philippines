@@ -48,6 +48,11 @@ class UserRoleCreateView(SuperAdminMixin, CreateView):
 
         return context
 
+    def get_form(self, form_class=None):
+        form = super(UserRoleCreateView, self).get_form(form_class=self.form_class)
+        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id'])
+        return form
+
 
 class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     """
