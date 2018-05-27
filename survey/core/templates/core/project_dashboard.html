@@ -1,208 +1,179 @@
 {% extends '_base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+{% endblock extra_css %}
 
 {% block content %}
-    <div class="row no-gutters">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    {% if request.user.is_superuser %}
-                        <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{project}} Dashboard</a></li>
-                    {% else %}
-                        <li class="breadcrumb-item"><a
-                                href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% endif %}
-                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
-                </ol>
-            </nav>
-            </nav>
-        </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="module-school-list">
-                <p><a href="{% url 'core:site_create' project.pk %}" title=""
-                      class="btn btn-sm btn-xs btn-primary btn-block"><i
-                        class="la la-caret-right"></i> Create Site</a></p>
-                <div class="school-wrap">
-                    <ul class="school-list">
-                        {% for site in project.sites.all %}
-                            <li>
-                                <a href="{% url 'core:site_detail' site.pk %}" title="">
-                                    <img src="assets/img/img-school.png" class="school-logo" alt="">
-                                    <h6>{{ site }}</h6>
-                                    <span>{{ site.address }}</span>
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="module-school-list">
+            <div class="school-action margin-bottom">
+                <a href="{% url 'core:site_create' project.pk %}" title="" class="btn btn-primary btn-block"><i
+                        class="la la-plus"></i> New School</a>
+            </div>
+            <div class="school-wrap">
+                <ul class="school-list">
+                    {% for site in project.sites.all %}
+                    <li>
+                        <a href="{% url 'core:site_detail' site.pk %}" title="">
+                            <img src="{{ MEDIA_URL}}{{site.logo}}" class="school-logo" alt="">
+                            <h6>{{site}}</h6>
+                            <span>{{ site.address }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
-        <div class="col-md-8 col-lg-9">
-            <div class="dash-right">
-                <div class="row">
-                    <div class="col-md-6">
-                        {% if request.user.is_superuser %}Assigned Project Manager: {{ assigned_manager }}{% endif %}
-
-                        <div class="widget-info margin-top-large">
-
-                            <div class="widget-head">
-
-                                <a href="{% url 'core:project_update' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Edit Project </a>
-                                {% if request.user.is_superuser %}
-                                    <a href="{% url 'userrole:userrole_create' project.pk %}" title=""
-                                       class="btn btn-sm btn-xs btn-primary"><i
-                                            class="la la-caret-right"></i> Assign Project Manager </a>
-                                {% endif %}
+    </div>
+    <div class="col-md-8 col-lg-9">
+        <div class="dash-right">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Overview</a></h4>
+                        </div>
+                        <div class="widget-body no-padding-top">
+                            <div class="row">
                                 <div class="col-md-6">
-
-                                <h4>Project Details</h4>
-                            </div>                                {% if project.name %}
-
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Name</a></h4>
-                            </div>
-                            <p>
-                                {{ project.name }}
-                            </p>
-                        </div>                               {% endif %}
-                {% if project.organization %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-
-                                <h4><a href="#" title="">Organization</a></h4>
-                            </div>
-                            <p>
-                                {{ project.organization }}
-                            </p>
-                        </div>{% endif %}{% if project.logo %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Logo</a></h4>
-                            </div>
-                            <p><img src="{{ MEDIA_URL }}{{ project.logo }}">
-
-                            </p>
-                        </div>{% endif %}{% if project.type %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Type</a></h4>
-                            </div>
-                            <p>
-                                {{ project.type }}
-                            </p>
-                        </div>{% endif %}{% if project.address %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Address</a></h4>
-                            </div>
-                            <p>
-                                {{ project.address }}
-                            </p>
-                        </div>{% endif %}{% if project.short_description %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Short Description</a></h4>
-                            </div>
-                            <p>
-                                {{ project.short_description }}
-                            </p>
-                        </div>{% endif %}{% if project.email_address %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Email Address</a></h4>
-                            </div>
-                            <p>
-                                {{ project.email_address }}
-                            </p>
-                        </div>{% endif %}{% if project.phone_number %}
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4><a href="#" title="">Contact</a></h4>
-                            </div>
-                            <p>
-                                {{ project.phone_number }}
-                            </p>
-                        </div>{% endif %}
-                    </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4>Guidelines</h4>
-                                <a href="{% url 'core:material_list' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> More</a>
-
-                                <a href="{% url 'core:material_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Create Guidelines </a>
-
-                            </div>
-                            <div class="widget-body">
-                                <ul class="submission-list">
-                                    {% for material in materials_list %}
-                                        <li>
-                                            <img src="assets/img/img-school.png" alt="">
-                                            <a title="View submission detail"
-                                               href="{% url 'core:material_detail' material.pk %}"><strong>{{ material }}</strong></a>
-
-                                        </li>
-                                    {% empty %}
-                                        <p>No Materials Found.</p>
-                                    {% endfor %}
-                                </ul>
+                                    <a href="#" title="" class="stat-item margin-top">
+                                        <span class="stat-count">{{project.total_sites}}</span>
+                                        <span class="stat-label">Sites</span>
+                                        <i class="la la-building"></i>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="#" title="" class="stat-item margin-top">
+                                        <span class="stat-count">{{project.total_reports}}</span>
+                                        <span class="stat-label">Reports</span>
+                                        <i class="la la-file-text"></i>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="#" title="" class="stat-item margin-top">
+                                        <span class="stat-count">{{project.total_personnel}}</span>
+                                        <span class="stat-label">Personnel</span>
+                                        <i class="la la-user"></i>
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <a href="#" title="" class="stat-item margin-top">
+                                        <span class="stat-count">350</span>
+                                        <span class="stat-label">Common Users</span>
+                                        <i class="la la-users"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4>Manage User</h4>
-                                <a href="{% url 'userrole:project_user_list' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> More</a>
-                                <a href="{% url 'userrole:project_user_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Create User</a>
-                            </div>
-                            <div class="widget-body">
-                                <ul class="submission-list">
-                                    <div class="widget-body">
-                                        <ul class="submission-list">
-                                            {% for user in users %}
-                                                <li>
-                                                    {{ forloop.counter }}. <strong>{{ user }}</strong>
-                                                </li>
-                                            {% empty %}
-                                                No User Found.
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                            </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">School Map</a></h4>
                         </div>
-                        <div class="widget-info margin-top-large">
-                            <div class="widget-head">
-                                <h4>Category</h4>
-                                <a href="{% url 'core:category_list' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> More</a>
-
-                                <a href="{% url 'core:category_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-caret-right"></i> Create Category</a>
-                            </div>
-                            <div class="widget-body">
-                                <ul class="submission-list">
+                        <div class="widget-body">
+                            <div id="school-map"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Construction Guidelines</a></h4>
+                            <a href="{% url 'core:category_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Category</a>
+                             <a href="{% url 'core:material_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Guidelines</a>
+                        </div>
+                        <div class="widget-body">
+                            <div class="guidelines-wrap">
+                                <ul id="accordion" class="collapseableWrap">
                                     {% for category in category_list %}
-                                        <li>
-                                            <a href="{% url 'core:category_update' category.pk %}"><strong>{{ category }}</strong></a>
-                                        </li>
-                                    {% empty %}
-                                        <p>No Categories Found.</p>
-
+                                    <li>
+                                        <div class="collapseHeader" id="{{category.pk}}" data-toggle="collapse"
+                                             data-target="#{{category.name}}" aria-expanded="true"
+                                             aria-controls="{{category.name}}">{{category}} <i class="la la-plus-circle"></i>
+                                        </div>
+                                        <div id="{{category.name}}" class="collapse collapseBody" aria-labelledby="{{category.pk}}"
+                                             data-parent="#accordion">
+                                            <ul class="guideline-list">
+                                                {% for material in category.materials.all %}
+                                                <li>
+                                                    <h6><a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a></h6>
+                                                    <small>Created By: {{material.project.project_roles.first.user}}</small>
+                                                    <div class="guideline-action">
+                                                        <a href="{% url 'core:material_update' material.pk %}" data-toggle="tooltip" data-placement="top"
+                                                           title="Edit"><i class="la la-edit"></i></a>
+                                                    </div>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </li>
                                     {% endfor %}
                                 </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Recent Updates</a></h4>
+                            <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                    class="la la-caret-right"></i> View All</a>
+                        </div>
+                        <div class="widget-body">
+                            <div class="update-wrap">
+                                <div class="update-item">
+                                    <h6>Today</h6>
+                                    <ul class="update-list">
+                                        <li>
+                                            Submitted a response for general form <a href="#" title=""><strong>Daily
+                                            Activity Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
+                                            Metropolitan Police Circle</strong></a>.
+                                            <span class="time">10:32:30 AM</span>
+                                        </li>
+                                        <li>
+                                            <img src="assets/img/Patanjali.jpg" alt="">
+                                            <a href="#" title=""><strong>Rajendra Bajracharya</strong></a> submitted a
+                                            response for general form <a href="#" title=""><strong>Daily Activity
+                                            Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
+                                            Metropolitan Police Circle</strong></a>.
+                                            <span class="time">09:20:30 AM</span>
+                                        </li>
+                                        <li>
+                                            Submitted a response for general form <a href="#" title=""><strong>Daily
+                                            Activity Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
+                                            Metropolitan Police Circle</strong></a>.
+                                            <span class="time">10:32:30 AM</span>
+                                        </li>
+                                        <li>
+                                            <img src="assets/img/img-avatar.jpg" alt="">
+                                            <a href="#" title=""><strong>Rajendra Bajracharya</strong></a> submitted a
+                                            response for general form <a href="#" title=""><strong>Daily Activity
+                                            Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
+                                            Metropolitan Police Circle</strong></a>.
+                                            <span class="time">09:20:30 AM</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -210,4 +181,100 @@
             </div>
         </div>
     </div>
+</div>
+
 {% endblock content %}
+
+{% block extra_script %}
+{% render_bundle 'asset_stylesheets' 'css'  %}
+{% render_bundle 'main' 'js'  %}
+<script src="{% static 'assets/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js'%}"></script>
+<!--&lt;!&ndash;<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+<!--<script>window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-3.2.1.min.js' %}"><\/script>')</script>-->
+<script>
+    window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}"><\/script>')
+</script>
+<script src="{% static 'assets/js/vendor/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/vendor/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/vendor/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+<script>
+        	$(document).ready(function(){
+                //Height Fix
+                schoolWrapHeightFix();
+                mapHeightFix();
+                window.onresize = function(event) {
+                    schoolWrapHeightFix();
+                    mapHeightFix();
+                }
+
+                function schoolWrapHeightFix() {
+                    vph = $(window).height();
+                    if($(document).width() > 479) {
+                        vph = vph - ($("#header").height() + 16 + $(".school-action").outerHeight() + 15);
+                        $(".school-wrap").height(vph);
+                        $(".dash-right").css("min-height", vph + $(".school-action").outerHeight() + 15);
+                    }else{
+                        vph = ( vph / 1.5 ) - ($("#header").height() + 16 + $(".school-action").outerHeight() + 15);
+                        $(".school-wrap").height(vph);
+                    }
+                }
+
+                function mapHeightFix(){
+                    var statH = $(".stat-item").outerHeight();
+                    var useH = (statH * 2) + 15;
+                    $("#school-map").height(useH);
+                    $(".guidelines-wrap").height(useH);
+                    $(".update-wrap").height(useH);
+                }
+                //Make it scroll
+        		if ($.fn.niceScroll) {
+                    $(".school-wrap").niceScroll({
+                        cursorcolor: "#FFF",
+                        cursorborderradius: "0px",
+                        cursorborder:"",
+                        cursorwidth: "8px"
+                    });
+
+                    $(".guidelines-wrap").niceScroll({
+                        cursorcolor: "#5184ac",
+                        cursorborderradius: "0px",
+                        cursorborder:"",
+                        cursorwidth: "8px"
+                    });
+
+                    $(".update-wrap").niceScroll({
+                        cursorcolor: "#5184ac",
+                        cursorborderradius: "0px",
+                        cursorborder:"",
+                        cursorwidth: "8px"
+                    });
+
+                }
+                $('.collapse').on('shown.bs.collapse', function () {
+                  $(".guidelines-wrap").getNiceScroll().resize();
+
+                })
+
+                $(".collapseHeader").click(function(){
+                   $(this).find('i').toggleClass('la-minus-circle');
+                });
+        	});
+
+
+</script>
+<script>
+        function myMap() {
+          var myCenter = new google.maps.LatLng(28.3949,84.1240);
+          var mapCanvas = document.getElementById("school-map");
+          var mapOptions = {center: myCenter, zoom: 5};
+          var map = new google.maps.Map(mapCanvas, mapOptions);
+          var marker = new google.maps.Marker({position:myCenter});
+          marker.setMap(map);
+        }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADDQuj6F2x8p1dEa_oSyinWepcGHrVxvU&callback=myMap"></script>
+
+{% endblock extra_script %}

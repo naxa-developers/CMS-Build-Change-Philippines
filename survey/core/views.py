@@ -232,9 +232,8 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
         elif self.kwargs['project_id'] is self.request.user.user_roles.values_list('project_id', flat=True)[0]:
             context['materials_list'] = Material.objects.filter(project__project_roles__user=self.request.user)
             context['project'] = get_object_or_404(Project, project_roles__user=self.request.user)
-            context['category_list'] = Category.objects.filter(project__project_roles__user=self.request.user)[:5]
+            context['category_list'] = Category.objects.filter(project__project_roles__user=self.request.user)
             context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
-
             return context
 
         else:
@@ -332,11 +331,11 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
 
     def get_success_url(self):
         if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:site_detail', args=(self.object.pk,))
             return success_url
 
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:site_detail', args=(self.object.pk,))
             return success_url
 
 
@@ -668,6 +667,9 @@ class UserProfileView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=self.kwargs['pk'])
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.filter(project_roles__user=self.request.user)
+            return context
         return context
         
 

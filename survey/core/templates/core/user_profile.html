@@ -3,11 +3,18 @@
 
 {% block content %}
     <div class="row no-gutters">
-            
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{user}}</li>
+                </ol>{%endif%}
+            </nav>
+        </div>
             <div class="col-md-12 col-lg-12">
                 <div class="dash-right">
                     <div class="row">
-                        
+
                         <div class="col-md-12">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">

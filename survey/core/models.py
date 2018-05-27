@@ -29,6 +29,18 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def total_sites(self):
+        return self.sites.count()
+
+    def total_reports(self):
+        return self.steps.values('checklist_steps__checklist_report').count()
+
+    def total_personnel(self):
+        project_manager = self.project_roles.filter(group__name="Project Manager").count()
+        field_engineer = self.project_roles.filter(group__name="Field Engineer").count()
+        community_member = self.project_roles.filter(group__name="Community Member").count()
+        return project_manager+field_engineer+community_member
+
 
 class Setting(models.Model):
     local_language = models.CharField(choices=settings.LANGUAGES, max_length=2, null=True, blank=True)
@@ -93,6 +105,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def materials(self):
+        return self.material
+
 
 class Material(models.Model):
     title = models.CharField(max_length=250)
@@ -139,6 +155,9 @@ class Report(models.Model):
     photo = models.ImageField(upload_to='report/%Y/%m/%D/', null=True, blank=True)
     report_status = models.BooleanField(default=0)
     date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{}{}'.format(self.user, self.checklist)
 
 
 class CheckListHistroy(models.Model):
