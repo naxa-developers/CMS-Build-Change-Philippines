@@ -743,9 +743,12 @@ class SiteDocumentDeleteView(ManagerSuperAdminMixin, DeleteView):
 
     
 class UserProfileUpdateView(UpdateView):
+    """
+    User Profile Update View
+    """
 
-    template_name = "core/user_profile_update.html"
+    template_name = "core/user_profile.html"
 
     model = User
-    fields = ['first_name', 'last_name'] 
+    fields = ['first_name', 'last_name']
     success_url = reverse_lazy("home")
