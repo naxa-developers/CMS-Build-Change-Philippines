@@ -106,10 +106,10 @@
                                     {% for category in category_list %}
                                     <li>
                                         <div class="collapseHeader" id="{{category.pk}}" data-toggle="collapse"
-                                             data-target="#{{category.name}}" aria-expanded="true"
-                                             aria-controls="{{category.name}}">{{category}} <i class="la la-plus-circle"></i>
+                                             data-target="#target_{{forloop.counter0}}" aria-expanded="true"
+                                             aria-controls="target_{{forloop.counter0}}">{{category}} <i class="la la-plus-circle"></i>
                                         </div>
-                                        <div id="{{category.name}}" class="collapse collapseBody" aria-labelledby="{{category.pk}}"
+                                        <div id="target_{{forloop.counter0}}" class="collapse collapseBody" aria-labelledby="{{category.pk}}"
                                              data-parent="#accordion">
                                             <ul class="guideline-list">
                                                 {% for material in category.materials.all %}
@@ -265,7 +265,7 @@
 </script>
 <script>
         function myMap() {
-          var myCenter = new google.maps.LatLng(28.3949,84.1240);
+          var myCenter = new google.maps.LatLng(12.8797, 121.7740);
           var mapCanvas = document.getElementById("school-map");
           var mapOptions = {center: myCenter, zoom: 5};
           var map = new google.maps.Map(mapCanvas, mapOptions);
