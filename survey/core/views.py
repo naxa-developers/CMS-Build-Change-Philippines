@@ -578,9 +578,12 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
             return context
         elif self.request.user.user_roles.filter(group__name="Project Manager"):
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
-            context['materials_list'] = Material.objects.filter(project=self.kwargs['pk'])
+            context['materials_list'] = Material.objects.filter(project__project_roles__user=self.request.user)
             context['project_id'] = self.kwargs['pk']
             return context
+
+        else:
+            raise PermissionDenied
 
 
 class SiteMaterialFormView(ManagerSuperAdminMixin, CreateView):
