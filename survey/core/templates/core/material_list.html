@@ -51,12 +51,28 @@
                                 <h4><a href="#" title="">Guidelines</a></h4>
                             </div>
                             <div class="widget-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">SN</th>
+                                            <th scope="col">Title</th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
                                 {% for material in materials_list %}
-                                    <a href="{% url 'core:material_detail' material.pk %}">
-                                        {{ forloop.counter }}. {{ material }}</a><br>
+                                    <tr>
+                                        <td>
+                                            {{ forloop.counter }}.
+                                        </td>
+                                        <td>
+                                        <a href="{% url 'core:material_detail' material.pk %}">
+                                             {{ material }}</a><br>
                                 {% empty %}
                                     <p>Not materials Found.
-                                    </p> {% endfor %}<br>
+                                    </p> </td>
+                                {% endfor %}<br></tr>
+                                </tbody>
+                                </table><br>
                                 <strong><a href="{% url 'core:material_create' project.pk %}">Create
                                     New</a></strong>
                             </div>
