@@ -74,6 +74,7 @@ class SuperAdminMixin(LoginRequiredMixin):
 
 class ManagerSuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
+
         if request.user.is_authenticated:
             if request.user.user_roles.filter(group__name="Super Admin")\
                     or self.request.user.user_roles.filter(group__name="Project Manager"):
@@ -216,6 +217,7 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
     template_name = "core/project_dashboard.html"
 
     def get_context_data(self, **kwargs):
+        print(self.request.project)
         context = super().get_context_data(**kwargs)
 
         if self.request.user.user_roles.filter(group__name="Super Admin"):
