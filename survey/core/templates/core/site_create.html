@@ -2,42 +2,42 @@
 
 {% block content %}
 
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">{% if request.user.is_superuser %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
-                    {% if object %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
-                    {% else %}
-                    <li class="breadcrumb-item active" aria-current="page">New Site</li>
-                    {% endif %}
-                    {% else %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                    {% if object %}
-                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
-                    {% else %}
-                    <li class="breadcrumb-item active" aria-current="page">New Site</li>{% endif %}
-                    {% endif %}
-                </ol>
-            </nav>
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Site</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Site</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="col-md-1 col-lg-7">
+        <div class="dash-right">
+            <div class="widget-info margin-top-large">
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ form.media }}
+                    {{ form.as_p }}
+                    <input type="submit" value="Submit">
+
+                </form>
+
+            </div>
         </div>
-
-       <div class="d-flex justify-content-center">
-        <div class="col-md-1 col-lg-7">
-            <div class="dash-right">
-                <div class="widget-info margin-top-large">
-                                <form method="post" enctype="multipart/form-data">{% csrf_token %}
-                                    {{ form.media }}
-                                    {{ form.as_p }}
-                                    <input type="submit" value="Submit">
-
-                                </form>
-
-                            </div>
-                        </div>
-                    </div>
-
+    </div>
+</div>
 {% endblock content %}
