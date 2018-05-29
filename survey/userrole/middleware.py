@@ -17,18 +17,19 @@ def clear_roles(request):
 
 
 class RoleMiddleware(object):
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
         return self.get_response(request)
 
-    def process_view(self, request, view_func, *view_args, **view_kwargs):
-        if request.user.is_authenticated:
-            request.role = None
-            groups = request.user.user_roles.all()
-            if groups:
-                request.role = groups[0].group
+    # def process_view(self, request, view_func, *view_args, **view_kwargs):
+    #     if request.user.is_authenticated:
+    #         request.role = None
+    #         groups = request.user.user_roles.all()
+    #         if groups:
+    #             request.role = groups[0].group
 
     def process_request(self, request):
 
@@ -43,15 +44,17 @@ class RoleMiddleware(object):
 
             role = None
             if request.session.get('role'):
+
                 try:
-                    role = Role.objects.select_related('group', 'organization').get(pk=request.session.get('role'),
+                    role = Role.objects.select_related().get(pk=request.session.get('role'),
                                                                                     user=request.user)
                 except Role.DoesNotExist:
                     pass
 
             if not role:
+
                 roles = Role.get_active_roles(request.user)
-                # roles = Role.objects.filter(user=request.user).select_related('group', 'organization')
+                # roles = Role.objects.filter(user=request.user).select_related()
                 if roles:
                     role = roles[0]
                     request.session['role'] = role.id
