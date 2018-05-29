@@ -1,8 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView, View
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, redirect, get_object_or_404, render
-from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
@@ -14,9 +13,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from userrole.forms import UserProfileForm
-from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm
+from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
+    SiteGuidelineRoleMixin, DocumentRoleMixin
 
 
 @api_view(['POST'])
@@ -53,15 +53,6 @@ def token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ProjectManagerMixin(LoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-
-            if request.user.user_roles.filter(group__name="Project Manager"):
-                return super(ProjectManagerMixin, self).dispatch(request, *args, **kwargs)
-        raise PermissionDenied
-
-
 class SuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -86,10 +77,10 @@ class ProjectMixin(object):
     context_object_name = 'projects'
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Project Manager"):
+        if self.request.group.name == "Project Manager":
             project_id = Project.objects.get(project_roles__user=self.request.user).pk
             return reverse('core:project_dashboard', kwargs={'project_id': project_id})
-        elif self.request.user.user_roles.filter(group__name="Super Admin"):
+        elif self.request.group.name == "Super Admin":
             return reverse('core:admin_dashboard')
 
 
@@ -101,10 +92,10 @@ class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
             return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
             return context
 
@@ -132,26 +123,13 @@ class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
         return context
 
 
-class ProjectUpdateView(ProjectMixin, UpdateView):
+class ProjectUpdateView(ProjectMixin, ProjectRoleMixin, UpdateView):
     """
     Project UpdateView
     """
     template_name = "core/project_form.html"
     model = Project
     context_object_name = 'project'
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user.user_roles.filter(group__name="Project Manager"):
-            try:
-                obj = self.get_object()
-                user_role = self.request.user.user_roles.get(project_id=self.kwargs['pk'])
-                if obj.project_roles.values_list('project__name', flat=True)[0] == user_role.project:
-                    return self.get_success_url()
-                return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
-            except UserRole.DoesNotExist:
-                raise PermissionDenied
-        elif self.request.user.user_roles.filter(group__name="Super Admin"):
-            return super(ProjectUpdateView, self).dispatch(request, *args, **kwargs)
 
 
 class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
@@ -162,25 +140,12 @@ class ProjectDeleteView(SuperAdminMixin, ProjectMixin, DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
             return context
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
             return context
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user.user_roles.filter(group__name="Project Manager"):
-            try:
-                obj = self.get_object()
-                user_role = self.request.user.user_roles.get(project_id=self.kwargs['pk'])
-                if obj.project_roles.values_list('project__name', flat=True)[0] == user_role.project:
-                    return self.get_success_url()
-                return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
-            except UserRole.DoesNotExist:
-                raise PermissionDenied
-        elif self.request.user.user_roles.filter(group__name="Super Admin"):
-            return super(ProjectDeleteView, self).dispatch(request, *args, **kwargs)
 
 
 class UserCreateView(SuperAdminMixin, CreateView):
@@ -206,7 +171,7 @@ class UserListView(SuperAdminMixin, ListView):
     context_object_name = "users"
 
 
-class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
+class ProjectDashboard(ProjectRoleMixin, TemplateView):
     """
     dashboard for Project Manager
     """
@@ -216,26 +181,15 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
-            context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
-            context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
-            context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
-            context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
-            if self.request.user.user_roles.filter(group__name="Super Admin"):
-                context['projects'] = Project.objects.all()
-                return context
+        context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
+        context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
+        context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+        if self.request.group.name == "Super Admin":
+            context['projects'] = Project.objects.all()
             return context
-
-        elif self.kwargs['project_id'] is self.request.user.user_roles.values_list('project_id', flat=True)[0]:
-            context['materials_list'] = Material.objects.filter(project__project_roles__user=self.request.user)
-            context['project'] = get_object_or_404(Project, project_roles__user=self.request.user)
-            context['category_list'] = Category.objects.filter(project__project_roles__user=self.request.user)
-            context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
-            return context
-
-        else:
-            raise PermissionDenied
+        return context
 
 
 class Dashboard(SuperAdminMixin, TemplateView):
@@ -253,7 +207,7 @@ class Dashboard(SuperAdminMixin, TemplateView):
         return context
 
 
-class SiteCreateView(ManagerSuperAdminMixin, CreateView):
+class SiteCreateView(SiteRoleMixin, CreateView):
     """
     Site Create Form
     """
@@ -272,11 +226,11 @@ class SiteCreateView(ManagerSuperAdminMixin, CreateView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
@@ -291,7 +245,7 @@ class SiteListView(ManagerSuperAdminMixin, ListView):
     paginate_by = 100
 
 
-class SiteDetailView(ManagerSuperAdminMixin, DetailView):
+class SiteDetailView(SiteRoleMixin, DetailView):
     """
     Site Detail View
     """
@@ -309,7 +263,7 @@ class SiteDetailView(ManagerSuperAdminMixin, DetailView):
         return context
 
 
-class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
+class SiteUpdateView(SiteRoleMixin, UpdateView):
     """
     Site Update View
     """
@@ -328,16 +282,16 @@ class SiteUpdateView(ManagerSuperAdminMixin, UpdateView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:site_detail', args=(self.object.pk,))
             return success_url
 
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:site_detail', args=(self.object.pk,))
             return success_url
 
 
-class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
+class SiteDeleteView(SiteRoleMixin, DeleteView):
     """
     Site Delete View
     """
@@ -350,11 +304,11 @@ class SiteDeleteView(ManagerSuperAdminMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard')
             return success_url
 
@@ -378,7 +332,7 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
         return data
 
 
-class CategoryFormView(ManagerSuperAdminMixin, FormView):
+class CategoryFormView(CategoryRoleMixin, FormView):
     """
     Category Form View
     """
@@ -398,15 +352,15 @@ class CategoryFormView(ManagerSuperAdminMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
 
 
-class CategoryListView(ManagerSuperAdminMixin, ListView):
+class CategoryListView(CategoryRoleMixin, ListView):
     """
     Category ListView
     """
@@ -415,13 +369,13 @@ class CategoryListView(ManagerSuperAdminMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project'] = Project.objects.get(id=self.kwargs['pk'])
-        context['category_list'] = Category.objects.filter(project=self.kwargs['pk'])
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
 
         return context
 
 
-class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
+class CategoryUpdateView(CategoryRoleMixin, UpdateView):
     """
     Category UpdateView
     """
@@ -448,7 +402,7 @@ class CategoryUpdateView(ManagerSuperAdminMixin, UpdateView):
             return success_url
 
 
-class CategoryDeleteView(ManagerSuperAdminMixin, DeleteView):
+class CategoryDeleteView(CategoryRoleMixin, DeleteView):
     """
     Category DeleteView
     """
@@ -465,7 +419,7 @@ class CategoryDeleteView(ManagerSuperAdminMixin, DeleteView):
             return success_url
 
 
-class MaterialFormView(ManagerSuperAdminMixin, FormView):
+class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
     """
     Material From View
     """
@@ -488,15 +442,15 @@ class MaterialFormView(ManagerSuperAdminMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
             return success_url
 
 
-class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
+class MaterialUpdateView(ProjectGuidelineRoleMixin, UpdateView):
     """
     Category UpdateView
     """
@@ -515,15 +469,15 @@ class MaterialUpdateView(ManagerSuperAdminMixin, UpdateView):
             return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
-class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
+class MaterialDeleteView(ProjectGuidelineRoleMixin, DeleteView):
     """
     Category DeleteView
     """
@@ -536,16 +490,16 @@ class MaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
+        if self.request.group.name == "Super Admin":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
+        elif self.request.group.name == "Project Manager":
             success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
             return success_url
 
 
-class MaterialDetailView(ManagerSuperAdminMixin, DetailView):
+class MaterialDetailView(ProjectGuidelineRoleMixin, DetailView):
     """
     Category UpdateView
     """
@@ -584,7 +538,7 @@ class MaterialListView(ManagerSuperAdminMixin, ListView):
             raise PermissionDenied
 
 
-class SiteMaterialFormView(ManagerSuperAdminMixin, CreateView):
+class SiteMaterialFormView(SiteGuidelineRoleMixin, CreateView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
 
@@ -608,7 +562,7 @@ class SiteMaterialFormView(ManagerSuperAdminMixin, CreateView):
         return context
 
 
-class SiteMaterialListView(ManagerSuperAdminMixin, ListView):
+class SiteMaterialListView(SiteGuidelineRoleMixin, ListView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
 
@@ -620,13 +574,13 @@ class SiteMaterialListView(ManagerSuperAdminMixin, ListView):
         return context
 
 
-class SiteMaterialDetailView(ManagerSuperAdminMixin, DetailView):
+class SiteMaterialDetailView(SiteGuidelineRoleMixin, DetailView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
     context_object_name = 'site_material'
 
 
-class SiteMaterialDeleteView(ManagerSuperAdminMixin, DeleteView):
+class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
 
@@ -674,7 +628,7 @@ class UserProfileView(TemplateView):
         return context
         
 
-class SiteDocumentFormView(ManagerSuperAdminMixin, FormView):
+class SiteDocumentFormView(DocumentRoleMixin, FormView):
     """
     Site Document Form
     """
@@ -708,7 +662,7 @@ class SiteDocumentFormView(ManagerSuperAdminMixin, FormView):
         return success_url
 
 
-class SiteDocumentListView(ManagerSuperAdminMixin, ListView):
+class SiteDocumentListView(DocumentRoleMixin, ListView):
     """
         List of Site Documents
     """
@@ -724,7 +678,7 @@ class SiteDocumentListView(ManagerSuperAdminMixin, ListView):
         return context
 
 
-class SiteDocumentDeleteView(ManagerSuperAdminMixin, DeleteView):
+class SiteDocumentDeleteView(DocumentRoleMixin, DeleteView):
     """
         Delete Site Document
     """
