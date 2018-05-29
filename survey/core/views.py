@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView, View
@@ -67,7 +65,7 @@ class ProjectManagerMixin(LoginRequiredMixin):
 class SuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.user_roles.filter(group__name="Super Admin"):
+            if request.group.name == "Super Admin":
                 return super(SuperAdminMixin, self).dispatch(request, *args, **kwargs)
         raise PermissionDenied
 
@@ -76,8 +74,7 @@ class ManagerSuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated:
-            if request.user.user_roles.filter(group__name="Super Admin")\
-                    or self.request.user.user_roles.filter(group__name="Project Manager"):
+            if request.group.name == "Super Admin" or request.group.name == "Project Manager":
                 return super(ManagerSuperAdminMixin, self).dispatch(request, *args, **kwargs)
 
         raise PermissionDenied
@@ -217,7 +214,6 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
     template_name = "core/project_dashboard.html"
 
     def get_context_data(self, **kwargs):
-        print(self.request.project)
         context = super().get_context_data(**kwargs)
 
         if self.request.user.user_roles.filter(group__name="Super Admin"):
