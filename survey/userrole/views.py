@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, RedirectView, ListView
 from django.contrib.auth.models import Group
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ProjectManagerMixin, ManagerSuperAdminMixin
@@ -34,17 +34,18 @@ class UserRoleCreateView(SuperAdminMixin, CreateView):
 
         form = self.form_class(data=request.POST)
         if form.is_valid():
-            group = Group.objects.get(name='Project Manager')
+            unassigned_group = Group.objects.get(name='Unassigned')
             user = form.cleaned_data['user']
             project = Project.objects.get(id=kwargs['project_id'])
-            UserRole.objects.get_or_create(user=user, group=group, project=project)
+            project_manager_group = Group.objects.get(name='Project Manager')
+            UserRole.objects.filter(user=user, group=unassigned_group, project=project).update(group=project_manager_group)
             return redirect('core:admin_dashboard')
 
         return render(request, self.template_name, {'form': form})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
 
         return context
 

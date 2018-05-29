@@ -217,7 +217,7 @@ class ProjectDashboard(ManagerSuperAdminMixin, TemplateView):
     template_name = "core/project_dashboard.html"
 
     def get_context_data(self, **kwargs):
-
+        print(self.request.project)
         context = super().get_context_data(**kwargs)
 
         if self.request.user.user_roles.filter(group__name="Super Admin"):
