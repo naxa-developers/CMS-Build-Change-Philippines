@@ -275,16 +275,16 @@
 <script>
         function myMap() {
             var locations = [
-              ['Bondi Beach', -33.890542, 151.274856, 4],
-              ['Coogee Beach', -33.923036, 151.259052, 5],
-              ['Cronulla Beach', -34.028249, 151.157507, 3],
-              ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-              ['Maroubra Beach', -33.950198, 151.259302, 1]
+              ['Bondi Beach', 14.5995, 120.9842, 4],
+              ['Coogee Beach', 14.5695, 120.9942, 5],
+              ['Cronulla Beach',14.5795, 120.9742, 3],
+              ['Manly Beach', 14.5895, 120.9642, 2],
+              ['Maroubra Beach', 14.5595, 120.9840, 1]
             ];
 
             var map = new google.maps.Map(document.getElementById('school-map'), {
-              zoom: 10,
-              center: new google.maps.LatLng(-33.92, 151.25),
+              zoom: 12,
+              center: new google.maps.LatLng(14.5995, 120.9842),
               mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 
