@@ -189,3 +189,29 @@ class DocumentRoleMixin(LoginRequiredMixin):
 
         raise PermissionDenied()
 
+
+class ReportRoleMixin(LoginRequiredMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+
+        if request.group.name == "Super Admin":
+            return super(ReportRoleMixin, self).dispatch(request, *args, **kwargs)
+
+        elif self.kwargs.get('site_pk'):
+            project_id = get_object_or_404(Project, sites=self.kwargs.get('site_pk'))
+            user_id = request.user.id
+            user_role = request.roles.filter(user_id=user_id, project_id=project_id, group__name="Project Manager")
+
+            if user_role:
+                return super(ReportRoleMixin, self).dispatch(request, *args, **kwargs)
+
+        elif self.kwargs.get('pk'):
+            site_id = Site.objects.get(steps__checklist_steps__checklist_report=self.kwargs.get('pk'))
+            project_id = get_object_or_404(Project, sites=site_id)
+            user_id = request.user.id
+            user_role = request.roles.filter(user_id=user_id, project_id=project_id, group__name="Project Manager")
+
+            if user_role:
+                return super(ReportRoleMixin, self).dispatch(request, *args, **kwargs)
+
+        raise PermissionDenied()

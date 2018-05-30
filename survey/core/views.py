@@ -16,7 +16,7 @@ from userrole.forms import UserProfileForm
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
-    SiteGuidelineRoleMixin, DocumentRoleMixin
+    SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 
 
 @api_view(['POST'])
@@ -589,7 +589,7 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         return success_url
 
 
-class ReportListView(ManagerSuperAdminMixin, ListView):
+class ReportListView(ReportRoleMixin, ListView):
     """
     Report List
     """
@@ -603,7 +603,7 @@ class ReportListView(ManagerSuperAdminMixin, ListView):
         return context
 
 
-class ReportDetailView(ManagerSuperAdminMixin, DetailView):
+class ReportDetailView(ReportRoleMixin, DetailView):
     """
     Report detail
     """
