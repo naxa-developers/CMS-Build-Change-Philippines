@@ -752,7 +752,7 @@ class UserProfileUpdateView(UpdateView):
     User Profile Update View
     """
 
-    template_name = "core/user_profile.html"
+    template_name = "core/user_profile_update.html"
 
     model = User
     fields = ['first_name', 'last_name']
