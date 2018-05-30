@@ -44,6 +44,9 @@ class Project(models.Model):
         community_member = self.project_roles.filter(group__name="Community Member").count()
         return project_manager+field_engineer+community_member
 
+    def total_common_users(self):
+        return self.project_roles.filter(group__name="Community Member").count()
+
 
 class Setting(models.Model):
     local_language = models.CharField(choices=settings.LANGUAGES, max_length=2, null=True, blank=True)
