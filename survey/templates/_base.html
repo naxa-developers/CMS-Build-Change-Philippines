@@ -37,9 +37,17 @@
 		          		<i class="la la-bars"></i>
 		        	</a>
 		        	<div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-			          	<a class="dropdown-item" href="#">Dashboard</a>
+                        {% if request.user.is_superuser %}
+			          	    <a class="dropdown-item" href="{% url 'core:admin_dashboard' %}">Dashboard</a>
+
+                            {% else %}
+                                <a class="dropdown-item" href="{% url 'core:project_dashboard' request.project.id %}">Dashboard</a>
+
+                        {% endif %}
+                     {% if request.group.name == "Project Manager"%}
 			          	<a class="dropdown-item" href="#">Materials</a>
 			          	<!--<a class="dropdown-item" href="#">Sites</a>-->
+                    {% endif %}
 		        	</div>
 		      	</li>
 		    </ul>
