@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from core.models import Project, Site
-from core.views import SuperAdminMixin, ProjectManagerMixin, ManagerSuperAdminMixin
+from core.views import SuperAdminMixin, ManagerSuperAdminMixin
 
 from .models import UserRole
 from .forms import UserRoleForm, ProjectUserForm
