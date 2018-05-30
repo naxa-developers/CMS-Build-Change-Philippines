@@ -72,7 +72,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <a href="#" title="" class="stat-item margin-top">
-                                        <span class="stat-count">350</span>
+                                        <span class="stat-count">{{project.total_common_users}}</span>
                                         <span class="stat-label">Common Users</span>
                                         <i class="la la-users"></i>
                                     </a>
@@ -95,8 +95,10 @@
                     <div class="widget-info margin-top-large">
                         <div class="widget-head">
                             <h4><a href="#" title="">Construction Guidelines</a></h4>
-                            <a href="{% url 'core:category_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Category</a>
-                             <a href="{% url 'core:material_create' project.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Guidelines</a>
+                            <a href="{% url 'core:category_create' project.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Category</a>
+                            <a href="{% url 'core:material_create' project.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Guidelines</a>
                         </div>
                         <div class="widget-body">
 
@@ -106,17 +108,21 @@
                                     <li>
                                         <div class="collapseHeader" id="{{category.pk}}" data-toggle="collapse"
                                              data-target="#target_{{forloop.counter0}}" aria-expanded="true"
-                                             aria-controls="target_{{forloop.counter0}}">{{category}} <i class="la la-plus-circle"></i>
+                                             aria-controls="target_{{forloop.counter0}}">{{category}} <i
+                                                class="la la-plus-circle"></i>
                                         </div>
-                                        <div id="target_{{forloop.counter0}}" class="collapse collapseBody" aria-labelledby="{{category.pk}}"
+                                        <div id="target_{{forloop.counter0}}" class="collapse collapseBody"
+                                             aria-labelledby="{{category.pk}}"
                                              data-parent="#accordion">
                                             <ul class="guideline-list">
                                                 {% for material in category.materials.all %}
                                                 <li>
                                                     <h6><a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a></h6>
-                                                    <small>Created By: {{material.project.project_roles.first.user}}</small>
+                                                    <small>Created By: {{material.project.project_roles.first.user}}
+                                                    </small>
                                                     <div class="guideline-action">
-                                                        <a href="{% url 'core:material_update' material.pk %}" data-toggle="tooltip" data-placement="top"
+                                                        <a href="{% url 'core:material_update' material.pk %}"
+                                                           data-toggle="tooltip" data-placement="top"
                                                            title="Edit"><i class="la la-edit"></i></a>
                                                     </div>
                                                     {% empty %}
@@ -188,7 +194,8 @@
 
 {% block extra_script %}
 <script>
-    window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}"></script>')
+    window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}">
+</script>')
 </script>
 <script src="{% static 'assets/js/vendor/jquery.nicescroll.min.js' %}"></script>
 <script>
@@ -263,15 +270,41 @@
         	});
 
 
+
 </script>
 <script>
         function myMap() {
-          var myCenter = new google.maps.LatLng(12.8797,121.7740);
-          var mapCanvas = document.getElementById("school-map");
-          var mapOptions = {center: myCenter, zoom: 5};
-          var map = new google.maps.Map(mapCanvas, mapOptions);
-          var marker = new google.maps.Marker({position:myCenter});
-          marker.setMap(map);
+            var locations = [
+              ['Bondi Beach', 14.5995, 120.9842, 4],
+              ['Coogee Beach', 14.5695, 120.9942, 5],
+              ['Cronulla Beach',14.5795, 120.9742, 3],
+              ['Manly Beach', 14.5895, 120.9642, 2],
+              ['Maroubra Beach', 14.5595, 120.9840, 1]
+            ];
+
+            var map = new google.maps.Map(document.getElementById('school-map'), {
+              zoom: 12,
+              center: new google.maps.LatLng(14.5995, 120.9842),
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            var infowindow = new google.maps.InfoWindow();
+
+            var marker, i;
+
+            for (i = 0; i < locations.length; i++) {
+              marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                map: map
+              });
+
+              google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                return function() {
+                  infowindow.setContent(locations[i][0]);
+                  infowindow.open(map, marker);
+                }
+              })(marker, i));
+            }
         }
 
 </script>
