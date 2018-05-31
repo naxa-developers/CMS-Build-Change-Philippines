@@ -11,10 +11,13 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">{% if request.user.is_superuser %}
                 <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% if project %}
+                <li class="breadcrumb-item active" aria-current="page">{{ project }}</li>
+                {% endif %}
                 {% else %}
                 <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-                {% endif %}
                 <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                {% endif %}
             </ol>
         </nav>
     </div>
@@ -66,14 +69,14 @@
                                 <div class="col-md-6">
                                     <a href="#" title="" class="stat-item margin-top">
                                         <span class="stat-count">{{project.total_personnel}}</span>
-                                        <span class="stat-label">Personnel</span>
+                                        <span class="stat-label">Project Personnel</span>
                                         <i class="la la-user"></i>
                                     </a>
                                 </div>
                                 <div class="col-md-6">
                                     <a href="#" title="" class="stat-item margin-top">
                                         <span class="stat-count">{{project.total_common_users}}</span>
-                                        <span class="stat-label">Common Users</span>
+                                        <span class="stat-label">Community Users</span>
                                         <i class="la la-users"></i>
                                     </a>
                                 </div>
