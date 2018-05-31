@@ -8,7 +8,7 @@
             <ol class="breadcrumb">{% if request.user.is_superuser %}
                 <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
                 {% else %}
-                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project_id %}">Dashboard</a></li>
                 {% endif %}
                 <li class="breadcrumb-item active" aria-current="page">{{ user }}</li>
             </ol>
@@ -28,30 +28,13 @@
                         </div>
                         <div class="widget-body">
                             <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">User Name</th>
-                                        <th scope="col">{{ user.username }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>First_Name</td>
-                                        <td>{{ user.first_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Last_Name</td>
-                                        <td>{{ user.last_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td> Email</td>
-                                        <td>{{ user.email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td> Date_Joined</td>
-                                        <td>{{ user.date_joined }}</td>
-                                    </tr>
-                                </tbody>
+                               <tbody>
+                               	<h3>User {% if not object %}Add{% else %} Edit{% endif %}</h3>
+                               		<form action="" method="POST" novalidate> {% csrf_token %}
+                               			{{ form.as_p }}
+                               			<button type="submit">Submit</button>
+                               		</form>
+                               </tbody>
                             </table>
                         </div>
                     </div>
