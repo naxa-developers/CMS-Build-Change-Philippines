@@ -15,11 +15,11 @@
         <div class="col-md-4 col-lg-6">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
+                <h5>Guidelines</h5>
                     {% for site_material in site_materials %}
                         {% for material in site_material.materials.all %}
-                            {{ forloop.counter }}. <a href="{% url 'core:material_detail' material.pk %}">
-                            {{ material }} </a><a href="{% url 'core:material_delete' material.pk %}"><span
-                                style="color:#000;">Delete</span></a><br>
+
+                            {{ material }}<br>
                         {% endfor %}
                     {% empty %}
                         No Guidelines Found.
