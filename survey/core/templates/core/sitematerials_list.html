@@ -5,22 +5,28 @@
             <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
         {% else %}
             <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' site.project.pk %}">Dashboard</a></li>
-            {% endif %}
+        {% endif %}
             <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
 
             <li class="breadcrumb-item active" aria-current="page"> Site Guideline List</li>
         </ol>
     </nav>
-<div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center">
         <div class="col-md-4 col-lg-6">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
-    {% for material in site_materials %}
-        {{ forloop.counter }}. <a href="{% url 'core:site_material_detail' material.pk %}">
-        {{ material }} </a>   <a href="{% url 'core:site_material_delete' material.pk %}"><span style="color:#000;">Delete</span></a><br>
-    {% empty %}
-        No Guidelines Found.
+                    {% for site_material in site_materials %}
+                        {% for material in site_material.materials.all %}
+                            {{ forloop.counter }}. <a href="{% url 'core:material_detail' material.pk %}">
+                            {{ material }} </a><a href="{% url 'core:material_delete' material.pk %}"><span
+                                style="color:#000;">Delete</span></a><br>
+                        {% endfor %}
+                    {% empty %}
+                        No Guidelines Found.
 
-    {% endfor %}
-                </div></div></div></div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
