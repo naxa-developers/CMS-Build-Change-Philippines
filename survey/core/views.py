@@ -705,5 +705,11 @@ class UserProfileUpdateView(UpdateView):
     template_name = "core/user_profile_update.html"
 
     model = User
-    fields = ['first_name', 'last_name']
+    fields = ['first_name', 'last_name', 'email']
     success_url = reverse_lazy("home")
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['project_id'] = self.request.project.pk
+        return context
