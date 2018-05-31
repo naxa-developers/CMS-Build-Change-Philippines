@@ -37,7 +37,8 @@ urlpatterns = [
     path('document-delete/<int:pk>/', views.SiteDocumentDeleteView.as_view(), name="document_delete"),
     path('site-report-list/<int:site_pk>', views.ReportListView.as_view(), name="report_list"),
     path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
-    path('user-profile/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
+    path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
     path('user-profile-update/<int:pk>', views.	UserProfileUpdateView.as_view(), name="user_profile_update"),
+    path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),
 ]
 

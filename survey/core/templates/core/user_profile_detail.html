@@ -1,1 +1,64 @@
-hello
+{% extends '_base.html' %}
+
+
+{% block content %}
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ user }}</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-12 col-lg-12">
+        <div class="dash-right">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">My profile</a></h4>
+                            <a href="#" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> <a
+                                    href="{% url 'core:user_profile_update' user.pk %}">Edit</a>
+                        </div>
+                        <div class="widget-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">{{ user.username }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>First name</td>
+                                        <td>{{ user.first_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Last name</td>
+                                        <td>{{ user.last_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Email</td>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Date joined</td>
+                                        <td>{{ user.date_joined }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

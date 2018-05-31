@@ -14,7 +14,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 
 from userrole.forms import UserProfileForm
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
-from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm
+from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
+    UserCreateForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 
@@ -615,15 +616,17 @@ class ReportDetailView(ReportRoleMixin, DetailView):
         return context
 
 
-class UserProfileView(TemplateView):
+class UserProfileView(CreateView):
     
     template_name = "core/user_profile.html"
+    model = User
+    form_class = UserCreateForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=self.kwargs['pk'])
         if self.request.user.user_roles.filter(group__name="Project Manager"):
-            context['project'] = Project.objects.get(project_roles__user=self.request.user)
+            context['project_id'] = Project.objects.get(project_roles__user=self.request.user).pk
             return context
         return context
         
@@ -702,8 +705,30 @@ class UserProfileUpdateView(UpdateView):
     User Profile Update View
     """
 
-    template_name = "core/user_profile_update.html"
-
+    template_name = "core/user_profile.html"
     model = User
-    fields = ['first_name', 'last_name']
+    form_class = UserCreateForm
     success_url = reverse_lazy("home")
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        if not self.request.group.name == 'Super Admin':
+            context['project_id'] = self.request.project.pk
+        return context
+
+
+class UserProfileDetailView(DetailView):
+    """
+    User Profile detail view
+    """
+    template_name = "core/user_profile_detail.html"
+    model = User
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = User.objects.get(pk=self.kwargs['pk'])
+        if self.request.user.user_roles.filter(group__name="Project Manager"):
+            context['project'] = Project.objects.get(project_roles__user=self.request.user)
+            return context
+        return context
