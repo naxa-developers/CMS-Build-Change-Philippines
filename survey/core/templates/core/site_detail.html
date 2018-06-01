@@ -158,7 +158,8 @@
                                             <img src="assets/img/img-school.png" alt="">
                                             {% for material in  site_material.materials.all %}
                                                {{ material }}
-                                                <br>
+                                            <a href="{% url 'core:site_material_delete' site_material.pk %}">Delete</a>
+                                            <br>
                                             {% endfor %}
 
 
