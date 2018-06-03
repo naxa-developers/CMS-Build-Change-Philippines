@@ -171,6 +171,7 @@ class SiteMaterialSerializer(serializers.ModelSerializer):
 
 class SiteDocumentSerializer(serializers.ModelSerializer):
     site = serializers.CharField(source='site.name')
+
     class Meta:
         model = SiteDocument
         fields = ('id', 'site', 'file', 'document_name')
