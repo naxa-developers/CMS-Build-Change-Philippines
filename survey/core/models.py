@@ -197,6 +197,22 @@ class SiteDocument(models.Model):
 
         super().save(*args, **kwargs)
 
+    def css_class(self):
+        name, extension = os.path.splitext(self.file.path)
+        if extension == '.pdf':
+            return 'pdf'
+        if extension == '.doc' or extension == '.docx':
+            return 'word'
+        if extension == '.xlsx':
+            return 'excel'
+        if extension == '.ppt':
+            return 'powerpoint'
+        if extension == '.png' or extension == '.jpg' or extension == '.jpeg':
+            return 'image'
+        if extension == '.zip':
+            return 'zip'
+        return 'pdf'
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
