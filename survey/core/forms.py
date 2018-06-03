@@ -29,7 +29,7 @@ class CategoryForm(forms.ModelForm):
 
     class Meta:
         model = Category
-        fields = ('name',)
+        exclude = ('project',)
 
 
 class MaterialForm(forms.ModelForm):

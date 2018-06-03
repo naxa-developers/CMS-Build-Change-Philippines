@@ -267,6 +267,11 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         return context
 
 
+class SiteDetailTemplateView(TemplateView):
+
+    template_name = 'core/site_detail_js.html'
+
+
 class SiteUpdateView(SiteRoleMixin, UpdateView):
     """
     Site Update View

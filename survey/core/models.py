@@ -111,6 +111,15 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_localname(self):
+        try:
+            if self.project.setting.local_language:
+                return getattr(self, 'name_'+self.project.setting.local_language)
+            else:
+                return "No language chosen yet."
+        except:
+            return "No language chosen yet."
+
     @property
     def materials(self):
         return self.material
