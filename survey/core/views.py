@@ -269,6 +269,15 @@ class SiteDetailTemplateView(TemplateView):
     template_name = 'core/site_detail_js.html'
 
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_id'] = self.kwargs['site_pk']
+
+       
+        return context
+
+
 class SiteUpdateView(SiteRoleMixin, UpdateView):
     """
     Site Update View

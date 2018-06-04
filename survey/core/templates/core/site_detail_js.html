@@ -1,11 +1,20 @@
 {% extends '_base.html' %}
-
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
 {% block content %}
+{% csrf_token %}
 
-<div id="app">
+<div id="app"></div>
 
-
-</div>
 
 {% endblock content %}
+
+{% block extra_script %}
+<script>
+    template_data.site_id={{site_id}};
+
+    
+</script>
+
+{% endblock extra_script %}
