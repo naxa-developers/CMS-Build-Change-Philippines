@@ -257,13 +257,13 @@ class SiteDetailView(SiteRoleMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:5]
+        context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
         context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username', flat=True)
-        context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])
+        context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         return context
 
 
