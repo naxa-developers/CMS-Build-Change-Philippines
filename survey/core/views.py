@@ -13,6 +13,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from userrole.forms import UserProfileForm
+from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm
@@ -260,7 +261,9 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
         context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
-
+        context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
+                                    .values_list('user__username', flat=True)
+        context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])
         return context
 
 

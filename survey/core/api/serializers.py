@@ -45,14 +45,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class MaterialSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
-    local_title = serializers.SerializerMethodField()
+    local_category = serializers.CharField(source='category.get_localname')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_title')
-
-    def get_local_title(self, obj):
-        return getattr(obj, 'title_'+obj.project.setting.local_language)
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category')
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -153,11 +150,28 @@ class ReportSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    localname = serializers.ReadOnlyField(source="get_localname")
     project_name = serializers.CharField(source='project.name')
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'project', 'project_name')
+        fields = ('id', 'name', 'localname', 'project', 'project_name')
+
+    def create(self, validated_data):
+        localname = validated_data.pop('localname') if 'localname' in validated_data else ""
+        instance = super(CategorySerializer, self).create(validated_data)
+        project = instance.project
+        setattr(instance, 'name_' + project.setting.local_language, localname)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        localname = self.context['request'].data.get('localname', "")
+        instance = super(CategorySerializer, self).update(instance, validated_data)
+        project = instance.project
+        setattr(instance, 'name_' + project.setting.local_language, localname)
+        instance.save()
+        return instance
 
 
 class SiteMaterialSerializer(serializers.ModelSerializer):

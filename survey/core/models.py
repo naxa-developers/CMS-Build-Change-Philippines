@@ -111,6 +111,15 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_localname(self):
+        try:
+            if self.project.setting.local_language:
+                return getattr(self, 'name_'+self.project.setting.local_language)
+            else:
+                return "No language chosen yet."
+        except:
+            return "No language chosen yet."
+
     @property
     def materials(self):
         return self.material
@@ -196,6 +205,22 @@ class SiteDocument(models.Model):
         # os.system('chmod 777 -R ' + path + self.file.name)
 
         super().save(*args, **kwargs)
+
+    def css_class(self):
+        name, extension = os.path.splitext(self.file.path)
+        if extension == '.pdf':
+            return 'pdf'
+        if extension == '.doc' or extension == '.docx':
+            return 'word'
+        if extension == '.xlsx':
+            return 'excel'
+        if extension == '.ppt':
+            return 'powerpoint'
+        if extension == '.png' or extension == '.jpg' or extension == '.jpeg':
+            return 'image'
+        if extension == '.zip':
+            return 'zip'
+        return 'pdf'
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

@@ -108,6 +108,11 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.select_related()
 
+    def perform_create(self, serializer, **kwargs):
+        localname = serializer.initial_data.get('localname', '')
+        data = serializer.save(localname=localname)
+        return data
+
 
 class SiteMaterialViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SiteMaterialSerializer
