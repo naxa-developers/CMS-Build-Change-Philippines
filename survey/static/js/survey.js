@@ -20,7 +20,8 @@ const channels = require('../vendor/js/websocket.js')
 
 window.Survey = new Vue({
  el: '#app',
- template:`
+ template:`<div> {{message}} </div>
+
            <div> {{template_data}}</div>
            <div class="row no-gutters">
         <div class="col-md-12">
@@ -50,6 +51,7 @@ window.Survey = new Vue({
         </div>
                `,
    data: {
+    message:"Hello Vue",
         template_data: template_data,
         documents:[],
         document:{},
