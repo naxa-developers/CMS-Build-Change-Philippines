@@ -167,7 +167,7 @@ class Report(models.Model):
                              blank=True)
     checklist = models.ForeignKey(Checklist, related_name='checklist_report', on_delete=models.CASCADE)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='report/%Y/%m/%D/', null=True, blank=True)
+    photo = models.ImageField(upload_to='report/', null=True, blank=True)
     report_status = models.BooleanField(default=0)
     date = models.DateTimeField(auto_now=True)
 
