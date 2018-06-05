@@ -264,6 +264,8 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username', flat=True)
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
+        context['site_pictures'] = Report.objects.filter(checklist__step__site__id=self.kwargs['pk'])\
+                                    .values_list('photo')
         return context
 
 

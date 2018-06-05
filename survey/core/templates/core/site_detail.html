@@ -255,11 +255,12 @@
                             </div>
                             <div class="widget-body no-padding-top" data-mh="sd-widget">
                                 <div class="row">
+                                    {% for picture in site_pictures %}
                                     <div class="col-md-4">
                                         <div class="photo-holder photo-item margin-top">
-                                            <img src="{{ MEDIA_URL }}{{ site.photo }}" img-title="Hello" alt="">
+                                            <img src="{{ MEDIA_URL }}{{ picture }}" img-title="Hello" alt="">
                                         </div>
-                                    </div>
+                                    </div>{% endfor %}
                                     <div class="col-md-4">
                                         <div class="photo-holder margin-top">
                                             <a href="{% url 'core:site_detail' site.pk %}" title=""
