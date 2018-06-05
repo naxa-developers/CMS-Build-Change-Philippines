@@ -101,7 +101,7 @@ class MaterialViewset(viewsets.ModelViewSet):
 
 class MaterialPhotosViewset(viewsets.ModelViewSet):
     serializer_class = MaterialphotosSerializer
-    queryset = Material.objects.exclude(good_photo__isnull=False)
+    queryset = Material.objects.all()
 
 
 class ReportViewset(viewsets.ModelViewSet):

@@ -196,13 +196,4 @@ class MaterialphotosSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Material
-        fields = ('good_photo',)
-
-    # def to_representation(self, obj):
-    #     # get the original representation
-    #     ret = super(MaterialphotosSerializer, self).to_representation(obj)
-    #
-    #     if self.fields['good_photo']:
-    #         ret.pop('good_photo')
-    #
-    #     return ret
+        fields = ('good_photo', 'bad_photo')
