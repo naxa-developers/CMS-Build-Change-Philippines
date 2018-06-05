@@ -7,7 +7,7 @@ from rest_framework.decorators import permission_classes
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, MaterialphotosSerializer
 
 # Serializers define the API representation.
 
@@ -97,6 +97,11 @@ class MaterialViewset(viewsets.ModelViewSet):
     #     localtext = serializer.initial_data.get('localtext', '')
     #     data = serializer.save(localtext=localtext)
     #     return data
+
+
+class MaterialPhotosViewset(viewsets.ModelViewSet):
+    serializer_class = MaterialphotosSerializer
+    queryset = Material.objects.exclude(good_photo__isnull=False)
 
 
 class ReportViewset(viewsets.ModelViewSet):
