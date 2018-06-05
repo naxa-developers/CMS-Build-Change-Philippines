@@ -172,6 +172,7 @@ window.Steps = new Vue({
                 `,
     data: {
         template_data: template_data,
+        site_id: site_id,
         steps: [],
         step: {},
 
@@ -204,7 +205,7 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/step-list/' + self.template_data.pk + '/', {
+            self.$http.get('/core/api/step-list/' + self.site_id + '/', {
                 params: {}
             }).then(successCallback, errorCallback);
 
@@ -223,7 +224,7 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/material-list/' + self.template_data.project + '/', {
+            self.$http.get('/core/api/material-list/' + self.site_id.project + '/', {
                 params: {}
             }).then(successCallback, errorCallback);
 
