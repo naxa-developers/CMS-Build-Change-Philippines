@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument
 
+from collections import OrderedDict
 
 class StepsSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source='sites.name', read_only=True)
@@ -190,3 +191,10 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteDocument
         fields = ('id', 'site', 'file', 'document_name')
+
+
+class MaterialphotosSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Material
+        fields = ('good_photo', 'bad_photo')
