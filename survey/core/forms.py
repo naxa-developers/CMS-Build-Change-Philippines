@@ -29,13 +29,14 @@ class CategoryForm(forms.ModelForm):
 
     class Meta:
         model = Category
-        exclude = ('project',)
+        exclude = ('project', 'name_en')
 
 
 class MaterialForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['category'].empty_label = None
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
@@ -43,7 +44,7 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = Material
-        exclude = ('project',)
+        exclude = ('project', 'title_en', 'description_en')
 
 
 class SiteForm(forms.ModelForm):
