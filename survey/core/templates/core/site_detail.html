@@ -1,10 +1,8 @@
 {% extends '_base.html' %}
+
 {% load static %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-{% endblock extra_css %}
-
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
 {% block content %}
     <div class="row no-gutters">
@@ -51,6 +49,9 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
                                     <a class="dropdown-item"
+                                       href="{% url 'userrole:project_user_create' project.pk %}"><i
+                                            class="la la-user"></i>Add User</a>                                    
+                                    <a class="dropdown-item"
                                        href="{% url 'userrole:field_engineer_create' object.pk %}"><i
                                             class="la la-user"></i> People</a>
                                     <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i
@@ -94,14 +95,14 @@
                             <h6><strong>Engineer Assigned</strong></h6>
                             <ul class="user-list-sm">
                                 {% for engineer in site_engineers %}
-                                <li>
-                                    <a href="#" title="">
-                                        <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
-                                        {{ engineer }}
-                                    </a>
-                                {% empty %}
-                                    <p>No Engineer Found.</p>
-                                </li>{% endfor %}
+                                    <li>
+                                        <a href="#" title="">
+                                            <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
+                                            {{ engineer }}
+                                        </a>
+                                        {% empty %}
+                                        <p>No Engineer Found.</p>
+                                    </li>{% endfor %}
                             </ul>
                         </div>
                     </div>
@@ -115,61 +116,67 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Steps</a></h4>
-                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
-                                        class="la la-caret-right"></i> Manage</a>
+                                <a href="{% url 'core:site-steps' 0 site.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-plus"></i> Add New Step</a>
                             </div>
                             <div class="widget-body overflow-show" data-mh="sd-widget">
                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                     {% for step in step_list %}
-                                        {% if forloop.counter0 == 0 %}
+                                        {% if forloop.counter == 1 %}
                                             <li class="nav-item">
-                                                <a class="nav-link active" id="tab-{{ forloop.counter0 }}"
-                                                   data-toggle="pill" href="" role="tab"
-                                                   aria-controls="step-{{ forloop.counter0 }}" aria-selected="true"><i
-                                                        class="la la-exclamation"></i>{{ step.name }}</a>
+                                                <a class="nav-link active" id="pills-step{{ forloop.counter }}-tab"
+                                                   data-toggle="pill"
+                                                   href="#pills-step{{ forloop.counter }}" role="tab"
+                                                   aria-controls="pills-step{{ forloop.counter }}"
+                                                   aria-selected="true"><i class="la la-exclamation"></i>{{ step.name }}
+                                                </a>
                                             </li>
                                         {% else %}
                                             <li class="nav-item">
-                                            <a class="nav-link" id="tab-{{ forloop.counter0 }}" data-toggle="pill"
-                                               href="" role="tab" aria-controls="step-{{ forloop.counter0 }}"
-                                               aria-selected="false">{{ step.name }}</a>
+                                                <a class="nav-link" id="pills-step{{ forloop.counter }}-tab"
+                                                   data-toggle="pill" href="#pills-step{{ forloop.counter }}"
+                                                   role="tab" aria-controls="pills-step{{ forloop.counter }}"
+                                                   aria-selected="false">{{ step.name }}</a>
                                             </li>
                                         {% endif %}
-                                    {% empty %}<p>No Steps Found.</p>
+                                    {% empty %}
+                                        <p>No Steps Found.</p>
                                     {% endfor %}
                                 </ul>
                                 <div class="tab-content" id="pills-tabContent">
                                     {% for step in step_list %}
-                                        {% if forloop.counter0 == 0 %}
-                                            <div class="tab-pane fade show active" id="step-{{ forloop.counter0 }}"
-                                                 role="tabpanel" aria-labelledby="tab-{{ forloop.counter0 }}">
-                                                <a href="" title="" class="btn btn-primary btn-xs pull-right"><i
+                                        {% if forloop.counter == 1 %}
+                                            <div class="tab-pane fade show active" id="pills-step{{ forloop.counter }}"
+                                                 role="tabpanel" aria-labelledby="pills-step{{ forloop.counter }}-tab">
+                                                <a href="#" title="" class="btn btn-primary btn-xs pull-right"><i
                                                         class="la la-edit"></i> Edit</a>
                                                 <div class="clearfix"></div>
-                                                <ul class="steps-checklist margin-top">
+                                                <ul>
                                                     <li>
                                                         <i class="la la-check-circle"></i>
                                                         <strong>{{ step.name }}</strong>
                                                         <span class="check-info">
-                                                        <i class="la la-user" aria-hidden="true"></i>Order: {{ step.order }}
-                                                        <i class="la la-clock-o" aria-hidden="true"></i>{{ step.site }}
+                                                        <i class="la la-user"
+                                                           aria-hidden="true"></i>{{ step.site.site_roles.first.user }}
                                                     </span>
                                                     </li>
                                                 </ul>
                                             </div>
                                         {% else %}
-                                            <div class="tab-pane fade" id="step-{{ forloop.counter0 }}" role="tabpanel"
-                                                 aria-labelledby="tab-{{ forloop.counter0 }}">{{ step.name }}
-                                                <a href="" title="" class="btn btn-primary btn-xs pull-right"><i
+                                            <div class="tab-pane fade" id="pills-step{{ forloop.counter }}"
+                                                 role="tabpanel"
+                                                 aria-labelledby="pills-step{{ forloop.counter }}-tab">
+                                                <a href="#pills-step{{ forloop.counter }}" title=""
+                                                   class="btn btn-primary btn-xs pull-right"><i
                                                         class="la la-edit"></i> Edit</a>
                                                 <div class="clearfix"></div>
-                                                <ul class="steps-checklist margin-top">
+                                                <ul>
                                                     <li>
                                                         <i class="la la-check-circle"></i>
-                                                        <strong>Name: {{ step.name }}</strong>
+                                                        <strong>{{ step.name }}</strong>
                                                         <span class="check-info">
-                                                        <i class="la la-user" aria-hidden="true"></i>{{ step.order }}
-                                                        <i class="la la-clock-o" aria-hidden="true"></i>{{ step.site }}
+                                                        <i class="la la-user"
+                                                           aria-hidden="true"></i>{{ step.site.site_roles.first.user }}
                                                     </span>
                                                     </li>
                                                 </ul>
@@ -184,7 +191,7 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Reports</a></h4>
-                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body" data-mh="sd-widget">
@@ -215,19 +222,24 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Plans</a></h4>
-                                <a href="{% url 'core:document_create' site.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                <a href="{% url 'core:document_create' site.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-plus"></i> Add</a>
+                                <a href="{% url 'core:document_list' site.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body no-padding-top" data-mh="sd-widget">
                                 <ul class="row">
                                     {% for document in site_documents %}
-                                    <li class="col-md-6">
-                                        <a href="#" class="plan-item margin-top"
-                                           title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                            <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
-                                            {{ document.document_name }}
-                                        </a>
-                                    </li>
+                                        <li class="col-md-6">
+                                            <a href="#" class="plan-item margin-top"
+                                               title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
+                                                <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
+                                                {{ document.document_name }}
+                                            </a>
+                                        </li>
+                                    {% empty %}<p>No Plans Found.</p>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -238,7 +250,7 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Pictures</a></h4>
-                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                <a href="#" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body no-padding-top" data-mh="sd-widget">
@@ -285,72 +297,5 @@
 {% endblock content %}
 
 {% block extra_script %}
-    <script>window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}"><\/script>')
-    </script>
-    <script src="{% static 'assets/js/vendor/jquery.nicescroll.min.js' %}"></script>
-    <script src="{% static 'assets/js/vendor/jquery.matchHeight.js' %}"></script>
-    <script src="{% static 'assets/js/vendor/bootstrap-tabdrop.js' %}"></script>
-    <script>
-        $(document).ready(function () {
-            //Height Fix
-            schoolWrapHeightFix();
-            window.onresize = function (event) {
-                schoolWrapHeightFix();
-            }
-
-            function schoolWrapHeightFix() {
-                vph = $(window).height();
-                if ($(document).width() > 479) {
-                    vph = vph - ($("#header").height() + 32 + $(".breadcrumb").outerHeight());
-                    $(".dash-right").css("min-height", vph);
-
-                    aboutHeight = vph - ($(".profile-head").outerHeight() + 32);
-                    $(".scrolling-wrap").height(aboutHeight);
-
-
-                } else {
-                    $(".scrolling-wrap").height(190);
-
-                }
-            }
-
-            //Make scroll
-            if ($.fn.niceScroll) {
-                $(".scrolling-wrap").niceScroll({
-                    cursorcolor: "#5184ac",
-                    cursorborderradius: "0px",
-                    cursorborder: "",
-                    cursorwidth: "8px"
-                });
-            }
-
-            $(".school-profile bg-white").hover(
-                function () {
-                    $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('show');
-                }, function () {
-                    $('[data-toggle="tooltip"]').tooltip({trigger: 'manual'}).tooltip('hide');
-                }
-            );
-
-            $('.nav-tabs, .nav-pills').tabdrop();
-
-            $('.photo-item img').on('click', function () {
-                var title = $(this).attr('img-title');
-                var src = $(this).attr('src');
-                var img = '<img src="' + src + '" class="img-responsive"/>';
-                var html = '';
-                html += img;
-                $('#myModalLabel').modal();
-                $('#myModalLabel').on('shown.bs.modal', function () {
-                    $('#myModalLabel .modal-header .modal-title').html(title);
-                    $('#myModalLabel .modal-body').html(html);
-                })
-                $('#myModalLabel').on('hidden.bs.modal', function () {
-                    $('#myModalLabel .modal-header .modal-title').html('');
-                    $('#myModalLabel .modal-body').html('');
-                });
-            });
-        });
-
-    </script>
+    {% render_bundle 'site' 'js' %}
 {% endblock extra_script %}
