@@ -47,10 +47,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 class MaterialSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
     local_category = serializers.CharField(source='category.get_localname')
+    created_by = serializers.ReadOnlyField(source='created_by.username')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category')
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
 
 
 class StepSerializer(serializers.ModelSerializer):
