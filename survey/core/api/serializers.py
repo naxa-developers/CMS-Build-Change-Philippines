@@ -62,6 +62,7 @@ class StepSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
         instance = super(StepSerializer, self).create(validated_data)
+        instance.created_by = self.context['request'].user
         project = instance.site.project
         setattr(instance, 'name_'+project.setting.local_language, localname)
         instance.save()

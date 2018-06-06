@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from django.db import models
 from django.contrib.postgres.fields import JSONField
@@ -87,6 +88,7 @@ class Step(models.Model):
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
     project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField()
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['order']
@@ -132,7 +134,8 @@ class Material(models.Model):
     description = models.TextField(max_length=300, blank=True, null=True)
     good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
     bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
-    
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.title
 

@@ -120,7 +120,7 @@
                                                 {% for material in category.materials.all %}
                                                 <li>
                                                     <h6><a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a></h6>
-                                                    <small>Created By: {{material.project.project_roles.first.user}}
+                                                    <small>Created By: {{material.created_by.username }}
                                                     </small>
                                                     <div class="guideline-action">
                                                         <a href="{% url 'core:material_update' material.pk %}"

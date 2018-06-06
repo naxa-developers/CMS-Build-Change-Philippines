@@ -444,6 +444,7 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.instance.created_by = self.request.user
         form.save()
         return super().form_valid(form)
 
