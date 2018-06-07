@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument
 
+from collections import OrderedDict
 
 class StepsSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source='sites.name', read_only=True)
@@ -45,14 +46,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class MaterialSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
-    local_title = serializers.SerializerMethodField()
+    local_category = serializers.CharField(source='category.get_localname')
+    created_by = serializers.ReadOnlyField(source='created_by.username')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_title')
-
-    def get_local_title(self, obj):
-        return getattr(obj, 'title_'+obj.project.setting.local_language)
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -65,6 +64,7 @@ class StepSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
         instance = super(StepSerializer, self).create(validated_data)
+        instance.created_by = self.context['request'].user
         project = instance.site.project
         setattr(instance, 'name_'+project.setting.local_language, localname)
         instance.save()
@@ -153,11 +153,28 @@ class ReportSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    localname = serializers.ReadOnlyField(source="get_localname")
     project_name = serializers.CharField(source='project.name')
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'project', 'project_name')
+        fields = ('id', 'name', 'localname', 'project', 'project_name')
+
+    def create(self, validated_data):
+        localname = validated_data.pop('localname') if 'localname' in validated_data else ""
+        instance = super(CategorySerializer, self).create(validated_data)
+        project = instance.project
+        setattr(instance, 'name_' + project.setting.local_language, localname)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        localname = self.context['request'].data.get('localname', "")
+        instance = super(CategorySerializer, self).update(instance, validated_data)
+        project = instance.project
+        setattr(instance, 'name_' + project.setting.local_language, localname)
+        instance.save()
+        return instance
 
 
 class SiteMaterialSerializer(serializers.ModelSerializer):
@@ -171,6 +188,14 @@ class SiteMaterialSerializer(serializers.ModelSerializer):
 
 class SiteDocumentSerializer(serializers.ModelSerializer):
     site = serializers.CharField(source='site.name')
+
     class Meta:
         model = SiteDocument
         fields = ('id', 'site', 'file', 'document_name')
+
+
+class MaterialphotosSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Material
+        fields = ('good_photo', 'bad_photo')

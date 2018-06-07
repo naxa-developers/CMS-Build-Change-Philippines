@@ -256,8 +256,8 @@
 <script>
     var template_data = template_data ||  {};
 </script>
-{% render_bundle 'main' 'js' %}
 {% block extra_script %}
+    {% render_bundle 'main' 'js' %}
 {% endblock extra_script %}
 </body>
 </html>

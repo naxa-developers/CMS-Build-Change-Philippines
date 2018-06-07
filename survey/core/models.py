@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.contrib.auth.models import User
 
 from django.db import models
 from django.contrib.postgres.fields import JSONField
@@ -87,6 +88,7 @@ class Step(models.Model):
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
     project = models.ForeignKey(Project, related_name="steps", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField()
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['order']
@@ -111,6 +113,15 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_localname(self):
+        try:
+            if self.project.setting.local_language:
+                return getattr(self, 'name_'+self.project.setting.local_language)
+            else:
+                return "No language chosen yet."
+        except:
+            return "No language chosen yet."
+
     @property
     def materials(self):
         return self.material
@@ -123,7 +134,8 @@ class Material(models.Model):
     description = models.TextField(max_length=300, blank=True, null=True)
     good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
     bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
-    
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.title
 
@@ -158,7 +170,7 @@ class Report(models.Model):
                              blank=True)
     checklist = models.ForeignKey(Checklist, related_name='checklist_report', on_delete=models.CASCADE)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='report/%Y/%m/%D/', null=True, blank=True)
+    photo = models.ImageField(upload_to='report/', null=True, blank=True)
     report_status = models.BooleanField(default=0)
     date = models.DateTimeField(auto_now=True)
 
@@ -196,6 +208,22 @@ class SiteDocument(models.Model):
         # os.system('chmod 777 -R ' + path + self.file.name)
 
         super().save(*args, **kwargs)
+
+    def css_class(self):
+        name, extension = os.path.splitext(self.file.path)
+        if extension == '.pdf':
+            return 'pdf'
+        if extension == '.doc' or extension == '.docx':
+            return 'word'
+        if extension == '.xlsx':
+            return 'excel'
+        if extension == '.ppt':
+            return 'powerpoint'
+        if extension == '.png' or extension == '.jpg' or extension == '.jpeg':
+            return 'image'
+        if extension == '.zip':
+            return 'zip'
+        return 'pdf'
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

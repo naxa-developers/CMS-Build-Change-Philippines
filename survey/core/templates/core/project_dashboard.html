@@ -1,9 +1,8 @@
 {% extends '_base.html' %}
 {% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-{% endblock extra_css %}
 
 {% block content %}
 <div class="row no-gutters">
@@ -61,7 +60,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <a href="#" title="" class="stat-item margin-top">
-                                        <span class="stat-count">{{project.total_reports}}</span>
+                                        <span class="stat-count">{{total_reports}}</span>
                                         <span class="stat-label">Reports</span>
                                         <i class="la la-file-text"></i>
                                     </a>
@@ -121,7 +120,7 @@
                                                 {% for material in category.materials.all %}
                                                 <li>
                                                     <h6><a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a></h6>
-                                                    <small>Created By: {{material.project.project_roles.first.user}}
+                                                    <small>Created By: {{material.created_by.username }}
                                                     </small>
                                                     <div class="guideline-action">
                                                         <a href="{% url 'core:material_update' material.pk %}"
@@ -188,95 +187,35 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Project Manager</a></h4>
+                            <a href="{% url 'userrole:project_user_create' project.pk %}"><i
+                                class="la la-user"></i>Add Manager</a> 
+                            </div>
+                            <div class="widget-body">
+                                {% for user in users %}
+                                    {{ forloop.counter }}. {{ user }}<br>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+
+
 {% endblock content %}
 
 {% block extra_script %}
-<script>
-    window.jQuery || document.write('<script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}">
-</script>')
-</script>
-<script src="{% static 'assets/js/vendor/jquery.nicescroll.min.js' %}"></script>
-<script>
-        	$(document).ready(function(){
-                //Height Fix
-                schoolWrapHeightFix();
-                mapHeightFix();
-                window.onresize = function(event) {
-                    schoolWrapHeightFix();
-                    mapHeightFix();
-                }
-
-                function schoolWrapHeightFix() {
-                    vph = $(window).height();
-                    if($(document).width() > 479) {
-                        vph = vph - ($("#header").height() + 16 + $(".school-action").outerHeight() + 15);
-                        $(".school-wrap").height(vph);
-                        $(".dash-right").css("min-height", vph + $(".school-action").outerHeight() + 15);
-                    }else{
-                        vph = ( vph / 1.5 ) - ($("#header").height() + 16 + $(".school-action").outerHeight() + 15);
-                        $(".school-wrap").height(vph);
-                    }
-                }
-
-                function mapHeightFix(){
-                    var statH = $(".stat-item").outerHeight();
-                    var useH = (statH * 2) + 15;
-                    $("#school-map").height(useH);
-                    $(".guidelines-wrap").height(useH);
-                    $(".update-wrap").height(useH);
-                }
-                //Make it scroll
-        		if ($.fn.niceScroll) {
-                    $(".school-wrap").niceScroll({
-                        cursorcolor: "#FFF",
-                        cursorborderradius: "0px",
-                        cursorborder:"",
-                        cursorwidth: "8px"
-                    });
-
-                    $(".guidelines-wrap").niceScroll({
-                        cursorcolor: "#5184ac",
-                        cursorborderradius: "0px",
-                        cursorborder:"",
-                        cursorwidth: "8px"
-                    });
-
-                    $(".update-wrap").niceScroll({
-                        cursorcolor: "#5184ac",
-                        cursorborderradius: "0px",
-                        cursorborder:"",
-                        cursorwidth: "8px"
-                    });
-
-                }
-                $('.collapse').on('shown.bs.collapse', function () {
-                  $(".guidelines-wrap").getNiceScroll().resize();
-
-                })
-
-                $(".collapseHeader").click(function(){
-                });
-                function toggleIcon(e) {
-                    $(e.target)
-                        .prev('.collapseHeader')
-                        .find("i")
-                        .toggleClass('la-minus-circle');
-                }
-                $('#accordion').on('hidden.bs.collapse', toggleIcon);
-                $('#accordion').on('shown.bs.collapse', toggleIcon);
-
-        	});
-
-
-
-</script>
-<script>
-        function myMap() {
+    {% render_bundle 'project' 'js' %}
+    <script>
+            function myMap() {
             var locations = [
               ['Bondi Beach', 14.5995, 120.9842, 4],
               ['Coogee Beach', 14.5695, 120.9942, 5],
@@ -309,9 +248,7 @@
               })(marker, i));
             }
         }
-
-</script>
-
+        </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADDQuj6F2x8p1dEa_oSyinWepcGHrVxvU&callback=myMap"></script>
 
 {% endblock extra_script %}
