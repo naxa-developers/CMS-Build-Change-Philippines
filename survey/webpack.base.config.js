@@ -15,8 +15,6 @@ module.exports = {
     style: ['./static/assets/css/style.css'],
     main: ['./static/js/survey'], // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
     steps: ['./static/js/steps'],
-    site: ['./static/js/site-detail'],
-    project: ['./static/js/project-dashboard'],
 //    dashboard: ['./static/js/dashboard-report.js'],
 
   },

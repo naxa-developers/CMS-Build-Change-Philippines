@@ -20,7 +20,7 @@ from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMateri
     UserCreateForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
-
+from django.core import serializers
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -274,6 +274,14 @@ class SiteDetailView(SiteRoleMixin, DetailView):
 class SiteDetailTemplateView(TemplateView):
 
     template_name = 'core/site_detail_js.html'
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_id'] = self.kwargs['site_pk']
+        context['site'] = serializers.serialize('json', [Site.objects.get(id=self.kwargs['site_pk'])], ensure_ascii=False)[1:-1]
+        return context
 
 
 class SiteUpdateView(SiteRoleMixin, UpdateView):
