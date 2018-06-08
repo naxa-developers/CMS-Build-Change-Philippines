@@ -47,10 +47,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 class MaterialSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source='category.name')
     local_category = serializers.CharField(source='category.get_localname')
+    created_by = serializers.ReadOnlyField(source='created_by.username')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category')
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -63,6 +64,7 @@ class StepSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
         instance = super(StepSerializer, self).create(validated_data)
+        instance.created_by = self.context['request'].user
         project = instance.site.project
         setattr(instance, 'name_'+project.setting.local_language, localname)
         instance.save()

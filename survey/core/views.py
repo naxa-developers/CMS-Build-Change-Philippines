@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, redirect, get_object_or_404, render
@@ -187,6 +188,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['users'] = User.objects.filter(user_roles__project=self.kwargs['project_id'])[:5]
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
+        context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
@@ -452,6 +454,7 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.instance.created_by = self.request.user
         form.save()
         return super().form_valid(form)
 
@@ -563,7 +566,8 @@ class SiteMaterialFormView(SiteGuidelineRoleMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=self.form_class)
-        form.fields['materials'].queryset = form.fields['materials'].queryset.filter(project__sites=self.kwargs['site_id'])
+        form.fields['materials'].queryset = form.fields['materials'].queryset.filter(project__sites=self.kwargs['site_id'])\
+                                            .distinct()
         return form
 
     def form_valid(self, form):
@@ -603,9 +607,19 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
     model = SiteMaterials
     form_class = SiteMaterialsForm
 
-    def get_success_url(self):
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        materials = self.object.materials.all()
+        site = Site.objects.get(site_site_materials=self.model.pk)
+        sitematerials = SiteMaterials.objects.filter(site=site)
+        sitematerials_list=[]
+        [sitematerials_list.append(sm.materials.all()) for sm in sitematerials]
+        print(sitematerials_list)
+        import ipdb
+        ipdb.set_trace()
         success_url = reverse_lazy('core:site_material_list', args=(self.object.site.pk,))
-        return success_url
+        self.object.materials.remove(materials)
+        return HttpResponseRedirect(success_url)
 
 
 class ReportListView(ReportRoleMixin, ListView):

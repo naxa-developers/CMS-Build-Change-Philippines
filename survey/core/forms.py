@@ -44,7 +44,7 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = Material
-        exclude = ('project', 'title_en', 'description_en')
+        exclude = ('project', 'title_en', 'description_en', 'created_by')
 
 
 class SiteForm(forms.ModelForm):

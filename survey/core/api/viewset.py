@@ -93,10 +93,9 @@ class MaterialViewset(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(project__id=project)
         return self.queryset
 
-    # def perform_create(self, serializer, **kwargs):
-    #     localtext = serializer.initial_data.get('localtext', '')
-    #     data = serializer.save(localtext=localtext)
-    #     return data
+    def perform_create(self, serializer, **kwargs):
+        data = serializer.save(created_by=self.request.user)
+        return data
 
 
 class MaterialPhotosViewset(viewsets.ModelViewSet):

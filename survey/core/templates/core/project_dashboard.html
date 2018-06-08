@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <a href="#" title="" class="stat-item margin-top">
-                                        <span class="stat-count">{{project.total_reports}}</span>
+                                        <span class="stat-count">{{total_reports}}</span>
                                         <span class="stat-label">Reports</span>
                                         <i class="la la-file-text"></i>
                                     </a>
@@ -120,7 +120,7 @@
                                                 {% for material in category.materials.all %}
                                                 <li>
                                                     <h6><a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a></h6>
-                                                    <small>Created By: {{material.project.project_roles.first.user}}
+                                                    <small>Created By: {{material.created_by.username }}
                                                     </small>
                                                     <div class="guideline-action">
                                                         <a href="{% url 'core:material_update' material.pk %}"
