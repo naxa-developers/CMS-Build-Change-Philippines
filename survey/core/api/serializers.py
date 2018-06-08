@@ -196,12 +196,12 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
 
 
 class SiteReportSerializer(serializers.ModelSerializer):
-    step_id = serializers.IntegerField(source='checklist.step.id', read_only=True)
     username = serializers.CharField(source='user.username')
+    checklist = serializers.CharField(source='checklist.step_checklist')
 
     class Meta:
         model = Report
-        fields = ('id', 'username', 'step_id', 'date')
+        fields = ('id', 'username', 'checklist', 'date')
 
 
 class SiteEngineerSerializer(serializers.ModelSerializer):
