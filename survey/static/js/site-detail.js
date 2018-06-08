@@ -10,15 +10,16 @@ import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
 window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.js')
 // import printjs from 'print-js'
 //require('../components/daterangepicker.component.js')
-
+window.$ = jQuery;
+window.jQuery = jQuery;
 require('../css/style.css');
-//
-// require('../assets/js/vendor/bootstrap-tabdrop.js');
+
+require('../assets/js/vendor/bootstrap-tabdrop.js'); 
 require('../bower_components/bootstrap/js/dropdown');
 require('../bower_components/bootstrap/js/modal');
 require('../bower_components/bootstrap/js/tab');
 window.PNotify = PNotify;
-window.$ = jQuery;
+
 const channels = require('../vendor/js/websocket.js')
 
 Vue.use(VueResource);
@@ -32,6 +33,7 @@ window.Survey = new Vue({
     el: '#app',
     template: `
                 <div>
+                {{template_data}}
                     <div class="row no-gutters">
                     {{steps}}
                     <br>
@@ -60,9 +62,9 @@ window.Survey = new Vue({
                 <div class="col-md-4 col-lg-3">
                 <div class="school-profile bg-white">
                     <div class="profile-head">
-                        <img src="assets/img/img-school.png" class="school-logo" alt="">
-                        <h4>Harvard University</h4>
-                        <span>Cambridge, Massachusetts</span>
+                        <img :src="'/media/'+template_data.site.fields.photo" class="school-logo" alt="">
+                        <h4>{{template_data.site.fields.name}}</h4>
+                        <span>{{template_data.site.fields.address}}</span>
                         <div class="text-center margin-top">
                             <div class="btn-group" role="group">
                                 <div class="btn-group btn-group-sm" role="group">
@@ -94,9 +96,25 @@ window.Survey = new Vue({
                     </div>
                     <div class="profile-body">
                         <div class="scrolling-wrap">
-                            <p>
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took
-                            </p>
+                            <div class="widget-body">
+                            <ul class="submission-list">
+                                
+                                    <li>
+                                        <strong>Address: {{ template_data.site.fields.address }}</strong>
+                                        <br>
+                                    </li>
+                                
+                                
+                                    <li>
+                                        <strong>Contact Number: {{ template_data.site.fields.contact_number }}</strong>
+                                        <br>
+
+                                    </li>
+                                
+                            </ul>
+                        </div>
+
+                        </p>
                             <div class="small-card margin-top">
                                 <h6><strong>Engineer Assigned</strong></h6>
                                 <ul class="user-list-sm">
@@ -134,54 +152,32 @@ window.Survey = new Vue({
                                     <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-caret-right"></i> Manage</a>
                                 </div>
                                 <div class="widget-body overflow-show" data-mh="sd-widget">
-                                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                                    <div v-for="step,key in steps"> 
-                                     <div v-if="key == 0  ">
-                                        <li vclass="nav-item">
-                                            <a v-bind:id="'pills-'+ key + '-tab'" v-bind:class="'nav-link ' +{ active: true }"   data-toggle="pill" v-bind:href="'#pills-'+ key" role="tab" aria-controls="pills-step1" aria-selected="true"><i class="la la-exclamation"></i> {{step.name}} </a>
-                                        </li>
-                                     </div>
-                                        <div v-else >
-                                        <li class="nav-item">
-                                            <a  v-bind:id="'pills-'+ key +'-tab'" v-bind:class="'nav-link '"   data-toggle="pill" v-bind:href="'#pills-'+ key" role="tab" aria-controls="pills-step1" aria-selected="false" ><i class="la la-exclamation"></i> {{step.name}} </a>
-                                        </li>
-                                        </div>
-                                <div>
-                                    </ul>
+                                     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
 
+                                     <li v-for="step, index in steps" class="nav-item" >
+                                            <a :class="index == 0 ? 'nav-link active' : 'nav-link' " :id="'pills-'+ index + '-tab'" data-toggle="pill" :href="'#pills-step'+ index" role="tab"  aria-controls="pills-step1" aria-selected="true"><i class="la la-exclamation"></i> {{step.name}}</a>
+                                        </li>
+                                        
+                                        <p v-if="steps.length == 0" >No Steps Found.</p>
+                                        
+                                    </ul>
                                 </div>
                                     <div class="tab-content" id="pills-tabContent">
-                                        <div class="tab-pane fade show active" id="pills-step1" role="tabpanel" aria-labelledby="pills-step1-tab">
-                                            <a href="#" title="" class="btn btn-primary btn-xs pull-right"><i class="la la-edit"></i> Edit</a>
+                                        <div v-for="step,index in steps" :class="index == 0 ? 'tab-pane fade show active' : 'tab-pane fade show' "  :id="'pills-step'+ index" role="tabpanel" aria-labelledby="pills-step1-tab">
+                                            <a href="#pills-step1" title="" class="btn btn-primary btn-xs pull-right"><i class="la la-edit"></i> Edit</a>
                                             <div class="clearfix"></div>
                                             <ul class="steps-checklist margin-top">
                                                 <li>
                                                     <i class="la la-check-circle"></i>
-                                                    <strong>Household Survey (घरधुरी सर्वेक्षण)</strong>
+                                                    <strong>{{step.name}}</strong>
                                                     <span class="check-info">
-                                                        <i class="la la-user" aria-hidden="true"></i>chapakot
-                                                        <i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago
-                                                    </span>
-                                                </li>
-                                                <li>
-                                                    <i class="la la-circle"></i>
-                                                    <strong>Household Survey (घरधुरी सर्वेक्षण)</strong>
-                                                </li>
-                                                <li>
-                                                    <i class="la la-check-circle"></i>
-                                                    <strong>Household Survey (घरधुरी सर्वेक्षण)</strong>
-                                                    <span class="check-info">
-                                                        <i class="la la-user" aria-hidden="true"></i>chapakot
+                                                        <i class="la la-user" aria-hidden="true"></i>{{step.name}}
                                                         <i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago
                                                     </span>
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="tab-pane fade" id="pills-step2" role="tabpanel" aria-labelledby="pills-step2-tab">2</div>
-                                        <div class="tab-pane fade" id="pills-step3" role="tabpanel" aria-labelledby="pills-step3-tab">3</div>
-                                        <div class="tab-pane fade" id="pills-step4" role="tabpanel" aria-labelledby="pills-step4-tab">4</div>
-                                        <div class="tab-pane fade" id="pills-step5" role="tabpanel" aria-labelledby="pills-step5-tab">5</div>
-                                        <div class="tab-pane fade" id="pills-step6" role="tabpanel" aria-labelledby="pills-step6-tab">6</div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -192,34 +188,16 @@ window.Survey = new Vue({
                                     <h4><a href="#" title="">Reports</a></h4>
                                     <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-caret-right"></i> More</a>
                                 </div>
-                                <div class="widget-body" data-mh="sd-widget">
+                                <div v-for="report in reports" class="widget-body" data-mh="sd-widget">
                                     <ul class="submission-list">
                                         <li> 
-                                            <img src="assets/img/img-school.png" alt="">
-                                            <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी सर्वेक्षण)</strong></a>
+                                            <img src="" alt="">
+                                            <a title="View submission detail" href="#"><strong>{{report}}</strong></a>
                                             <br>
-                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>chapakot</small></a>
-                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago</small>
+                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>sd</small></a>
+                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> sds</small>
                                         </li>
-                                        <li>
-                                            <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी सर्वेक्षण)</strong></a>
-                                            <br>
-                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>chapakot</small></a>
-                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago</small>
-                                        </li>
-                                        <li>
-                                            <img src="assets/img/img-school.png" alt="">
-                                            <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी सर्वेक्षण)</strong></a>
-                                            <br>
-                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>chapakot</small></a>
-                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago</small>
-                                        </li>
-                                        <li>
-                                            <a title="View submission detail" href="#"><strong>Household Survey (घरधुरी सर्वेक्षण)</strong></a>
-                                            <br>
-                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>chapakot</small></a>
-                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> 2 hours, 47 minutes ago</small>
-                                        </li>
+                                       
                                     </ul>
                                 </div>
                             </div>
@@ -354,22 +332,27 @@ window.Survey = new Vue({
         reports:[],
         documents:[],
         materials:[],
-        
 
-        step: {},
-        report:{},
+        
+        active:'',
+        
+        
         document:{},
         material:{},
         loading: false,
+        isActive: false,
         error: '',
         template_data: template_data,
     },
     methods: {
 
+
         getStep: function () {
+
 
             var self = this;
             self.loading = true;
+            
 
             function successCallback(response) {
                 self.steps = response.body;
@@ -381,10 +364,10 @@ window.Survey = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/step-list/' + 1 + '/', {
+            self.$http.get('/core/api/step-list/' + self.template_data.site_id + '/', {
                 params: {}
             }).then(successCallback, errorCallback);
-            console.log(steps);
+            //console.log(steps);
         },
 
         getReport: function() {
@@ -402,7 +385,7 @@ window.Survey = new Vue({
                 console.log('failed');
                 self.loading= false;
             }
-            self.$http.get('/core/api/report/' + 1 + '/',{
+            self.$http.get('/core/api/report/' + self.template_data.site_id + '/',{
                 params:{}
             }).then(successCallback, errorCallback);
         },
@@ -421,7 +404,7 @@ window.Survey = new Vue({
                 console.log('failed');
                 self.loading= false;
             }
-            self.$http.get('/core/api/site-documents/' + 1 + '/',{
+            self.$http.get('/core/api/site-documents/' + self.template_data.site_id + '/',{
                 params:{}
             }).then(successCallback, errorCallback);
         },
@@ -440,11 +423,26 @@ window.Survey = new Vue({
                 console.log('failed');
                 self.loading= false;
             }
-            self.$http.get('/core/api/material-list/' + 1 + '/',{
+            self.$http.get('/core/api/material-list/' + self.template_data.site_id + '/',{
                 params:{}
             }).then(successCallback, errorCallback);
         },
-        
+        activeLink(event) {
+            console.log(event);
+            console.log(event.target.className);
+        if(event.target.className == "nav-link")
+        {
+            console.log('active');
+            event.target.className = "nav-link active";
+        }
+        else
+        {
+            console.log('not-active');
+
+            event.target.className = "nav-link";
+        }
+    }      
+
     },
         created: function () {
         var self = this;
@@ -524,119 +522,7 @@ window.Survey = new Vue({
 //         });
 
 
-
-// <div class="col-md-12">
-//                     <nav aria-label="breadcrumb">
-//                       <ol class="breadcrumb">
-//                         <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-//                         <li class="breadcrumb-item active" aria-current="page">Site-Details</li>
-//                       </ol>
-//                     </nav>
-//                 </div>
-//                      <div class="col-md-8 col-lg-9">
-//             <div class="dash-right">
-//                 <div class="row">
-//                     <div class="col-md-6">
-//                         <div class="widget-info margin-top-large">
-//                             <div class="widget-head">
-//                                 <h4><a href="#" title="">Steps</a></h4>
-//                                 <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
-//                                         class="la la-caret-right"></i> Manage</a>
-//                             </div>
-//                             <div class="widget-body overflow-show" data-mh="sd-widget">
-//                                 <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-//                                     <div v-for="step,key in steps">
-//                                         <div {{key}}
-//                                             <li class="nav-item">
-//                                                 <a class="nav-link active" id="tab-{{ key }}"
-//                                                    data-toggle="pill" href="" role="tab"
-//                                                     aria-selected="true"><i
-//                                                         class="la la-exclamation"></i>{{ step.name }}</a>
-//                                             </li>
-
-//                                         <li v-else>
-//                                             <li class="nav-item">
-//                                             <a class="nav-link" id="tab-{{ key }}" data-toggle="pill"
-//                                                href="" role="tab" aria-controls="step-{{ key }}"
-//                                                aria-selected="false">{{ steps.name }}</a>
-//                                             </li>
-                                        
-//                                     <!--- <div v-empty="0"<p>No Steps Found.</p> -->
-
-//                                 </ul>
-//                                 <div class="tab-content" id="pills-tabContent">
-//                                     <div v-for ="step,key in step_list">
-//                                         <div v-if key == 0>
-//                                             <div class="tab-pane fade show active" id="step-{{ key }}"
-//                                                  role="tabpanel" aria-labelledby="tab-{{ key }}">
-//                                                 <a href="" title="" class="btn btn-primary btn-xs pull-right"><i
-//                                                         class="la la-edit"></i> Edit</a>
-//                                                 <div class="clearfix"></div>
-//                                                 <ul class="steps-checklist margin-top">
-//                                                     <li>
-//                                                         <i class="la la-check-circle"></i>
-//                                                         <strong>{{ step.name }}</strong>
-//                                                         <span class="check-info">
-//                                                         <i class="la la-user" aria-hidden="true"></i>Order: {{ step.order }}
-//                                                         <i class="la la-clock-o" aria-hidden="true"></i>{{ step.site }}
-//                                                     </span>
-//                                                     </li>
-//                                                 </ul>
-//                                             </div>
-//                                         <else>
-//                                             <div class="tab-pane fade" id="step-{{ key }}" role="tabpanel"
-//                                                  aria-labelledby="tab-{{ key }}">{{ step.name }}
-//                                                 <a href="" title="" class="btn btn-primary btn-xs pull-right"><i
-//                                                         class="la la-edit"></i> Edit</a>
-//                                                 <div class="clearfix"></div>
-//                                                 <ul class="steps-checklist margin-top">
-//                                                     <li>
-//                                                         <i class="la la-check-circle"></i>
-//                                                         <strong>Name: {{ step.name }}</strong>
-//                                                         <span class="check-info">
-//                                                         <i class="la la-user" aria-hidden="true"></i>{{ step.order }}
-//                                                         <i class="la la-clock-o" aria-hidden="true"></i>{{ step.site }}
-//                                                     </span>
-//                                                     </li>
-//                                                 </ul>
-//                                             </div>
-                                        
-                                    
-//                                 </div>
-//                             </div>
-//                         </div>
-//                     </div>
-//                         <div class="col-md-6">
-//                         <div class="widget-info margin-top-large">
-//                             <div class="widget-head">
-//                                 <h4><a href="#" title="">Reports</a></h4>
-//                                 <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
-//                                         class="la la-caret-right"></i> More</a>
-//                             </div>
-//                             <div class="widget-body" data-mh="sd-widget">
-//                                 <ul class="submission-list">
-//                                      <li v-for="report in reports">
-//                                      <li>
-//                                             <img src="{{ MEDIA_URL }}{{ report.photo }}" alt="">
-//                                             <a title="View submission detail"
-//                                                href="#"><strong>{{ report.checklist }}</strong></a>
-//                                             <br>
-//                                             <a href="#" title="View details of user">
-//                                                 <small><i class="la la-user"></i>{{ report.user }}</small>
-//                                             </a>
-//                                             <small class="site_icon_float" style=""><i class="la la-clock-o"
-//                                                                                        aria-hidden="true"></i>{{ report.date }}
-//                                             </small>
-//                                         </li>
-//                                         </li>
-//                                     <div v-empty >
-//                                         No Reports Found.
-
-                                     
-//                                 </ul>
-//                             </div>
-//                         </div>
-
+                    
 
 
 
