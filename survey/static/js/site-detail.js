@@ -48,6 +48,10 @@ window.Survey = new Vue({
                     <br>
                     {{materials}}
                     <br>
+                    <br>
+                    {{engineers}}
+                    <br>
+
                     </div>
                         <div class="row no-gutters">
         <div class="col-md-12">
@@ -122,23 +126,11 @@ window.Survey = new Vue({
                         </p>
                             <div class="small-card margin-top">
                                 <h6><strong>Engineer Assigned</strong></h6>
-                                <ul class="user-list-sm">
+                                <ul v-for="engineer in engineers" class="user-list-sm">
                                     <li>
                                         <a href="#" title="">
                                             <img src="assets/img/img-avatar.jpg" alt="">
-                                            Bikrant Giri
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" title="">
-                                            <img src="assets/img/img-avatar.jpg" alt="">
-                                            Bikrant Giri
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#" title="">
-                                            <img src="assets/img/img-avatar.jpg" alt="">
-                                            Bikrant Giri
+                                            {{engineer.user}}
                                         </a>
                                     </li>
                                 </ul>
@@ -197,10 +189,10 @@ window.Survey = new Vue({
                                     <ul class="submission-list">
                                         <li> 
                                             <img src="" alt="">
-                                            <a title="View submission detail" href="#"><strong>{{report}}</strong></a>
+                                            <a title="View submission detail" href="#"><strong>Step-Id:{{report.step_id}}</strong></a>
                                             <br>
-                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>sd</small></a>
-                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> sds</small>
+                                            <a href="#" title="View details of user"><small><i class="la la-user"></i>{{report.username}}</small></a>
+                                            <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> {{report.date}}</small>
                                         </li>
                                        
                                     </ul>
@@ -363,7 +355,7 @@ window.Survey = new Vue({
                 console.log('failed');
                 self.loading= false;
             }
-            self.$http.get('/core/api/report/' + self.template_data.site_id + '/',{
+            self.$http.get('/core/api/site-report-list/' + self.template_data.site_id + '/',{
                 params:{}
             }).then(successCallback, errorCallback);
         },
@@ -405,6 +397,25 @@ window.Survey = new Vue({
                 params:{}
             }).then(successCallback, errorCallback);
         },
+        getEngineer: function() {
+
+            var self=this;
+            self.loading=true;
+
+            function successCallback(response) {
+                self.engineers= response.body;
+                self.loading= false;
+
+            }
+
+            function errorCallback() {
+                console.log('failed');
+                self.loading= false;
+            }
+            self.$http.get('/core/api/site-engineers/' + self.template_data.site_id + '/',{
+                params:{}
+            }).then(successCallback, errorCallback);
+        },
         activeLink(event) {
             console.log(event);
             console.log(event.target.className);
@@ -424,6 +435,7 @@ window.Survey = new Vue({
     },
         created: function () {
         var self = this;
+        self.getEngineer();
         self.getMaterial();
         self.getDocument();
         self.getReport();
