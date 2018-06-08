@@ -4,10 +4,12 @@ from rest_framework import viewsets, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 
+from userrole.models import UserRole
+
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, MaterialphotosSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, MaterialphotosSerializer, SiteReportSerializer, SiteEngineerSerializer
 
 # Serializers define the API representation.
 
@@ -126,6 +128,28 @@ class SiteMaterialViewSet(viewsets.ReadOnlyModelViewSet):
         site = self.kwargs.get('site', False)
         if site:
             self.queryset = self.queryset.filter(site=site)
+        return self.queryset
+
+
+class SiteReportViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SiteReportSerializer
+    queryset = Report.objects.all()
+
+    def get_queryset(self):
+        site = self.kwargs.get('site', False)
+        if site:
+            self.queryset = self.queryset.filter(checklist__step__site=site)
+        return self.queryset
+
+
+class SiteEngineerViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SiteEngineerSerializer
+    queryset = UserRole.objects.all()
+
+    def get_queryset(self):
+        site = self.kwargs.get('site', False)
+        if site:
+            self.queryset = self.queryset.filter(site__id=site)
         return self.queryset
 
 

@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument
-
+from userrole.models import UserRole
 from collections import OrderedDict
+
 
 class StepsSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source='sites.name', read_only=True)
@@ -192,6 +193,23 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteDocument
         fields = ('id', 'site', 'file', 'document_name')
+
+
+class SiteReportSerializer(serializers.ModelSerializer):
+    step_id = serializers.IntegerField(source='checklist.step.id', read_only=True)
+    username = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = Report
+        fields = ('id', 'username', 'step_id', 'date')
+
+
+class SiteEngineerSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = UserRole
+        fields = ('id', 'user')
 
 
 class MaterialphotosSerializer(serializers.ModelSerializer):
