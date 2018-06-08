@@ -25,6 +25,10 @@ urlpatterns = [
     path('material-list/<int:project>/', viewset.MaterialViewset.as_view({'get': 'list', }), name="api_materials"),
     path('material-photos/', viewset.MaterialPhotosViewset.as_view({'get': 'list', }), name="materials_photos"),
     path('site-materials-list/<int:site>/', viewset.SiteMaterialViewSet.as_view({'get': 'list', }), name="api_site_materials"),
+    path('site-report-list/<int:site>/', viewset.SiteReportViewSet.as_view({'get': 'list', }),
+         name="api_site_report"),
+    path('site-engineers/<int:site>/', viewset.SiteEngineerViewSet.as_view({'get': 'list', }),
+         name="api_site_engineers"),
     path('site-documents/<int:site>/', viewset.SiteDocumentViewSet.as_view({'get': 'list', }), name="api_site_documents"),
     path('category-list/', viewset.CategoryViewSet.as_view({'get': 'list'})),
 
