@@ -1,10 +1,16 @@
 import Vue from 'vue';
-import moment from 'moment';
-import VueResource from 'vue-resource'
 import jQuery from 'jquery';
+window.$ = jQuery;
+window.jQuery = jQuery;
+import 'bootstrap';
+require('../assets/css/style.css');
+require('../assets/js/vendor/jquery.nicescroll.min.js');
+require('../assets/js/plugins.js');
+
+import VueResource from 'vue-resource'
 import VuejsDialog from "vuejs-dialog"
-// import PNotify from 'pnotify';
 import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
+window.PNotify = PNotify;
 window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.js')
 // import printjs from 'print-js'
 //require('../components/daterangepicker.component.js')
@@ -13,15 +19,41 @@ require('../css/style.css');
 require('../bower_components/bootstrap/js/dropdown');
 require('../bower_components/bootstrap/js/modal');
 require('../bower_components/bootstrap/js/tab');
-window.PNotify = PNotify;
-window.$ = jQuery;
 const channels = require('../vendor/js/websocket.js')
 
 Vue.use(VueResource);
 Vue.use(VuejsDialog);
 //Vue.use(VueMultiselect);
 
+	$(document).ready(function(){
+        	console.log("hello");
+                //Height Fix
+                schoolWrapHeightFix();
+                window.onresize = function(event) {
+                    schoolWrapHeightFix();
+                }
 
+                function schoolWrapHeightFix() {
+                   var  vph = $(window).height();
+                    if($(document).width() > 479) {
+                        vph = vph - ($("#header").height() + 16);
+                        $(".school-wrap").height(vph);
+                    }else{
+                        vph = ( vph / 1.5 ) - ($("#header").height() + 16);
+                        $(".school-wrap").height(vph);
+                    }
+                }
+                //Make it scroll
+        		if ($.fn.niceScroll) {
+        		console.log("scroll");
+                    $(".school-wrap").niceScroll({
+                        cursorcolor: "#FFF",
+                        cursorborderradius: "0px",
+                        cursorborder:"",
+                        cursorwidth: "8px"
+                    });
+                }
+        	});
 
 
 window.Steps = new Vue({
@@ -32,7 +64,7 @@ window.Steps = new Vue({
              <div class="col-md-12">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0)"  title="Dashboard" v-bind:href="template_data.dashboard_url">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Steps</li>
                   </ol>
                 </nav>
