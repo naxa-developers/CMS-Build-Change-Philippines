@@ -72,6 +72,8 @@ window.Survey = new Vue({
                                        <i class="la la-file-text"></i> Report
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <a class="dropdown-item" href="/core/document-list/1/"><i
+                                            class="la la-list"></i>Document</a>
                                         <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
                                         <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
                                     </div>
@@ -81,6 +83,9 @@ window.Survey = new Vue({
                                         <i class="la la-cogs"></i> Manage
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                                    <a class="dropdown-item"
+                                       href="#"><i
+                                            class="la la-user"></i>Add User</a>  
                                         <a class="dropdown-item" href="#"><i class="la la-user"></i> People</a>
                                         <a class="dropdown-item" href="#"><i class="la la-tasks"></i> Forms</a>
                                         <a class="dropdown-item" href="#"><i class="la la-cog"></i> Settings</a>
@@ -207,44 +212,17 @@ window.Survey = new Vue({
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
                                     <h4><a href="#" title="">Plans</a></h4>
-                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add</a>
+                                    <a href="/core/document-create/1/" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add</a>
+                                    <a href="/core/document-list/1/" title=""
+                                   class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                        class="la la-caret-right"></i> More</a>
                                 </div>
-                                <div class="widget-body no-padding-top" data-mh="sd-widget">
-                                    <ul class="row">
+                                <div v-for="document in documents" class="widget-body no-padding-top" data-mh="sd-widget">
+                                    <ul  class="row">
                                         <li class="col-md-6">
                                             <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
                                                 <i class="la la-file-pdf-o color-pdf"></i>
-                                                Reduce deaths, injuries and economic losses..
-                                            </a>
-                                        </li>
-                                        <li class="col-md-6">
-                                           <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                                <i class="la la-file-word-o color-word"></i>
-                                                Reduce deaths, injuries and economic losses..
-                                            </a>
-                                        </li>
-                                        <li class="col-md-6">
-                                            <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                                <i class="la la-file-excel-o color-excel"></i>
-                                                Reduce deaths, injuries and economic losses..
-                                            </a>
-                                        </li>
-                                        <li class="col-md-6">
-                                            <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                                <i class="la la-file-powerpoint-o color-powerpoint"></i>
-                                                Reduce deaths, injuries and economic losses..
-                                            </a>
-                                        </li>
-                                        <li class="col-md-6">
-                                            <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                                <i class="la la-file-image-o color-image"></i>
-                                                Reduce deaths, injuries and economic losses..
-                                            </a>
-                                        </li>
-                                        <li class="col-md-6">
-                                            <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
-                                                <i class="la la-file-zip-o color-zip"></i>
-                                                Reduce deaths, injuries and economic losses..
+                                                {{document.document_name}}
                                             </a>
                                         </li>
                                     </ul>
