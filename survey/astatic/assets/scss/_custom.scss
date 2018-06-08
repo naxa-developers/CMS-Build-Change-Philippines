@@ -1,0 +1,266 @@
+html,body{
+	min-height: 100%;
+	//overflow-x: hidden;
+}
+a{
+	&:focus, &:hover, &:active{
+		outline: 0;
+		text-decoration: none;
+	}
+}
+img{
+	max-width: 100%;
+	@media(max-width: 768px){
+		height: auto;
+	}
+}
+
+.padding{
+	padding: 15px;
+}
+.padding-large{
+	padding: 30px;
+}
+.padding-top{
+	padding-top: 15px;
+}
+.padding-left{
+	padding-left: 15px;
+}
+.padding-right{
+	padding-right: 15px;
+}
+.margin{
+	margin: 15px;
+}
+.margin-right{
+	margin-right: 15px;
+}
+.margin-top{
+	margin-top: 15px;
+}
+
+.margin-top-large{
+	margin-top: 30px;
+}
+
+.margin-top-sm{
+	margin-top: 10px;
+
+}
+.margin-bottom{
+	margin-bottom: 15px;
+}
+
+ul{
+	margin: 0;
+}
+
+
+/*===============Header=======================*/
+
+.main-header{
+	font-size: 14px;
+	i{
+		font-size: 16px
+	}
+}
+
+.user-avatar {
+    display: inline-block;
+    vertical-align: top;
+    width: 26px;
+    height: 26px;
+    background-color: #aaaaa9;
+    margin-top: -3px;
+    border-radius: 500%;
+    overflow: hidden;
+    margin-right: 5px;
+}
+
+.large-dropdown-menu {
+    min-width: 360px;
+    max-width: 360px;
+    .dropdown-item {
+	    white-space: unset;
+	}
+}
+
+.notification-item{
+	float: none;
+	position: relative;
+}
+
+.notification-avatar{
+    position: relative;
+    text-align: center;
+    width: 38px;
+    height: 38px;
+    background-color: rgba(0, 0, 0, 0.06);
+    margin-right: 10px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    overflow: hidden;
+}
+
+.notification-avatar .avatar-icon{
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+}
+
+.notification-highlight {
+    display: block;
+    overflow: hidden;
+}
+
+.notification-highlight-excerpt {
+    margin-bottom: 0;
+    line-height: 1.3;
+	font-size: 13px;
+	font-weight: 300;
+	a{
+		font-weight: 600;
+	}
+}
+
+.notification-highlight-time {
+    margin-top: 3px;
+    margin-bottom: 0;
+    font-size: 12px;
+    color: rgba(0,0,0,0.3);
+}
+
+#main-container{
+	margin: 0 16px;
+	margin-bottom: 16px;
+	//background: #f1f1f1;
+}
+
+.module-school-list{
+	padding-right: 1rem;
+	color: $white;
+	>h1, >h2, >h3, >h4, >h5, >h6{
+		margin-bottom: 1rem; 
+		font-size: 15px;
+		font-weight: 600;
+	}
+}
+
+
+
+ul.school-list{
+	li{
+		position: relative;
+		padding: 1.5rem;
+		padding-left: 60px;
+		&:nth-child(odd){
+			background: rgba(0,0,0,0.05);
+		}
+		a{
+			color: $white;
+			display: block;
+			@include transition(all 0.3s ease-in-out);
+			@include hover-focus(){
+				padding: .5rem 0;
+				img{
+					top: 2rem;
+				}
+			}
+		}
+		img{
+			width: 35px;
+			height: 35px;
+			position: absolute;
+			left: 1rem;
+			top: 1.5rem;
+			border-radius: 50%;
+			@include transition(all 0.3s ease-in-out);
+		}
+		h1,h2,h3,h4,h5,h6{
+			margin: 0;
+			line-height: 100%;
+			font-size: 14px;
+			font-weight: 600;
+			text-transform: capitalize;
+		}
+		span{
+			font-size: 11px;
+			color: rgba(255,255,255,0.6);
+		}
+	}
+}
+
+
+.dash-right, .dash-full{
+	padding: 2rem;
+	//padding-top: 1rem;
+	padding-top: 0;
+	background: #f1f1f1;
+	&:before{
+		content: '';
+		display: table;
+		clear:both;
+	}
+}
+
+.widget-info{
+	.widget-head{
+		>h4 {
+		    font-size: 15px;
+		    font-weight: 600;
+		    margin: 0 0 15px 0;
+		    float: left;
+		    a{
+			    color: #212529;
+			}
+		}
+		>a {
+		    float: right;
+		    padding: 0px 2px;
+		    margin-left: 7.5px;
+		}
+		@include clearfix();
+	}
+	.widget-body {
+	    position: relative;
+	    overflow: hidden;
+		background: #FFF;
+		padding: 1rem;
+	}
+}
+
+.btn-xs {
+    font-size: 12px;
+}
+
+
+.school-profile{
+	.profile-head{
+		padding: 1rem 1rem;
+		text-align: center;
+		img{
+			width: 100px;
+			margin: 1rem 0;
+		}
+		h1,h2,h3,h4,h5,h6{
+			font-weight: 600;
+			margin: 0;
+		}
+		span{
+			font-size: 13px;
+		}
+		.progress{
+			margin-top: 1rem;
+		}
+	}
+	.profile-body{
+		padding: 1rem;
+		background: rgba(0,0,0,0.02);
+	}
+}

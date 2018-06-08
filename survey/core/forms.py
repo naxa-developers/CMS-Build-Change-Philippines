@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument
 
+from mapwidgets.widgets import GooglePointFieldWidget
+
 
 class ProjectForm(forms.ModelForm):
 
@@ -59,6 +61,9 @@ class SiteForm(forms.ModelForm):
     class Meta:
         model = Site
         exclude = ('project',)
+        widgets = {
+            'location': GooglePointFieldWidget,
+        }
 
 
 class SiteMaterialsForm(forms.ModelForm):

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rest_framework.authtoken',
     'rest_framework_swagger',
+    'mapwidgets',
 
     # local apps
     'core',
@@ -169,6 +170,14 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
         # 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-local.json'),
     }
+}
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 8),
+        ("mapCenterLocation", [12.8797, 121.7740]),
+    ),
+    "GOOGLE_MAP_API_KEY": "AIzaSyADDQuj6F2x8p1dEa_oSyinWepcGHrVxvU"
 }
 
 try:
