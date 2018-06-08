@@ -340,8 +340,16 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
             project = Site.objects.get(pk=data['pk']).project.id
             data['project'] = project
             data['site'] = Site.objects.select_related().get(id=self.kwargs['pk'])
+            if self.request.user.is_superuser:
+                data['dashboard_url'] = reverse('core:admin_dashboard')
+            else:
+                data['dashboard_url'] = reverse('core:project_dashboard',  kwargs={'project_id': project})
         else:
             data['project'] = data['pk']
+            if self.request.user.is_superuser:
+                data['dashboard_url'] = reverse('core:admin_dashboard')
+            else:
+                data['dashboard_url'] = reverse('core:project_dashboard',  kwargs={'project_id': data['pk']})
         return data
 
 
