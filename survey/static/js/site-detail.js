@@ -189,7 +189,7 @@ window.Survey = new Vue({
                                     <ul class="submission-list">
                                         <li> 
                                             <img src="" alt="">
-                                            <a title="View submission detail" href="#"><strong>Step-Id:{{report.step_id}}</strong></a>
+                                            <a title="View submission detail" href="#"><strong>{{report.checklist}}</strong></a>
                                             <br>
                                             <a href="#" title="View details of user"><small><i class="la la-user"></i>{{report.username}}</small></a>
                                             <small class="site_icon_float" style=""><i class="la la-clock-o" aria-hidden="true"></i> {{report.date}}</small>
