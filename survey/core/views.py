@@ -20,7 +20,7 @@ from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMateri
     UserCreateForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
-
+from django.core import serializers
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -276,6 +276,14 @@ class SiteDetailTemplateView(TemplateView):
     template_name = 'core/site_detail_js.html'
 
 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_id'] = self.kwargs['site_pk']
+        context['site'] = serializers.serialize('json', [Site.objects.get(id=self.kwargs['site_pk'])], ensure_ascii=False)[1:-1]
+        return context
+
+
 class SiteUpdateView(SiteRoleMixin, UpdateView):
     """
     Site Update View
@@ -340,8 +348,16 @@ class SiteStepsView(ManagerSuperAdminMixin, TemplateView):
             project = Site.objects.get(pk=data['pk']).project.id
             data['project'] = project
             data['site'] = Site.objects.select_related().get(id=self.kwargs['pk'])
+            if self.request.user.is_superuser:
+                data['dashboard_url'] = reverse('core:admin_dashboard')
+            else:
+                data['dashboard_url'] = reverse('core:project_dashboard',  kwargs={'project_id': project})
         else:
             data['project'] = data['pk']
+            if self.request.user.is_superuser:
+                data['dashboard_url'] = reverse('core:admin_dashboard')
+            else:
+                data['dashboard_url'] = reverse('core:project_dashboard',  kwargs={'project_id': data['pk']})
         return data
 
 

@@ -146,7 +146,8 @@ class Checklist(models.Model):
     material = models.ForeignKey(Material, related_name="checklist_material", null=True, blank=True, on_delete=models.SET_NULL)
     status = models.BooleanField(default=False)
 
-    def __str__(self):
+    @property
+    def step_checklist(self):
         return "step_id:" + str(self.step) + "------ id:" + str(self.id)
 
     def get_materials(self):
