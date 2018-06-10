@@ -57,7 +57,7 @@ window.Survey = new Vue({
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb"> 
-                    <li class="breadcrumb-item"><a href="url 'core:admin_dashboard' ">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a v-bind:href="template_data.dashboard_url">Dashboard</a></li>
                     <li class="breadcrumb-item active" aria-current="page"> Detail</li>
                  
                 </ol>
@@ -76,7 +76,7 @@ window.Survey = new Vue({
                                        <i class="la la-file-text"></i> Report
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <a class="dropdown-item" href="/core/document-list/1/"><i
+                                    <a class="dropdown-item" v-bind:href="template_data.document-list_url"><i
                                             class="la la-list"></i>Document</a>
                                         <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
                                         <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
