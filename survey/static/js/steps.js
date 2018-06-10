@@ -204,7 +204,7 @@ window.Steps = new Vue({
                 `,
     data: {
         template_data: template_data,
-        site_id: site_id,
+        site_id: template_data.pk,
         steps: [],
         step: {},
 
