@@ -41,5 +41,8 @@ urlpatterns = [
     path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
     path('user-profile-update/<int:pk>', views.	UserProfileUpdateView.as_view(), name="user_profile_update"),
     path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),
+
+    path('project-material-photos/<int:project_id>', views.project_material_photos, name="project_material_photos"),
+
 ]
 
