@@ -9,7 +9,7 @@ from userrole.models import UserRole
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, MaterialphotosSerializer, SiteReportSerializer, SiteEngineerSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer
 
 # Serializers define the API representation.
 
@@ -98,11 +98,6 @@ class MaterialViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer, **kwargs):
         data = serializer.save(created_by=self.request.user)
         return data
-
-
-class MaterialPhotosViewset(viewsets.ModelViewSet):
-    serializer_class = MaterialphotosSerializer
-    queryset = Material.objects.all()
 
 
 class ReportViewset(viewsets.ModelViewSet):

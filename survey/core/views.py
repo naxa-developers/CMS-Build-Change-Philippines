@@ -1,11 +1,14 @@
+import os
+import zipfile
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
-from django.shortcuts import reverse, redirect, get_object_or_404, render
+from django.shortcuts import reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,6 +16,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
@@ -21,6 +25,7 @@ from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMateri
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
+
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -54,6 +59,23 @@ def token(request):
             'msg': 'Invalid Username and Password',
             'data': request.POST
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+def project_material_photos(request, project_id):
+
+    response = HttpResponse(content_type='application/zip')
+    zip_file = zipfile.ZipFile(response, 'w')
+    material_photos = Material.objects.filter(project_id=project_id)
+    project = get_object_or_404(Project, id=project_id)
+
+    for filename in material_photos:
+        if filename.good_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
+        if filename.bad_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
+
+    response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
+    return response
 
 
 class SuperAdminMixin(LoginRequiredMixin):
@@ -275,12 +297,17 @@ class SiteDetailTemplateView(TemplateView):
 
     template_name = 'core/site_detail_js.html'
 
-
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        project = Project.objects.get(sites=self.kwargs['site_pk'])
         context['site_id'] = self.kwargs['site_pk']
         context['site'] = serializers.serialize('json', [Site.objects.get(id=self.kwargs['site_pk'])], ensure_ascii=False)[1:-1]
+        context['document_url'] = reverse('core:document_list',  kwargs={'site_id': self.kwargs['site_pk']})
+        context['add_user_url'] = reverse('userrole:project_user_create',  kwargs={'project_id': project.id})
+        context['people_url'] = reverse('userrole:field_engineer_create',  kwargs={'site_id': self.kwargs['site_pk']})
+        context['site_edit_url'] = reverse('core:site_update',  kwargs={'pk': self.kwargs['site_pk']})
+        context['site_delete_url'] = reverse('core:site_delete',  kwargs={'pk': self.kwargs['site_pk']})
+
         return context
 
 
