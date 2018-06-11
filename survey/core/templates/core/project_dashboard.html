@@ -33,7 +33,9 @@
                         <a href="{% url 'core:site_detail' site.pk %}" title="">
                             <img src="{{ MEDIA_URL}}{{site.logo}}" class="school-logo" alt="">
                             <h6>{{site}}</h6>
-                            <span>{{ site.address }}</span>
+                            {% if site.address %}
+                                <span>{{ site.address }}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}

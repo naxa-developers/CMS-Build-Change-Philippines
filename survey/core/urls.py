@@ -43,6 +43,7 @@ urlpatterns = [
     path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),
 
     path('project-material-photos/<int:project_id>', views.project_material_photos, name="project_material_photos"),
+    path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
 
 ]
 

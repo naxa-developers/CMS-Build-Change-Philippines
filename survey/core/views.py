@@ -78,6 +78,21 @@ def project_material_photos(request, project_id):
     return response
 
 
+def site_documents_zip(request, site_id):
+
+    response = HttpResponse(content_type='application/zip')
+    zip_file = zipfile.ZipFile(response, 'w')
+    site_documents = SiteDocument.objects.filter(site=site_id)
+    site = get_object_or_404(Site, id=site_id)
+
+    for filename in site_documents:
+        if filename.file:
+            zip_file.write(os.path.join(BASE_DIR) + filename.file.url, arcname=filename.file.url)
+
+    response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
+    return response
+
+
 class SuperAdminMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
