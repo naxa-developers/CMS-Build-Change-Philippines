@@ -32,27 +32,7 @@ Vue.use(VuejsDialog);
 window.Survey = new Vue({
     el: '#app',
     template: `
-                <div>
-                {{template_data}}
-                    <div class="row no-gutters">
-                    {{steps}}
-                    <br>
-                    </div>
-                    <br>
-                    {{reports}}
-                    <br>
-<div>
-                    <br>
-                    {{documents}}
-                    <br>
-                    <br>
-                    {{materials}}
-                    <br>
-                    <br>
-                    {{engineers}}
-                    <br>
-
-                    </div>
+                
                         <div class="row no-gutters">
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
@@ -76,7 +56,7 @@ window.Survey = new Vue({
                                        <i class="la la-file-text"></i> Report
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <a class="dropdown-item" v-bind:href="template_data.document-list_url"><i
+                                    <a class="dropdown-item" v-bind:href="template_data.document"><i
                                             class="la la-list"></i>Document</a>
                                         <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
                                         <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
@@ -178,7 +158,7 @@ window.Survey = new Vue({
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
