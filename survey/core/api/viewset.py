@@ -19,24 +19,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'password', 'email')
 
-        write_only_fields = ['password']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        password = validated_data.pop('password', None)
-        instance = self.Meta.model(**validated_data)
-        if password is not None:
-            instance.set_password(password)
-        instance.save()
-        return instance
+        user = User.objects.create(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
 
-    def update(self, instance, validated_data):
-        for attr, value in validated_data.items():
-            if attr == 'password':
-                instance.set_password(value)
-            else:
-                setattr(instance, attr, value)
-        instance.save()
-        return instance
+        UserRole.objects.create(user=user, group=Group.objects.get(name='Community Member'))
+
+        return user
 
 
 @permission_classes((AllowAny, ))
