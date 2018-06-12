@@ -17,17 +17,22 @@
         <ul class="submission-list">
             {% for report in reports  %}
             <li>
-                <img src="assets/img/img-school.png" alt="">
-                <a title="View submission detail" href="{% url 'core:report_detail' report.pk %}">
-                    {{ forloop.counter }}. <strong>{{ report.checklist }}</strong></a>
-                <br>
+                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.step_checklist }}</strong></a>
+                    <br>
+                    {% if report.user %}
+                        <a href="#" title="View details of user">
+                            <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
+                        </a><br>{% endif %}{% if object.date %}
+                    <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                               aria-hidden="true"></i>{{ report.date }}
+                    </small><br>{% endif %}{% if object.checklist.step %}
+                    <small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small><br>{% endif %}
 
-                    <small><i class="la la-user"></i>{{ report.user }}</small>
-                <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                           aria-hidden="true"></i>{{ report.date }}
-                </small><br>
-             <small class="site_icon_float" style="">{{ report.checklist.step}}</small>
-            </li>
+                    {% if report.date %}
+                        <small class="site_icon_float" style="">{{ report.date }}</small><br>{% endif %}
+
+
+                </li>
             {% empty %}
                 No Reports Found.
 
