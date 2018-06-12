@@ -26,7 +26,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
 
-        UserRole.objects.create(user=user, group=Group.objects.get(name='Community Member'))
+        UserRole.objects.create(user=user, group=Group.objects.get(name='Community Member'), project_id=2)
 
         return user
 
