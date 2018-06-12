@@ -1,0 +1,45 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+     <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project %}">Dashboard</a>
+                    </li>
+                {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">Recent Updates</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+      <div class="widget-body">
+        <ul class="submission-list">
+            {% for report in recent_activities_report %}
+                <li>
+                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.step_checklist }}</strong></a>
+                    <br>
+                    {% if report.user %}
+                        <a href="#" title="View details of user">
+                            <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
+                        </a><br>{% endif %}{% if object.date %}
+                    <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                               aria-hidden="true"></i>{{ report.date }}
+                    </small><br>{% endif %}{% if object.checklist.step %}
+                    <small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small><br>{% endif %}
+                    {% if report.comment %}
+                        <small class="site_icon_float" style="">Comment: {{ report.comment }}</small><br>{% endif %}
+                    {% if report.date %}
+                        <small class="site_icon_float" style="">{{ report.date }}</small><br>{% endif %}
+
+
+                </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}

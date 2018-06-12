@@ -13,6 +13,7 @@ urlpatterns = [
     path('user-list/', views.UserListView.as_view(), name="user_list"),
     path('dashboard/', views.Dashboard.as_view(), name="admin_dashboard"),
     path('project-dashboard/<int:project_id>', views.ProjectDashboard.as_view(), name="project_dashboard"),
+    path('recent-updates/<int:project_id>', views.RecentUpdates.as_view(), name="recent_updates"),
     path('site-create/<int:project_id>/', views.SiteCreateView.as_view(), name="site_create"),
     path('site-update/<int:pk>/', views.SiteUpdateView.as_view(), name="site_update"),
     path('site-list/', views.SiteListView.as_view(), name="site_list"),

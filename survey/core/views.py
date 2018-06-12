@@ -227,9 +227,24 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
             return context
+        return context
+
+
+class RecentUpdates(ProjectRoleMixin, TemplateView):
+    """
+    Recent Updates
+    """
+
+    template_name = "core/recent_updates.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = self.kwargs['project_id']
+        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')
         return context
 
 
