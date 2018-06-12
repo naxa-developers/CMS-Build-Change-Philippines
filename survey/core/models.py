@@ -210,6 +210,10 @@ class SiteDocument(models.Model):
 
         super().save(*args, **kwargs)
 
+    def get_name(self):
+        base = os.path.basename(self.file.path)
+        return os.path.splitext(base)[0]
+
     def css_class(self):
         name, extension = os.path.splitext(self.file.path)
         if extension == '.pdf':

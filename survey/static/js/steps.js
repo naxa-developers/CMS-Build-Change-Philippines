@@ -256,7 +256,7 @@ window.Steps = new Vue({
                 self.loading = false;
             }
 
-            self.$http.get('/core/api/material-list/' + self.site_id.project + '/', {
+            self.$http.get('/core/api/material-list/' + self.template_data.project + '/', {
                 params: {}
             }).then(successCallback, errorCallback);
 

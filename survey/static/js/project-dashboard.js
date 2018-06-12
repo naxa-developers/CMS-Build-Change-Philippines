@@ -1,6 +1,8 @@
 import 'bootstrap';
 import jQuery from 'jquery';
+// export to global scope now!
 
+require('../../node_modules/leaflet/dist/leaflet.js');
 require('../assets/js/vendor/jquery.nicescroll.min.js');
 require('../assets/js/plugins.js');
 require('../assets/css/style.css');

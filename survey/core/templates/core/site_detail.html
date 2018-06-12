@@ -171,14 +171,14 @@
                                                         class="la la-edit"></i> Edit</a>
                                                 <div class="clearfix"></div>
                                                 <ul>
-                                                    <li>
+                                                    <li>{% for checklist in step.checklist_steps.all %}
                                                         <i class="la la-check-circle"></i>
-                                                        <strong>{{ step.name }}</strong>
+                                                        <strong>{{ checklist.text }}</strong>
                                                         <span class="check-info">
                                                         <i class="la la-user"
                                                            aria-hidden="true"></i>{{ step.created_by.username }}
                                                     </span>
-                                                    </li>
+                                                    </li>{% empty %}No Checklist Found.{% endfor %}
                                                 </ul>
                                             </div>
                                         {% endif %}
@@ -233,9 +233,9 @@
                                     {% for document in site_documents %}
                                         <li class="col-md-6">
                                             <a href="#" class="plan-item margin-top"
-                                               title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
+                                               title="{{ document.get_name }}">
                                                 <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
-                                                {{ document.document_name }}
+                                                {{ document.get_name }}
                                             </a>
                                         </li>
                                     {% empty %}<p>No Plans Found.</p>
