@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
 {% block content %}
 
 <div class="row no-gutters">
@@ -29,7 +33,9 @@
                                 <a href="{% url 'core:project_dashboard' project.pk %}" title="">
                                     <img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">
                                     <h6>{{ project }}</h6>
-                                    <span>{{ project.address }}</span>
+                                    {% if project.address %}
+                                        <span>{{ project.address }}</span>
+                                    {% endif %}
                                 </a>
                             </li>{% endfor %}
 
@@ -83,3 +89,6 @@
             </div>
         </div>
 {% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock %}

@@ -1,4 +1,8 @@
 {% extends '_base.html' %}
+{% load staticfiles %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
 {% block content %}
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -16,3 +20,6 @@
                 </div></div></div></div>
 
 {% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

@@ -12,7 +12,7 @@ window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.j
 //require('../components/daterangepicker.component.js')
 window.$ = jQuery;
 window.jQuery = jQuery;
-require('../css/style.css');
+require('../css/style.css')
 
 require('../assets/js/vendor/bootstrap-tabdrop.js');
 require('../bower_components/bootstrap/js/dropdown');

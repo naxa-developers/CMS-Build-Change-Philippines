@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from rest_framework import viewsets, serializers
 from rest_framework.permissions import AllowAny
@@ -9,7 +9,7 @@ from userrole.models import UserRole
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, MaterialphotosSerializer, SiteReportSerializer, SiteEngineerSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer
 
 # Serializers define the API representation.
 
@@ -17,7 +17,18 @@ from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer,
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'username', 'email')
+        fields = ('url', 'username', 'password', 'email')
+
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create(**validated_data)
+        user.set_password(validated_data['password'])
+        user.save()
+
+        UserRole.objects.create(user=user, group=Group.objects.get(name='Community Member'), project_id=2)
+
+        return user
 
 
 @permission_classes((AllowAny, ))
@@ -98,11 +109,6 @@ class MaterialViewset(viewsets.ModelViewSet):
     def perform_create(self, serializer, **kwargs):
         data = serializer.save(created_by=self.request.user)
         return data
-
-
-class MaterialPhotosViewset(viewsets.ModelViewSet):
-    serializer_class = MaterialphotosSerializer
-    queryset = Material.objects.all()
 
 
 class ReportViewset(viewsets.ModelViewSet):

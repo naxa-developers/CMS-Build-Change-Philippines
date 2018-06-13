@@ -47,3 +47,6 @@
     </div>
 </div>
 {% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'site' 'js' %}
+{% endblock extra_script %}

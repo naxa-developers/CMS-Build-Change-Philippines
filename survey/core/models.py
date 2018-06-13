@@ -165,6 +165,9 @@ class Checklist(models.Model):
         except:
             return "No language chosen yet."
 
+    def get_status(self):
+        return self.status
+
 
 class Report(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_report', on_delete=models.SET_NULL, null=True,

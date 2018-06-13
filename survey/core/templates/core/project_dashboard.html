@@ -41,7 +41,9 @@
                         <a href="{% url 'core:site_detail' site.pk %}" title="">
                             <img src="{{ MEDIA_URL}}{{site.logo}}" class="school-logo" alt="">
                             <h6>{{site}}</h6>
-                            <span>{{ site.address }}</span>
+                            {% if site.address %}
+                                <span>{{ site.address }}</span>
+                            {% endif %}
                         </a>
                     </li>
                     {% endfor %}
@@ -153,7 +155,7 @@
                     <div class="widget-info margin-top-large">
                         <div class="widget-head">
                             <h4><a href="#" title="">Recent Updates</a></h4>
-                            <a href="#" title="" class="btn btn-sm btn-xs btn-primary"><i
+                            <a href="{% url 'core:recent_updates' project.pk%}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                     class="la la-caret-right"></i> View All</a>
                         </div>
                         <div class="widget-body">
@@ -161,34 +163,18 @@
                                 <div class="update-item">
                                     <h6>Today</h6>
                                     <ul class="update-list">
-                                        <li>
-                                            Submitted a response for general form <a href="#" title=""><strong>Daily
-                                            Activity Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
-                                            Metropolitan Police Circle</strong></a>.
-                                            <span class="time">10:32:30 AM</span>
-                                        </li>
-                                        <li>
-                                            <img src="assets/img/Patanjali.jpg" alt="">
-                                            <a href="#" title=""><strong>Rajendra Bajracharya</strong></a> submitted a
-                                            response for general form <a href="#" title=""><strong>Daily Activity
-                                            Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
-                                            Metropolitan Police Circle</strong></a>.
-                                            <span class="time">09:20:30 AM</span>
-                                        </li>
-                                        <li>
-                                            Submitted a response for general form <a href="#" title=""><strong>Daily
-                                            Activity Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
-                                            Metropolitan Police Circle</strong></a>.
-                                            <span class="time">10:32:30 AM</span>
-                                        </li>
-                                        <li>
-                                            <img src="assets/img/img-avatar.jpg" alt="">
-                                            <a href="#" title=""><strong>Rajendra Bajracharya</strong></a> submitted a
-                                            response for general form <a href="#" title=""><strong>Daily Activity
-                                            Report</strong></a> in site <a href="#" title=""><strong>Maharajgunj
-                                            Metropolitan Police Circle</strong></a>.
-                                            <span class="time">09:20:30 AM</span>
-                                        </li>
+                                        {% for report in recent_activities_report %}
+                                            <li>
+                                                <img src="assets/img/Patanjali.jpg" alt="">
+                                                <a href="#" title=""><strong>{{ report.user }}</strong></a> submitted a
+                                                response for general form <a href="{% url 'core:report_detail' report.pk %}" title=""><strong>{{ report.checklist.step_checklist }} Report</strong></a> in site <a href="#" title=""><strong>
+                                                 {{ report.checklist.step.site }}
+                                            </strong></a>.
+                                                <span class="time"><i class="la la-clock-o"
+                                                                                       aria-hidden="true"></i>{{ report.date }}</span>
+                                            </li>
+                                        {% endfor %}
+
                                     </ul>
                                 </div>
                             </div>
@@ -203,9 +189,15 @@
                                 class="la la-user"></i>Add Manager</a>
                             </div>
                             <div class="widget-body">
+                              <ul class="user-list-sm">
                                 {% for user in users %}
-                                    {{ forloop.counter }}. {{ user }}<br>
-                                {% endfor %}
+                                    <li>
+                                            <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
+                                                {{ user }}
+                                        {% empty %}
+                                        <p>No Project Manager Found.</p>
+                                    </li>{% endfor %}
+                            </ul>
 
                             </div>
                         </div>

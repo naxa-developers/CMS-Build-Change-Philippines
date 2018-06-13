@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
 {% block content %}
 
         <div class="col-md-12">
@@ -27,4 +31,6 @@
             </div>
 
 {% endblock content %}
-
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

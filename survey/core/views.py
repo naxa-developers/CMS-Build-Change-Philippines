@@ -1,11 +1,14 @@
+import os
+import zipfile
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
-from django.shortcuts import reverse, redirect, get_object_or_404, render
+from django.shortcuts import reverse, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,14 +17,16 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
 
+from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument
+from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
+
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -55,6 +60,38 @@ def token(request):
             'msg': 'Invalid Username and Password',
             'data': request.POST
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+def project_material_photos(request, project_id):
+
+    response = HttpResponse(content_type='application/zip')
+    zip_file = zipfile.ZipFile(response, 'w')
+    material_photos = Material.objects.filter(project_id=project_id)
+    project = get_object_or_404(Project, id=project_id)
+
+    for filename in material_photos:
+        if filename.good_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
+        if filename.bad_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
+
+    response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
+    return response
+
+
+def site_documents_zip(request, site_id):
+
+    response = HttpResponse(content_type='application/zip')
+    zip_file = zipfile.ZipFile(response, 'w')
+    site_documents = SiteDocument.objects.filter(site=site_id)
+    site = get_object_or_404(Site, id=site_id)
+
+    for filename in site_documents:
+        if filename.file:
+            zip_file.write(os.path.join(BASE_DIR) + filename.file.url, arcname=filename.file.url)
+
+    response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
+    return response
 
 
 class SuperAdminMixin(LoginRequiredMixin):
@@ -198,9 +235,24 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = [[l.x, l.y] for l in site_latlong_object]
+        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
             return context
+        return context
+
+
+class RecentUpdates(ProjectRoleMixin, TemplateView):
+    """
+    Recent Updates
+    """
+
+    template_name = "core/recent_updates.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = self.kwargs['project_id']
+        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')
         return context
 
 
@@ -276,6 +328,9 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         context['site_pictures'] = Report.objects.filter(checklist__step__site__id=self.kwargs['pk'])\
                                     .values_list('photo')
+        checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
+        total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
+        context['progress'] = round(checklist_status_true_count/total_site_checklist_count*100)
         return context
 
 
@@ -283,12 +338,17 @@ class SiteDetailTemplateView(TemplateView):
 
     template_name = 'core/site_detail_js.html'
 
-
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        project = Project.objects.get(sites=self.kwargs['site_pk'])
         context['site_id'] = self.kwargs['site_pk']
         context['site'] = serializers.serialize('json', [Site.objects.get(id=self.kwargs['site_pk'])], ensure_ascii=False)[1:-1]
+        context['document_url'] = reverse('core:document_list',  kwargs={'site_id': self.kwargs['site_pk']})
+        context['add_user_url'] = reverse('userrole:project_user_create',  kwargs={'project_id': project.id})
+        context['people_url'] = reverse('userrole:field_engineer_create',  kwargs={'site_id': self.kwargs['site_pk']})
+        context['site_edit_url'] = reverse('core:site_update',  kwargs={'pk': self.kwargs['site_pk']})
+        context['site_delete_url'] = reverse('core:site_delete',  kwargs={'pk': self.kwargs['site_pk']})
+
         return context
 
 

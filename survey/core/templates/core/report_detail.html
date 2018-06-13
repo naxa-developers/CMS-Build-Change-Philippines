@@ -1,5 +1,9 @@
 {% extends '_base.html' %}
 
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
 {% block content %}
     <div class="row no-gutters">
     <div class="col-md-12">
@@ -9,33 +13,36 @@
 
             {% endif %}
                 <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ object.checklist }} Detail</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ object.checklist.step_checklist }} Detail</li>
             </ol>
         </nav>
     </div>
-    <div class="widget-body">
+     <div class="widget-body">
         <ul class="submission-list">
             <li>
-                <img src="assets/img/img-school.png" alt="">
-                <strong>{{ object.checklist }}</strong>
-                <br>
-                {% if object.user %}
-                    <a href="#" title="View details of user">
-                        <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
-                    </a>{% endif %}{% if object.date %}
-                <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                           aria-hidden="true"></i>{{ object.date }}
-                </small><br>{% endif %}{% if object.checklist.step %}
-                <small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}
-                {% if object.comment %}
-                    <small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}
-                {% if object.photo %}
-                    <small class="site_icon_float" style="">Photo: <img src="{{ MEDIA_URL }}{{ object.photo }}"
-                                                                        class="report-photo" alt=""></small>{% endif %}
+                   <strong>{{ object.checklist.step_checklist }}</strong>
+                    <br>
+                    {% if object.user %}
+                        <a href="#" title="View details of user">
+                            <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
+                        </a><br>{% endif %}
+                    {% if object.checklist.step %}
+                    <small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}
 
-            </li>
+                    {% if object.comment %}
+                        <small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}
+                     {% if object.date %}
+                    <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                               aria-hidden="true"></i>{{ object.date }}
+                    </small><br>{% endif %}
+
+                </li>
 
 
         </ul>
     </div>
-{% endblock content %} 
+    </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

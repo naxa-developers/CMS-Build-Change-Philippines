@@ -210,10 +210,3 @@ class SiteEngineerSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserRole
         fields = ('id', 'user')
-
-
-class MaterialphotosSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Material
-        fields = ('good_photo', 'bad_photo')
