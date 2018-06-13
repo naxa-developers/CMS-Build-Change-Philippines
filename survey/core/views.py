@@ -228,12 +228,12 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
-        context['locations'] = serializers.serialize('geojson', Site.objects.filter(\
+        context['locations'] = serializers.serialize('geojson', Site.objects.exclude(location=None).filter(\
                                 project__id=self.kwargs['project_id']), fields=('location'))
-        site_address = Site.objects.filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
+        site_address = Site.objects.exclude(location=None).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
         json_site_address = json.dumps(list(site_address))
         context['site_address'] = json_site_address
-        site_latlong_object = Site.objects.filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
+        site_latlong_object = Site.objects.exclude(location=None).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = [[l.x, l.y] for l in site_latlong_object]
         context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
         if self.request.group.name == "Super Admin":
