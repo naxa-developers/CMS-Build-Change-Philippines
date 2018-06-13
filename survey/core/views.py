@@ -232,11 +232,13 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
             context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location'))
+        else:
+            context['locations'] =  [[]]
         site_address = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
         json_site_address = json.dumps(list(site_address))
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
-        context['site_latlong'] = [[l.x, l.y] for l in site_latlong_object]
+        context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()

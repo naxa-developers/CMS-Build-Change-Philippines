@@ -216,6 +216,8 @@
     {% render_bundle 'project' 'js' %}
     <script>
             function myMap() {
+                {#var if_locations = {{ locations|escapejs }};#}
+
                 var locations = JSON.parse("{{ locations|escapejs }}");
                 var address = JSON.parse("{{ site_address|escapejs }}");
                 var latlong = JSON.parse("{{ site_latlong|escapejs }}");
@@ -230,8 +232,12 @@
 
                 var infowindow = new google.maps.InfoWindow();
                 var marker, i;
-                map.data.addGeoJson(locations);
-
+                if (locations.length > 1){
+                    console.log(locations)
+                    locations = JSON.parse("{{ locations|escapejs }}");
+                    map.data.addGeoJson(locations);
+                    console.log("hello inside1")
+                }
                 for (i = 0; i < address.length; i++) {
                     marker = new google.maps.Marker({
                     position: new google.maps.LatLng(latlong[i][1], latlong[i][0]),
