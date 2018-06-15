@@ -785,14 +785,18 @@ class SiteDocumentListView(DocumentRoleMixin, ListView):
         List of Site Documents
     """
     model = SiteDocument
+    template_name = "core/sitedocument_list.html"
     form_class = SiteDocumentForm
+    context_object_name = 'documents'
+    paginate_by = 5
+
+    def get_queryset(self, *args, **kwargs):
+        return SiteDocument.objects.filter(site=self.kwargs['site_id'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
-
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
-        context['documents'] = SiteDocument.objects.filter(site=self.kwargs['site_id'])
         return context
 
 

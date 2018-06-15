@@ -5,23 +5,23 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">{% if request.user.is_superuser %}
-            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">{% if request.user.is_superuser %}
+        <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
         {% else %}
-            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
         {% endif %}
-            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">{{ site }} Document List</li>
-        </ol>
-    </nav>
-    <div class="d-flex justify-content-center">
-        <div class="col-md-3 col-lg-8"> <a href="{% url 'core:document_create' site.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i
-                                        class="la la-plus"></i> Add Documents</a></p>
-            <div class="dash-right">
-                <div class="widget-info margin-top-large">
-                    <table id="gallery" class="table table-bordered">
+        <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ site }} Document List</li>
+    </ol>
+</nav>
+<div class="d-flex justify-content-center">
+    <div class="col-md-3 col-lg-8"><a href="{% url 'core:document_create' site.pk %}" title=""
+                                      class="btn btn-sm btn-xs btn-primary"><i
+            class="la la-plus"></i> Add Documents</a></p>
+        <div class="dash-right">
+            <div class="widget-info margin-top-large">
+                <table id="gallery" class="table table-bordered">
                     <p>
 
                         <thead>
@@ -31,31 +31,51 @@
 
                             <th>Site Documents</th>
                             <th>Document Name</th>
-                            <th>Delete</th>
+                            <th>Action</th>
 
 
                         </tr>
                         </thead>
                         <tbody>
                         {% for document in documents %}
-                            <tr>
-                                <td>{{ forloop.counter }}</td>
-                                <td>{{ document.file }}</td>
-                                <td>{% if document.document_name %}{{ document.document_name }}{% endif %}</td>
-                                <td><a href="{% url 'core:document_delete' document.pk %}">Delete</a></td>
-                            </tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ document.file }}</td>
+                            <td>{% if document.document_name %}{{ document.document_name }}{% endif %}</td>
+                            <td><a href="{% url 'core:document_delete' document.pk %}">Delete</a></td>
+                        </tr>
 
                         {% endfor %}
 
                         </tbody>
-                    </table>
-                </div>
+                </table>
+                {% if is_paginated %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                    {% else %}
+                    <li><a href="?page={{ i }}">&nbsp;{{ i }}&nbsp;</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                    <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                    <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                </ul>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 
 {% endblock content %}
 
 {% block extra_script %}
-    {% render_bundle 'site' 'js' %}
+{% render_bundle 'project' 'js' %}
 {% endblock extra_script %}
