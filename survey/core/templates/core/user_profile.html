@@ -25,9 +25,8 @@
                     <div class="widget-info margin-top-large">
                         <div class="widget-head">
                             <h4><a href="#" title="">My profile</a></h4>
-                            <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
-                                    class="la la-plus"></i> <a
-                                    href="{% url 'core:user_profile_update' user.pk %}">Edit</a>
+                            <a href="{% url 'core:user_profile_update' user.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i>Edit</a>
                         </div>
                         <div class="widget-body">
                             <table class="table">
@@ -51,4 +50,4 @@
 
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
-{% endblock  extra_script%}
+{% endblock extra_script %}
