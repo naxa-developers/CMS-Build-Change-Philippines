@@ -9,7 +9,7 @@ require('../assets/css/style.css');
 
 window.$ = jQuery;
 window.jQuery = jQuery;
-console.log("Hello from project-dashboard");
+console.log("Hello from site-dashboard");
 
 // The routing fires all common scripts, followed by the page specific scripts.
 // Add additional events for more control over timing e.g. a finalize event

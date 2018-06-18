@@ -12,12 +12,12 @@ window.VueMultiselect = require('../vendor/vue-multiselect/vue-multiselect.min.j
 //require('../components/daterangepicker.component.js')
 window.$ = jQuery;
 window.jQuery = jQuery;
-require('../css/style.css')
-
+require('../assets/js/vendor/jquery.nicescroll.min.js');
 require('../assets/js/vendor/bootstrap-tabdrop.js');
 require('../bower_components/bootstrap/js/dropdown');
 require('../bower_components/bootstrap/js/modal');
 require('../bower_components/bootstrap/js/tab');
+require('../css/style.css')
 window.PNotify = PNotify;
 
 const channels = require('../vendor/js/websocket.js')

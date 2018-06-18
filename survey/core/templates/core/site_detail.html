@@ -187,12 +187,13 @@
                                         class="la la-caret-right"></i> More</a>
                             </div>
                             <div class="widget-body" data-mh="sd-widget">
+                            <div class="update-wrap">
                                 <ul class="submission-list">
                                     {% for report in site_reports %}
                                         <li>
                                             <img src="{{ MEDIA_URL }}{{ report.photo }}" alt="">
                                             <a title="View submission detail"
-                                               href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.step_checklist }}</strong></a>
+                                               href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment|truncatechars:20 }}</strong></a>
                                             <br>
                                             <a href="#" title="View details of user">
                                                 <small><i class="la la-user"></i>{{ report.user }}</small>
@@ -205,6 +206,7 @@
                                         No Reports Found.
                                     {% endfor %}
                                 </ul>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -284,5 +286,5 @@
 {% endblock content %}
 
 {% block extra_script %}
-    {% render_bundle 'site' 'js' %}
+    {% render_bundle 'sitedetail' 'js' %}
 {% endblock extra_script %}

@@ -17,6 +17,7 @@ module.exports = {
     steps: ['./static/js/steps'],
     site: ['./static/js/site-detail'],
     project: ['./static/js/project-dashboard'],
+    sitedetail: ['./static/js/sitedetail'],
 //    dashboard: ['./static/js/dashboard-report.js'],
 
   },
