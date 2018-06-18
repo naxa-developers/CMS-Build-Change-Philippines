@@ -335,7 +335,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
         if total_site_checklist_count:
-            context['progress'] = round(checklist_status_true_count/total_site_checklist_count*100)
+            context['progress'] = round((checklist_status_true_count/total_site_checklist_count)*100)
         else:
             context['progress'] = 0
         return context
