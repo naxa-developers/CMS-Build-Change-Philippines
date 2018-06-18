@@ -134,7 +134,7 @@ class SitesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'address', 'steps')
+        fields = ('id', 'name', 'address', 'location', 'steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
