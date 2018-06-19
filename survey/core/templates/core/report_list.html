@@ -21,7 +21,7 @@
         <ul class="submission-list">
             {% for report in reports  %}
             <li>
-                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.checklist.step_checklist }}</strong></a>
+                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment }}</strong></a>
                     <br>
                     {% if report.user %}
                         <a href="#" title="View details of user">
