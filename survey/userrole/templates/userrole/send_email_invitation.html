@@ -1,0 +1,29 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a>
+                    </li>
+                {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ project.name }} User List</li>
+                </ol>
+            </nav>
+        </div>
+        <form method="post">{% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Send">
+        </form>
+    </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

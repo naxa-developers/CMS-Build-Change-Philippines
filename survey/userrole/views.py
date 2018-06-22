@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, RedirectView, ListView
+from django.views.generic import CreateView, RedirectView, ListView, FormView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -7,7 +7,7 @@ from core.models import Project, Site
 from core.views import SuperAdminMixin, ManagerSuperAdminMixin
 
 from .models import UserRole
-from .forms import UserRoleForm, ProjectUserForm
+from .forms import UserRoleForm, ProjectUserForm, SendInvitationForm
 
 
 class Redirection(RedirectView):
@@ -125,3 +125,17 @@ class ProjectUserListView(ManagerSuperAdminMixin, ListView):
                 return context
         return context
 
+
+class SendInvitationView(ManagerSuperAdminMixin, FormView):
+    model = User
+    form_class = SendInvitationForm
+    template_name = 'userrole/send_email_invitation.html'
+
+    def form_valid(self, form):
+        form.send_email()
+        print('here')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail',  args=(self.kwargs['site_id'],))
+        return success_url

@@ -8,5 +8,6 @@ urlpatterns = [
         path('assign-engineer/<int:site_id>/', views.FieldEngineerUserRoleFormView.as_view(), name="field_engineer_create"),
         path('project-user-create/<int:project_id>/', views.ProjectUserFormView.as_view(), name="project_user_create"),
         path('project-user-list/<int:project_id>/', views.ProjectUserListView.as_view(), name="project_user_list"),
+        path('email-invitation/<int:site_id>/', views.SendInvitationView.as_view(), name="send_invitation"),
 
 ]
