@@ -31,14 +31,14 @@ Vue.use(VuejsDialog);
 
 window.Survey = new Vue({
     el: '#app',
-    template: `
-                
+    template: ` 
                         <div class="row no-gutters">
+                       
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb"> 
-                    <li class="breadcrumb-item"><a v-bind:href="template_data.dashboard_url">Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"> Detail</li>
+                    <li class="breadcrumb-item"><a href=/core/dashboard>Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"> {{template_data.site.fields.name}} Detail</li>
                  
                 </ol>
             </nav>
@@ -48,6 +48,7 @@ window.Survey = new Vue({
                     <div class="profile-head">
                         <img :src="'/media/'+template_data.site.fields.photo" class="school-logo" alt="">
                         <h4>{{template_data.site.fields.name}}</h4>
+
                         <span>{{template_data.site.fields.address}}</span>
                         <div class="text-center margin-top">
                             <div class="btn-group" role="group">
@@ -56,7 +57,7 @@ window.Survey = new Vue({
                                        <i class="la la-file-text"></i> Report
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <a class="dropdown-item" v-bind:href="template_data.document"><i
+                                    <a class="dropdown-item" v-bind:href="template_data.document_url"><i
                                             class="la la-list"></i>Document</a>
                                         <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
                                         <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
@@ -68,11 +69,11 @@ window.Survey = new Vue({
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
                                     <a class="dropdown-item"
-                                       href="#"><i
-                                            class="la la-user"></i>Add User</a>  
-                                        <a class="dropdown-item" href="#"><i class="la la-user"></i> People</a>
-                                        <a class="dropdown-item" href="#"><i class="la la-tasks"></i> Forms</a>
-                                        <a class="dropdown-item" href="#"><i class="la la-cog"></i> Settings</a>
+                                       :href="template_data.add_user_url"><i
+                                            class="la la-user"   ></i>Add User</a>  
+                                        <a class="dropdown-item" :href="template_data.people_url"><i class="la la-user"></i> People</a>
+                                        <a class="dropdown-item" :href="template_data.site_edit_url"><i class="la la-tasks"></i> Edit</a>
+                                        <a class="dropdown-item" :href="template_data.site_delete_url"><i class="la la-cog"></i> Delete</a>
                                     </div>
                                 </div>
                             </div>
@@ -85,23 +86,26 @@ window.Survey = new Vue({
                     </div>
                     <div class="profile-body">
                         <div class="scrolling-wrap">
-                            <div class="widget-body">
+                            <div class="widget-body" 
+                            >
                             <ul class="submission-list">
                                 
-                                    <li>
-                                        <strong>Address: {{ template_data.site.fields.address }}</strong>
+                                    <li :style="template_data.site.fields.address.length > 0 ? 'display: ' : 'display:none' ">
+                                        <strong> Address:{{ template_data.site.fields.address }}</strong>
                                         <br>
                                     </li>
+                                    
                                 
                                 
-                                    <li>
-                                        <strong>Contact Number: {{ template_data.site.fields.contact_number }}</strong>
+                                    <li :style="template_data.site.fields.contact_number.length > 0 ? 'display: ' : 'display:none' ">
+                                        <strong >Contact Number: {{ template_data.site.fields.contact_number }}</strong>
                                         <br>
 
                                     </li>
                                 
                             </ul>
                         </div>
+                        
 
                         </p>
                             <div class="small-card margin-top">
@@ -157,8 +161,9 @@ window.Survey = new Vue({
                                         
                                     </div>
                                 </div>
-                            </div>
-                        
+                                </div>
+                                
+
                         <div class="col-md-6">
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
@@ -184,14 +189,14 @@ window.Survey = new Vue({
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
                                     <h4><a href="#" title="">Plans</a></h4>
-                                    <a href="/core/document-create/1/" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add</a>
+                                    <a :href="template_data.document_create" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add</a>
                                     <a href="/core/document-list/1/" title=""
                                    class="btn btn-sm btn-xs btn-primary" target="_blank"><i
                                         class="la la-caret-right"></i> More</a>
                                 </div>
-                                <div v-for="document in documents" class="widget-body no-padding-top" data-mh="sd-widget">
+                                <div class="widget-body no-padding-top" data-mh="sd-widget">
                                     <ul  class="row">
-                                        <li class="col-md-6">
+                                        <li v-for="document in documents" class="col-md-6">
                                             <a href="#" class="plan-item margin-top" title="Reduce deaths, injuries and economic losses caused by housing and school collapses">
                                                 <i class="la la-file-pdf-o color-pdf"></i>
                                                 {{document.document_name}}
@@ -241,13 +246,12 @@ window.Survey = new Vue({
                                                         <span class="align-middle">100+</span>
                                                     </a>
                                                     <img src="assets/img/img-gallery.jpg" img-title="Image Title" alt="">
-                                                </div>
-                                            </div>                                          
-                                        </div>
+                                             </div>
+                                        </div>                                          
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -283,7 +287,6 @@ window.Survey = new Vue({
         documents:[],
         materials:[],
         engineer:[],
-        
         active:'',
         
         
@@ -397,21 +400,7 @@ window.Survey = new Vue({
                 params:{}
             }).then(successCallback, errorCallback);
         },
-        activeLink(event) {
-            console.log(event);
-            console.log(event.target.className);
-        if(event.target.className == "nav-link")
-        {
-            console.log('active');
-            event.target.className = "nav-link active";
-        }
-        else
-        {
-            console.log('not-active');
-
-            event.target.className = "nav-link";
-        }
-    }      
+            
 
     },
         created: function () {
@@ -424,7 +413,26 @@ window.Survey = new Vue({
         
         
     },
+    computed: {
+    valid_name: function () {
+            var self = this;
+            var valid = true;
+            
 
+            if (template_data.site.fields.addresss.length == 0 || template_data.site.fields.contact_number.length == 0) {
+                return false;
+            }
+
+            return valid;
+        },
+    valid_checklist: function () {
+            var self = this;
+            var valid = true;
+            "template_data.site.fields.addresss.length == 0 ? 'widget-body active' : 'widget-body' "
+
+            return valid;
+    },
+},
 });
 
 

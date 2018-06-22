@@ -318,10 +318,16 @@ class SiteDetailTemplateView(TemplateView):
         context['site_id'] = self.kwargs['site_pk']
         context['site'] = serializers.serialize('json', [Site.objects.get(id=self.kwargs['site_pk'])], ensure_ascii=False)[1:-1]
         context['document_url'] = reverse('core:document_list',  kwargs={'site_id': self.kwargs['site_pk']})
+        context['add_document_url'] = reverse('core:document_create',  kwargs={'site_id': self.kwargs['site_pk']})
         context['add_user_url'] = reverse('userrole:project_user_create',  kwargs={'project_id': project.id})
         context['people_url'] = reverse('userrole:field_engineer_create',  kwargs={'site_id': self.kwargs['site_pk']})
         context['site_edit_url'] = reverse('core:site_update',  kwargs={'pk': self.kwargs['site_pk']})
         context['site_delete_url'] = reverse('core:site_delete',  kwargs={'pk': self.kwargs['site_pk']})
+
+        if self.request.user.is_superuser:
+            context['dashboard_url'] = reverse('core:admin_dashboard')
+        else:
+            context['dashboard_url'] = reverse('core:project_dashboard',  kwargs={'project_id': project})
 
         return context
 
