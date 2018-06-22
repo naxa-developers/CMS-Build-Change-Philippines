@@ -133,7 +133,6 @@ class SendInvitationView(ManagerSuperAdminMixin, FormView):
 
     def form_valid(self, form):
         form.send_email()
-        print('here')
         return super().form_valid(form)
 
     def get_success_url(self):

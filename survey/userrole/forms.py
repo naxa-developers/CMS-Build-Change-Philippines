@@ -59,9 +59,16 @@ class ProjectUserForm(UserCreationForm):
 class SendInvitationForm(forms.Form):
     email = forms.EmailField()
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
     def send_email(self):
         subject, from_email, to = 'Invitation Testing', 'puskarjoshi22@gmail.com', self.cleaned_data['email']
-        html_content = '<html><body><p>CMS Builders Invitation.</p><br><a href="https://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>Signup here</h2></a></body></html>'
+        html_content = '<html><body><p>CMS Builders Invitation.</p><br><a href="http://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>Signup here</h2></a></body></html>'
         email = EmailMultiAlternatives(subject, body='This is an Invitation Email from CMS Builders. Testing!',\
                                        from_email=from_email, to=[to])
         email.attach_alternative(html_content, "text/html")
