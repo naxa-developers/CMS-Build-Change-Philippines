@@ -1,8 +1,10 @@
 import 'bootstrap';
 import jQuery from 'jquery';
+import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
 
 // export to global scope now!
 
+window.PNotify = PNotify;
 window.$ = jQuery;
 window.jQuery = jQuery;
 

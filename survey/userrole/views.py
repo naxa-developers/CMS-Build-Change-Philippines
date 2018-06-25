@@ -3,8 +3,11 @@ from django.views.generic import CreateView, RedirectView, ListView, FormView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ManagerSuperAdminMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 from .models import UserRole
 from .forms import UserRoleForm, ProjectUserForm, SendInvitationForm
@@ -126,14 +129,23 @@ class ProjectUserListView(ManagerSuperAdminMixin, ListView):
         return context
 
 
-class SendInvitationView(ManagerSuperAdminMixin, FormView):
+class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
     model = User
     form_class = SendInvitationForm
     template_name = 'userrole/send_email_invitation.html'
+    # success_message = "Email Sent To %(email) !"
 
     def form_valid(self, form):
-        form.send_email()
+        status = form.send_email()
+        print(status)
+        if status:
+            messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
+        else:
+            messages.error(self.request, "Invitation to {} unsuccessful.".format(form.cleaned_data['email']))
         return super().form_valid(form)
+
+    # def get_success_message(self, cleaned_data):
+    #     return "Invitation Sent To {}!".format(cleaned_data['email'])
 
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail',  args=(self.kwargs['site_id'],))

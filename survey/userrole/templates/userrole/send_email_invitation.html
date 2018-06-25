@@ -18,15 +18,12 @@
                 </ol>
             </nav>
         </div>
-    <div class="col-md-2">
-        <h6><strong>Send Invitation To:</strong></h6><br>
-        <form method="post">{% csrf_token %}
-            {{ form }}
-            <br><input type="submit" value="Send" class="btn btn-sm btn-primary">
-        </form>
-    </div>
+        <div class="col-md-2">
+            <h6><strong>Send Invitation To:</strong></h6><br>
+            <form method="post">{% csrf_token %}
+                {{ form }}
+                <br><input type="submit" value="Send" class="btn btn-sm btn-primary">
+            </form>
+        </div>
     </div>
 {% endblock content %}
-{% block extra_script %}
-    {% render_bundle 'project' 'js' %}
-{% endblock extra_script %}

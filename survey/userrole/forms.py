@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 
+from survey import settings
 from .models import UserRole, Project
 from django.core.mail import EmailMultiAlternatives
 
@@ -67,13 +68,13 @@ class SendInvitationForm(forms.Form):
         })
 
     def send_email(self):
-        subject, from_email, to = 'Invitation Testing', 'puskarjoshi22@gmail.com', self.cleaned_data['email']
-        html_content = '<html><body><p>CMS Builders Invitation.</p><br><a href="http://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>Signup here</h2></a></body></html>'
+        subject, from_email, to = 'Invitation Testing', settings.EMAIL_HOST_USER, self.cleaned_data['email']
+        html_content = '<html><body><p>CMS Builders Invitation.</p><br>Sign Up<a href="http://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>here</h2></a></body></html>'
         email = EmailMultiAlternatives(subject, body='This is an Invitation Email from CMS Builders. Testing!',\
                                        from_email=from_email, to=[to])
         email.attach_alternative(html_content, "text/html")
         try:
-            email.send()
+            # email.send()
+            return email.send(fail_silently=False)
         except:
             return HttpResponse('Invalid header found.')
-        return print('Success')
