@@ -138,7 +138,7 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
     def form_valid(self, form):
         status = form.send_email()
         print(status)
-        if status:
+        if status == 1:
             messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
         else:
             messages.error(self.request, "Invitation to {} unsuccessful.".format(form.cleaned_data['email']))
