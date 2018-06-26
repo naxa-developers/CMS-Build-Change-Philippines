@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, RedirectView, ListView, FormView
 from django.contrib.auth.models import Group
@@ -136,17 +137,21 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
     # success_message = "Email Sent To %(email) !"
 
     def form_valid(self, form):
-        status = form.send_email()
-        print(status)
-        if status == 1:
-            messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
+        user_exists = UserRole.objects.filter(user__email=form.cleaned_data['email'],\
+                                   group=Group.objects.get(name='Unassigned'),
+                                   project__id=self.kwargs['project_id']).exists()
+        print(user_exists)
+        if not user_exists:
+            status = form.send_email()
+            print(status)
+            if status == 1:
+                messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
+            else:
+                messages.error(self.request, "Invitation to {} unsuccessful.".format(form.cleaned_data['email']))
+            return super().form_valid(form)
         else:
-            messages.error(self.request, "Invitation to {} unsuccessful.".format(form.cleaned_data['email']))
-        return super().form_valid(form)
-
-    # def get_success_message(self, cleaned_data):
-    #     return "Invitation Sent To {}!".format(cleaned_data['email'])
+            return self.render_to_response(self.get_context_data(form=form, data="Sorry! The user already exists."))
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail',  args=(self.kwargs['site_id'],))
+        success_url = reverse_lazy('core:project_dashboard',  args=(self.kwargs['project_id'],))
         return success_url

@@ -22,6 +22,9 @@
             <h6><strong>Send Invitation To:</strong></h6><br>
             <form method="post">{% csrf_token %}
                 {{ form }}
+                {% if data %}
+                {{ data }}<br>
+                {% endif %}
                 <br><input type="submit" value="Send" class="btn btn-sm btn-primary">
             </form>
         </div>
