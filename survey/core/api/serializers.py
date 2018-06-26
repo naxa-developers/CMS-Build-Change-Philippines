@@ -96,6 +96,9 @@ class ChecklistSerializer(serializers.ModelSerializer):
         return {}
 
     def get_last_submission(self, obj):
+        latest_submission = obj.checklist_report.first()
+        if latest_submission:
+            return ReportSerializer(latest_submission).data
         return {}
 
     def create(self, validated_data):
