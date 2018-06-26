@@ -69,7 +69,7 @@ class SendInvitationForm(forms.Form):
 
     def send_email(self):
         subject, from_email, to = 'Invitation Testing', settings.EMAIL_HOST_USER, self.cleaned_data['email']
-        html_content = '<html><body><p>CMS Builders Invitation.</p><br>Sign Up<a href="http://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>here</h2></a></body></html>'
+        html_content = '<html><body><p>You have been invited to join Construction Management System of Build Change Philippines.</p><br><a href="http://bccms.naxa.com.np/userrole/project-user-create/2/"><h2>Click here</h2></a></body></html>'
         email = EmailMultiAlternatives(subject, body='This is an Invitation Email from CMS Builders. Testing!',\
                                        from_email=from_email, to=[to])
         email.attach_alternative(html_content, "text/html")
