@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, RedirectView, ListView, FormView
+from django.views.generic import CreateView, RedirectView, ListView, FormView, TemplateView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -93,7 +93,7 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
         return form
 
 
-class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
+class ProjectUserFormView(CreateView):
     model = User
     template_name = 'userrole/project_user_form.html'
     form_class = ProjectUserForm
@@ -106,7 +106,7 @@ class ProjectUserFormView(ManagerSuperAdminMixin, CreateView):
 
             UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
                                     project_id=self.kwargs['project_id'])
-            return redirect(reverse('core:project_dashboard', kwargs={'project_id': self.kwargs['project_id']}))
+            return redirect(reverse('userrole:thankyou'))
 
         return render(request, self.template_name, {'form': form})
 
@@ -168,3 +168,7 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
     def get_success_url(self):
         success_url = reverse_lazy('core:project_dashboard',  args=(self.kwargs['project_id'],))
         return success_url
+
+
+class Thankyou(TemplateView):
+    template_name = "userrole/thankyou.html"
