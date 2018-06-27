@@ -96,6 +96,9 @@ class ChecklistSerializer(serializers.ModelSerializer):
         return {}
 
     def get_last_submission(self, obj):
+        latest_submission = obj.checklist_report.first()
+        if latest_submission:
+            return ReportSerializer(latest_submission).data
         return {}
 
     def create(self, validated_data):
@@ -134,7 +137,7 @@ class SitesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'address', 'steps')
+        fields = ('id', 'name', 'address', 'location', 'steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -198,10 +201,11 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
 class SiteReportSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
     checklist = serializers.CharField(source='checklist.step_checklist')
+    checklist_id = serializers.IntegerField(source='checklist.id')
 
     class Meta:
         model = Report
-        fields = ('id', 'username', 'checklist', 'date')
+        fields = ('id', 'username', 'checklist_id', 'checklist', 'date')
 
 
 class SiteEngineerSerializer(serializers.ModelSerializer):

@@ -1,15 +1,16 @@
 import 'bootstrap';
 import jQuery from 'jquery';
+import PNotify from '../vendor/pnotify/pnotify.custom.min.js';
 // export to global scope now!
 
-require('../../node_modules/leaflet/dist/leaflet.js');
 require('../assets/js/vendor/jquery.nicescroll.min.js');
 require('../assets/js/plugins.js');
 require('../assets/css/style.css');
 
+window.PNotify = PNotify;
 window.$ = jQuery;
 window.jQuery = jQuery;
-console.log("Hello from project-dashboard");
+console.log("Hello from site-dashboard");
 
 // The routing fires all common scripts, followed by the page specific scripts.
 // Add additional events for more control over timing e.g. a finalize event

@@ -1,13 +1,17 @@
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, RedirectView, ListView
+from django.views.generic import CreateView, RedirectView, ListView, FormView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ManagerSuperAdminMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 from .models import UserRole
-from .forms import UserRoleForm, ProjectUserForm
+from .forms import UserRoleForm, ProjectUserForm, SendInvitationForm
 
 
 class Redirection(RedirectView):
@@ -125,3 +129,36 @@ class ProjectUserListView(ManagerSuperAdminMixin, ListView):
                 return context
         return context
 
+
+class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
+    model = User
+    form_class = SendInvitationForm
+    template_name = 'userrole/send_email_invitation.html'
+
+    def form_valid(self, form):
+        user_exists = UserRole.objects.filter(user__email=form.cleaned_data['email'],\
+                                   group=Group.objects.get(name='Unassigned'),
+                                   project__id=self.kwargs['project_id']).exists()
+        print(user_exists)
+        if not user_exists:
+            status = form.send_email()
+            print(status)
+            if status == 1:
+                messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
+            else:
+                messages.error(self.request, "Invitation to {} Unsuccessful.".format(form.cleaned_data['email']))
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form, data="Sorry! The user already exists."))
+
+    def get_form_kwargs(self):
+        kwargs = super(SendInvitationView, self).get_form_kwargs()
+        if self.request.method in ('POST', 'PUT'):
+            kwargs.update({
+                'project': self.kwargs['project_id']
+            })
+        return kwargs
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:project_dashboard',  args=(self.kwargs['project_id'],))
+        return success_url

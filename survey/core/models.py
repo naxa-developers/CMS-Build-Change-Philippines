@@ -76,11 +76,11 @@ class Site(models.Model):
 
     @property
     def get_latitude(self):
-        return self.location.x
+        return self.location.y
 
     @property
     def get_longitude(self):
-        return self.location.y
+        return self.location.x
 
 
 class Step(models.Model):
@@ -179,7 +179,7 @@ class Report(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}{}'.format(self.user, self.checklist)
+        return self.comment
 
 
 class CheckListHistroy(models.Model):

@@ -5,119 +5,129 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"  lang="en"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>{% block title %}School{% endblock title %}</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-        {% render_bundle 'asset_stylesheets' 'css'  %}
-        {% render_bundle 'style' 'css'  %}
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>{% block title %}School{% endblock title %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
+    {% render_bundle 'asset_stylesheets' 'css' %}
+    {% render_bundle 'style' 'css' %}
 
-        {% block extra_css %}
-        {% endblock extra_css %}
-    </head>
-    <body>
-        <!--[if lt IE 8]>
+    {% block extra_css %}
+    {% endblock extra_css %}
+</head>
+<body>
+<!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-       <header id="header" class="main-header clearfix">
-	<nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
-	  	<a class="navbar-brand" href="#">Build Change</a>
-	  	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-	    	<span class="navbar-toggler-icon"></span>
-	  	</button>
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-		    <ul class="navbar-nav mr-auto">
-		      	<li class="nav-item dropdown">
-		        	<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		          		<i class="la la-bars"></i>
-		        	</a>
-		        	<div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+<header id="header" class="main-header clearfix">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+        <a class="navbar-brand" href="#">Build Change</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="la la-bars"></i>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
                         {% if request.user.is_superuser %}
-			          	    <a class="dropdown-item" href="{% url 'core:admin_dashboard' %}">Dashboard</a>
+                            <a class="dropdown-item" href="{% url 'core:admin_dashboard' %}">Dashboard</a>
 
-                            {% else %}
-                                <a class="dropdown-item" href="{% url 'core:project_dashboard' request.project.id %}">Dashboard</a>
+                        {% else %}
+                            <a class="dropdown-item" href="{% url 'core:project_dashboard' request.project.id %}">Dashboard</a>
 
                         {% endif %}
-                     {% if request.group.name == "Project Manager"%}
-			          	<a class="dropdown-item" href="#">Materials</a>
-			          	<!--<a class="dropdown-item" href="#">Sites</a>-->
-                    {% endif %}
-		        	</div>
-		      	</li>
-		    </ul>
-	    	<ul class="navbar-nav ml-auto">
-		      	<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="la la-bell"></i>
-						<span class="badge badge-warning">4</span>
-					</a>
-					<div class="dropdown-menu large-dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
-						<div class="dropdown-header">Notifications (12) </div>
-						<div class="dropdown-item">
-							<div class="notification-item">
-								<div class="notification-avatar pull-left" href="">
-									<i class="avatar-icon la la-bolt"></i>
-								</div>
-								<div class="notification-highlight">
-									<p class="notification-highlight-excerpt">
-										<a href="#">hemant</a> submitted a response for General form <a href="#"> Daily Activity Report</a> in site <a href="#">Kobarasian (SAPTARI)</a>
-									</p>
-									<p class="notification-highlight-time">Dec 18, 2017, 6:14 PM</p>
-								</div>
-							</div>
-						</div>
-						<div class="dropdown-item">
-							<div class="notification-item">
-								<div class="notification-avatar pull-left" href="">
-									<i class="avatar-icon la la-bolt"></i>
-								</div>
-								<div class="notification-highlight">
-									<p class="notification-highlight-excerpt">
-										<a href="#">hemant</a> submitted a response for General form <a href="#"> Daily Activity Report</a> in site <a href="#">Kobarasian (SAPTARI)</a>
-									</p>
-									<p class="notification-highlight-time">Dec 18, 2017, 6:14 PM</p>
-								</div>
-							</div>
-						</div>
-						<div class="dropdown-divider"></div>
-						<div class="dropdown-header">
-							<div class="row">
-								<div class="col text-left">
-									<a href="#" title="">View All</a>
-								</div>
-								<div class="col text-right">
-									<a href="#" title="">Mark all as read</a>
-								</div>
-							</div>
-						</div>
-					</div>
-				</li>
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<div class="user-avatar">
-                            <img src="{% static 'assets/img/logo.png'  %}">
-						</div>
-						<span class="hidden-sm hidden-xs">{{request.user}}</span>
-					</a>
-					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButtonUser">
-						<a class="dropdown-item" href="{% url 'core:user_profile_detail' request.user.pk %}"><i class="la la-user"></i> My Profile</a>
-						<a class="dropdown-item" href="{% url 'password_change' %}"><i class="la la-key"></i> Change Password</a>
-						<a class="dropdown-item" href="{% url 'logout' %}"><i class="la la-sign-out"></i> Logout</a>
-					</div>
-				</li>
-		    </ul>
-	  	</div>
-	</nav>
+                        {% if request.group.name == "Project Manager" %}
+                            <a class="dropdown-item" href="#">Materials</a>
+                            <!--<a class="dropdown-item" href="#">Sites</a>-->
+                        {% endif %}
+                    </div>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="la la-bell"></i>
+                        <span class="badge badge-warning">4</span>
+                    </a>
+                    <div class="dropdown-menu large-dropdown-menu dropdown-menu-right"
+                         aria-labelledby="navbarDropdown2">
+                        <div class="dropdown-header">Notifications (12)</div>
+                        <div class="dropdown-item">
+                            <div class="notification-item">
+                                <div class="notification-avatar pull-left" href="">
+                                    <i class="avatar-icon la la-bolt"></i>
+                                </div>
+                                <div class="notification-highlight">
+                                    <p class="notification-highlight-excerpt">
+                                        <a href="#">hemant</a> submitted a response for General form <a href="#"> Daily
+                                        Activity Report</a> in site <a href="#">Kobarasian (SAPTARI)</a>
+                                    </p>
+                                    <p class="notification-highlight-time">Dec 18, 2017, 6:14 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-item">
+                            <div class="notification-item">
+                                <div class="notification-avatar pull-left" href="">
+                                    <i class="avatar-icon la la-bolt"></i>
+                                </div>
+                                <div class="notification-highlight">
+                                    <p class="notification-highlight-excerpt">
+                                        <a href="#">hemant</a> submitted a response for General form <a href="#"> Daily
+                                        Activity Report</a> in site <a href="#">Kobarasian (SAPTARI)</a>
+                                    </p>
+                                    <p class="notification-highlight-time">Dec 18, 2017, 6:14 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-header">
+                            <div class="row">
+                                <div class="col text-left">
+                                    <a href="#" title="">View All</a>
+                                </div>
+                                <div class="col text-right">
+                                    <a href="#" title="">Mark all as read</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="user-avatar">
+                            <img src="{% static 'assets/img/logo.png' %}">
+                        </div>
+                        <span class="hidden-sm hidden-xs">{{ request.user }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButtonUser">
+                        <a class="dropdown-item" href="{% url 'core:user_profile_detail' request.user.pk %}"><i
+                                class="la la-user"></i> My Profile</a>
+                        <a class="dropdown-item" href="{% url 'password_change' %}"><i class="la la-key"></i> Change
+                            Password</a>
+                        <a class="dropdown-item" href="{% url 'logout' %}"><i class="la la-sign-out"></i> Logout</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header>
 <div id="main-container" class="minified">
- {% block content %}
-	<div class="row no-gutters">
+    {% block content %}
+        <div class="row no-gutters">
             <div class="col-md-4 col-lg-3">
                 <div class="module-school-list">
                     <div class="school-wrap">
@@ -210,11 +220,15 @@
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
                                     <h4><a href="#" title="">Widget</a></h4>
-                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                            class="la la-plus"></i> Add New</a>
                                 </div>
                                 <div class="widget-body">
-                                     <p>
-                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                                        tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                                        vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+                                        no sea takimata sanctus est Lorem ipsum dolor sit amet.
                                     </p>
                                 </div>
                             </div>
@@ -223,11 +237,15 @@
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
                                     <h4><a href="#" title="">Widget</a></h4>
-                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                            class="la la-plus"></i> Add New</a>
                                 </div>
                                 <div class="widget-body">
-                                     <p>
-                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                                        tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                                        vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+                                        no sea takimata sanctus est Lorem ipsum dolor sit amet.
                                     </p>
                                 </div>
                             </div>
@@ -236,11 +254,23 @@
                             <div class="widget-info margin-top-large">
                                 <div class="widget-head">
                                     <h4><a href="#" title="">Widget</a></h4>
-                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i class="la la-plus"></i> Add New</a>
+                                    <a href="#" title="" class="btn btn-sm btn-xs btn-primary" target="_blank"><i
+                                            class="la la-plus"></i> Add New</a>
                                 </div>
                                 <div class="widget-body">
-                                     <p>
-                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                                        tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                                        vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,
+                                        no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit
+                                        amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                        labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
+                                        et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+                                        sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
+                                        sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+                                        magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo
+                                        dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
+                                        Lorem ipsum dolor sit amet.
                                     </p>
                                 </div>
                             </div>
@@ -250,14 +280,26 @@
             </div>
         </div>
 
- {% endblock content %}
+    {% endblock content %}
 
 </div>
 <script>
-    var template_data = template_data ||  {};
+    var template_data = template_data || {};
 </script>
 {% block extra_script %}
     {% render_bundle 'main' 'js' %}
 {% endblock extra_script %}
+<script>
+    {% for message in messages %}
+    $(document).ready(function () {
+        new PNotify({
+            target: document.body,
+            {#title: '{{ message.tags|upper }}',#}
+            text: '{{ message }}',
+            type: '{{ message.tags }}'
+        });
+    });
+    {% endfor %}
+</script>
 </body>
 </html>

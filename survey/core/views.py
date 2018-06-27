@@ -232,11 +232,13 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
             context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location'))
+        else:
+            context['locations'] =  [[]]
         site_address = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
         json_site_address = json.dumps(list(site_address))
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
-        context['site_latlong'] = [[l.x, l.y] for l in site_latlong_object]
+        context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
@@ -323,7 +325,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:5]
+        context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:10]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username', flat=True)
@@ -333,7 +335,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
         if total_site_checklist_count:
-            context['progress'] = round(checklist_status_true_count/total_site_checklist_count*100)
+            context['progress'] = round((checklist_status_true_count/total_site_checklist_count)*100)
         else:
             context['progress'] = 0
         return context
@@ -445,7 +447,7 @@ class CategoryFormView(CategoryRoleMixin, FormView):
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         form.save()
-        return super().form_valid(form)
+        return super(). form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -783,14 +785,18 @@ class SiteDocumentListView(DocumentRoleMixin, ListView):
         List of Site Documents
     """
     model = SiteDocument
+    template_name = "core/sitedocument_list.html"
     form_class = SiteDocumentForm
+    context_object_name = 'documents'
+    paginate_by = 5
+
+    def get_queryset(self, *args, **kwargs):
+        return SiteDocument.objects.filter(site=self.kwargs['site_id'])
 
     def get_context_data(self, *, object_list=None, **kwargs):
-
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
-        context['documents'] = SiteDocument.objects.filter(site=self.kwargs['site_id'])
         return context
 
 
