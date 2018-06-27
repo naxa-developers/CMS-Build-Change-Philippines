@@ -159,6 +159,11 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
             })
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        return context
+
     def get_success_url(self):
         success_url = reverse_lazy('core:project_dashboard',  args=(self.kwargs['project_id'],))
         return success_url
