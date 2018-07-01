@@ -181,6 +181,9 @@ class Report(models.Model):
     def __str__(self):
         return self.comment
 
+    class Meta:
+        ordering = ('-date', )
+
 
 class CheckListHistroy(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_checklist_history', on_delete=models.SET_NULL, null=True,
