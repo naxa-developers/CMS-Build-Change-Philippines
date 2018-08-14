@@ -27,7 +27,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         user.save()
 
         UserRole.objects.create(user=user, group=Group.objects.get(name='Community Member'), project_id=1)
-
         return user
 
 
