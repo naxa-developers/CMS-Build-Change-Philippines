@@ -25,7 +25,10 @@
         <div class="col-md-4 col-lg-3">
             <div class="school-profile bg-white">
                 <div class="profile-head">
-                    <img src="{{ MEDIA_URL }}{{ site.photo }}" class="school-logo" alt="">
+                    {% if site.photo %}
+                        <img src="{{ site.photo.url }}" class="school-logo" alt="">
+
+                    {% endif %}
                     <h4>{{ site.name }}</h4>
                     <span>{{ site.address }}</span>
                     <div class="text-center margin-top">
@@ -188,7 +191,10 @@
                                 <ul class="submission-list">
                                     {% for report in site_reports %}
                                         <li>
-                                            <img src="{{ MEDIA_URL }}{{ report.photo }}" alt="">
+                                        {% if report.photo %}
+                                            <img src="{{ report.photo.url }}" alt="">
+
+                                        {% endif %}
                                             <a title="View submission detail"
                                                href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment|truncatechars:20 }}</strong></a>
                                             <br>
@@ -246,16 +252,23 @@
                             <div class="widget-body no-padding-top" data-mh="sd-widget">
                                 <div class="row">
                                     {% for picture in site_pictures %}
+                                        {% if picture.0 %}
+
                                     <div class="col-md-4">
                                         <div class="photo-holder photo-item margin-top">
-                                            <img src="{{ MEDIA_URL }}{{ picture }}" img-title="Hello" alt="">
+                                                <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
+
                                         </div>
 
-                                    </div>
-                                    {% empty %} <p>No Pictures Found.</p>
-                                    {% endfor %}
+                                    </div>                                            {% endif %}
+
+                                    {% empty %}
+                                        <p>No Pictures Found.</p>
+                                                                    {% endfor %}
+
 
                                 </div>
+
                             </div>
                         </div>
                     </div>
