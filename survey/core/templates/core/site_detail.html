@@ -4,6 +4,13 @@
 {% load render_bundle from webpack_loader %}
 {% load get_files from webpack_loader %}
 
+{% block extra_css %}
+<style>.widget-info .widget-body {
+    max-height: 300px;
+    overflow-y: scroll;
+</style>
+{% endblock %}
+
 {% block content %}
     <div class="row no-gutters">
         <div class="col-md-12">
@@ -119,64 +126,57 @@
                                 <a href="{% url 'core:site-steps' 0 site.pk %}" title="" class="btn btn-sm btn-xs btn-primary"><i
                                         class="la la-plus"></i> Add New Step</a>
                             </div>
-                            <div class="widget-body overflow-show" data-mh="sd-widget">
-                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                                    {% for step in step_list %}
-                                        {% if forloop.counter == 1 %}
-                                            <li class="nav-item">
-                                                <a class="nav-link active" id="pills-step{{ forloop.counter }}-tab"
-                                                   data-toggle="pill"
-                                                   href="#pills-step{{ forloop.counter }}" role="tab"
-                                                   aria-controls="pills-step{{ forloop.counter }}"
-                                                   aria-selected="true"><i class="la la-exclamation"></i>{{ step.name }}
-                                                </a>
+
+
+                            <div class="widget-body">
+
+                                <div class="guidelines-wrap">
+                                    <ul id="accordion" class="collapseableWrap">
+                                        {% for step in step_list %}
+                                            <li>
+                                                <div class="collapseHeader" id="{{ step.pk }}"
+                                                     data-toggle="collapse"
+                                                     data-target="#target_{{ forloop.counter0 }}" aria-expanded="true"
+                                                     aria-controls="target_{{ forloop.counter0 }}">{{ step }} <i
+                                                        class="la la-plus-circle"></i>
+                                                </div>
+                                                <div id="target_{{ forloop.counter0 }}" class="collapse collapseBody"
+                                                     aria-labelledby="{{ step.pk }}"
+                                                     data-parent="#accordion">
+                                                    <ul class="guideline-list">
+                                                        {% for checklist in step.checklist_steps.all %}
+                                                            <li>
+                                                                <h6>
+                                                                    {% if checklist.status %}
+                                                                    <i class="la la-check-circle"></i>
+                                                                        {% else %}
+                                                                        <i class="la la-times-circle-o"></i>
+                                                                    {% endif %}
+                                                                    {{ checklist.text }}
+                                                                </h6>
+                                                                <small>
+                                                                </small>
+                                                                <div class="guideline-action">
+                                                                    <a href=""
+                                                                       data-toggle="tooltip" data-placement="top"
+                                                                       title="Edit"></a>
+                                                                </div>
+                                                                {% empty %}
+                                                                <small>No Checklist Found.</small>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
                                             </li>
-                                        {% else %}
-                                            <li class="nav-item">
-                                                <a class="nav-link" id="pills-step{{ forloop.counter }}-tab"
-                                                   data-toggle="pill" href="#pills-step{{ forloop.counter }}"
-                                                   role="tab" aria-controls="pills-step{{ forloop.counter }}"
-                                                   aria-selected="false">{{ step.name }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% empty %}
-                                        <p>No Steps Found.</p>
-                                    {% endfor %}
-                                </ul>
-                                <div class="tab-content" id="pills-tabContent">
-                                    {% for step in step_list %}
-                                        {% if forloop.counter == 1 %}
-                                            <div class="tab-pane fade show active" id="pills-step{{ forloop.counter }}"
-                                                 role="tabpanel" aria-labelledby="pills-step{{ forloop.counter }}-tab">
-                                                <a href="#" title="" class="btn btn-primary btn-xs pull-right"><i
-                                                        class="la la-edit"></i> Edit</a>
-                                                <div class="clearfix"></div>
-                                                <ul>
-                                                    <li>
-                                                        <i class="la la-check-circle"></i>
-                                                        <strong>{{ step.name }}</strong>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        {% else %}
-                                            <div class="tab-pane fade" id="pills-step{{ forloop.counter }}"
-                                                 role="tabpanel"
-                                                 aria-labelledby="pills-step{{ forloop.counter }}-tab">
-                                                <a href="#pills-step{{ forloop.counter }}" title=""
-                                                   class="btn btn-primary btn-xs pull-right"><i
-                                                        class="la la-edit"></i> Edit</a>
-                                                <div class="clearfix"></div>
-                                                <ul>
-                                                    <li>{% for checklist in step.checklist_steps.all %}
-                                                        <i class="la la-check-circle"></i>
-                                                        <strong>{{ checklist.text }}</strong>
-                                                    </li>{% empty %}No Checklist Found.{% endfor %}
-                                                </ul>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+                                        {% endfor %}
+                                    </ul>
+
                                 </div>
                             </div>
+
+
+
+
                         </div>
                     </div>
                     <div class="col-md-6">
