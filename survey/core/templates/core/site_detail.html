@@ -40,18 +40,7 @@
                     <span>{{ site.address }}</span>
                     <div class="text-center margin-top">
                         <div class="btn-group" role="group">
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a href="#" id="btnGroupDrop1" class="btn btn-secondary dropdown-toggle"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="la la-file-text"></i> Report
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                    <a class="dropdown-item" href="{% url 'core:document_list' site.pk %}"><i
-                                            class="la la-list"></i>Document</a>
-                                    <a class="dropdown-item" href="#"><i class="la la-reply"></i> View Responses</a>
-                                    <a class="dropdown-item" href="#"><i class="la la-list"></i> Generate Report</a>
-                                </div>
-                            </div>
+
                             <div class="btn-group btn-group-sm" role="group">
                                 <a href="#" id="btnGroupDrop2" class="btn btn-secondary dropdown-toggle"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,6 +50,9 @@
                                     <a class="dropdown-item"
                                        href="{% url 'userrole:field_engineer_create' object.pk %}"><i
                                             class="la la-user"></i> People</a>
+                                     <a class="dropdown-item"
+                                       href="{% url 'core:document_list' site.pk %}"><i
+                                            class="la la-user"></i> Documents</a>
                                     <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i
                                             class="la la-tasks"></i> Edit</a>
                                     <a class="dropdown-item" href="{% url 'core:site_delete' object.pk %}"><i
@@ -145,9 +137,11 @@
                                                      data-parent="#accordion">
                                                     <ul class="guideline-list">
                                                         {% for checklist in step.checklist_steps.all %}
+
+
                                                             <li>
                                                                 <h6>
-                                                                    {% if checklist.status %}
+                                                                    {% if checklist.report_status %}
                                                                     <i class="la la-check-circle"></i>
                                                                         {% else %}
                                                                         <i class="la la-times-circle-o"></i>

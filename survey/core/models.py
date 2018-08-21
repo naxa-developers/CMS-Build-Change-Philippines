@@ -101,9 +101,9 @@ class Step(models.Model):
             if self.site.project.setting.local_language:
                 return getattr(self, 'name_'+self.site.project.setting.local_language)
             else:
-                return "No language chosen yet."
+                return "No Translation in Warray"
         except:
-            return "No language chosen yet."
+            return "No Translation in Warray"
 
 
 class Category(models.Model):
@@ -118,9 +118,9 @@ class Category(models.Model):
             if self.project.setting.local_language:
                 return getattr(self, 'name_'+self.project.setting.local_language)
             else:
-                return "No language chosen yet."
+                return "No Translation in Warray"
         except:
-            return "No language chosen yet."
+            return "No Translation in Warray"
 
     @property
     def materials(self):
@@ -161,9 +161,9 @@ class Checklist(models.Model):
             if self.step.site.project.setting.local_language:
                 return getattr(self, 'text_'+self.step.site.project.setting.local_language)
             else:
-                return "No language chosen yet."
+                return "No Translation in Warray"
         except:
-            return "No language chosen yet."
+            return "No Translation in Warray"
 
     def get_status(self):
         return self.status
