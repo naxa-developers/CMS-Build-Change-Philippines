@@ -241,6 +241,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
+        context['recent_activities_checklist'] = Checklist.objects.select_related('material', 'step')[:5]
+
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
             return context

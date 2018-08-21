@@ -87,7 +87,7 @@ class ChecklistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Checklist
-        fields = ('id', 'text', 'step', 'localtext', 'materials','material', 'last_submission')
+        fields = ('id', 'text', 'step', 'localtext', 'materials', 'material', 'status', 'last_submission')
 
     def get_materials(self, obj):
         if obj.material:

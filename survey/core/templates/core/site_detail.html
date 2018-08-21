@@ -139,13 +139,16 @@
                                                         {% for checklist in step.checklist_steps.all %}
 
 
+
                                                             <li>
                                                                 <h6>
-                                                                    {% if checklist.report_status %}
-                                                                    <i class="la la-check-circle"></i>
-                                                                        {% else %}
-                                                                        <i class="la la-times-circle-o"></i>
-                                                                    {% endif %}
+                                                                        {% if checklist.status %}
+                                                                        <i class="la la-check-circle"></i>
+                                                                            {% else %}
+                                                                            <i class="la la-times-circle-o"></i>
+
+                                                                        {% endif %}
+
                                                                     {{ checklist.text }}
                                                                 </h6>
                                                                 <small>
