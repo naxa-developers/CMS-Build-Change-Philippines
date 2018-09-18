@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument
+from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSubSteps
 from userrole.models import UserRole
-from collections import OrderedDict
 
 
 class StepsSerializer(serializers.ModelSerializer):
@@ -29,12 +28,39 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'order', 'checklist')
 
 
+class ConstructionSubstepSerializer(serializers.ModelSerializer):
+    created_by = serializers.CharField(source="created_by.username")
+
+    class Meta:
+        model = ConstructionSubSteps
+        fields = ('title', 'description', 'good_photo', 'bad_photo', 'primary_photo', 'order', 'created_by')
+
+
+class SiteStepsSerializer(serializers.ModelSerializer):
+    step = serializers.CharField(source="step.name")
+    order = serializers.CharField(source="step.order")
+    sub_steps = serializers.SerializerMethodField()
+
+    class Meta:
+        model = SiteSteps
+        fields = ('step', 'order', 'sub_steps')
+
+    def get_sub_steps(self, obj):
+        sub_steps = ConstructionSubSteps.objects.filter(
+            step=obj.step,
+        )
+        serializer = ConstructionSubstepSerializer(sub_steps, many=True)
+
+        return serializer.data
+
+
 class SitesSerializer(serializers.ModelSerializer):
     steps = ProjectStepsSerializer(many=True)
+    site_steps = SiteStepsSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'steps')
+        fields = ('id', 'name', 'steps', 'site_steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -132,20 +158,22 @@ class StepDetailSerializer(serializers.ModelSerializer):
         return  ChecklistSerializer(qs, many=True).data
 
 
-class SitesSerializer(serializers.ModelSerializer):
-    steps = StepDetailSerializer(many=True)
-
-    class Meta:
-        model = Site
-        fields = ('id', 'name', 'address', 'location', 'steps')
-
-
-class ProjectSerializer(serializers.ModelSerializer):
-    sites = SitesSerializer(many=True)
-
-    class Meta:
-        model = Project
-        fields = ('id', 'name', 'sites')
+#
+# class SitesSerializer(serializers.ModelSerializer):
+#     steps = StepDetailSerializer(many=True)
+#
+#
+#     class Meta:
+#         model = Site
+#         fields = ('id', 'name', 'address', 'location', 'steps')
+#
+#
+# class ProjectSerializer(serializers.ModelSerializer):
+#     sites = SitesSerializer(many=True)
+#
+#     class Meta:
+#         model = Project
+#         fields = ('id', 'name', 'sites')
 
 
 class ReportSerializer(serializers.ModelSerializer):

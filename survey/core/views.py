@@ -20,9 +20,10 @@ from rest_framework.utils import json
 from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist
+from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm
+    UserCreateForm, SiteConstructionStepsForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -140,6 +141,20 @@ class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
             return context
 
+    def form_valid(self, form):
+        self.object = form.save()
+        project_id = self.object.id
+        for step in CONSTRUCTION_STEPS_LIST:
+            ConstructionSteps.objects.get_or_create(name=step, project_id=project_id)
+
+        for step_substeps in CONSTRUCTION_SUB_STEPS_LIST:
+            for step in step_substeps.keys():
+                for substeps_list in step_substeps.values():
+                    for substep in substeps_list:
+                        ConstructionSubSteps.objects.get_or_create(title=substep, step=ConstructionSteps.objects.get(name=step), created_by=self.request.user)
+
+        return super().form_valid(form)
+
 
 class ProjectDetailView(SuperAdminMixin, ProjectMixin, DetailView):
     """
@@ -226,7 +241,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['users'] = User.objects.filter(user_roles__project__id=self.kwargs['project_id'],\
                                                user_roles__group__name__exact="Project Manager")[:5]
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
-        context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
+        # context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
+        context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id'])
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
         site_geojson = Site.objects.filter(\
@@ -853,3 +869,32 @@ class UserProfileDetailView(DetailView):
             context['project'] = Project.objects.get(project_roles__user=self.request.user)
             return context
         return context
+
+
+# updated views
+class ConstructionStepUpdate(UpdateView):
+    model = ConstructionSubSteps
+    fields = '__all__'
+    template_name = 'core/construction_substep_form.html'
+
+
+class SiteStepsCreate(FormView):
+    template_name = "core/construction_sitesteps_form.html"
+    form_class = SiteConstructionStepsForm
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        construction_steps = ConstructionSteps.objects.all()
+        return self.render_to_response(
+            self.get_context_data(form=form, construction_steps=construction_steps
+
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+
+        site_id = get_object_or_404(Site, id=self.kwargs['site_id']).id
+        for construction_step_id in request.POST.getlist('construction_steps'):
+            SiteSteps.objects.get_or_create(site_id=site_id, step_id=construction_step_id)
+
+        url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+        return HttpResponseRedirect(url)

@@ -46,5 +46,9 @@ urlpatterns = [
     path('project-material-photos/<int:project_id>', views.project_material_photos, name="project_material_photos"),
     path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
 
+    # Updated urls
+    path('construction-step-update/<int:pk>/', views.ConstructionStepUpdate.as_view(), name="construction_step_update"),
+    path('site-steps-create/<int:site_id>/', views.SiteStepsCreate.as_view(), name="site_steps_create"),
+
 ]
 

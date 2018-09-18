@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument
+from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps
 
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -90,3 +90,19 @@ class UserCreateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
+
+
+# Updated form
+class SiteConstructionStepsForm(forms.ModelForm):
+    """ Form to create prakop, baali, mausam, prakop starikaran list for project """
+
+    construction_steps = forms.ModelMultipleChoiceField(
+        queryset=ConstructionSteps.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    class Meta:
+        model = ConstructionSteps
+        fields = ['construction_steps',]
+
+

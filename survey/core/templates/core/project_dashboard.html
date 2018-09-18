@@ -107,42 +107,42 @@
                     <div class="col-md-6">
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
-                                <h4><a href="#" title="">Construction Guidelines</a></h4>
+                                <h4><a href="#" title="">Construction Steps</a></h4>
                                 <a href="{% url 'core:category_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Category</a>
+                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>Configure Steps</a>
                                 <a href="{% url 'core:material_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Guidelines</a>
+                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Substeps</a>
                             </div>
                             <div class="widget-body">
 
                                 <div class="guidelines-wrap">
                                     <ul id="accordion" class="collapseableWrap">
-                                        {% for category in category_list %}
+                                        {% for step in construction_steps_list %}
                                             <li>
-                                                <div class="collapseHeader" id="{{ category.pk }}"
+                                                <div class="collapseHeader" id="{{ step.pk }}"
                                                      data-toggle="collapse"
                                                      data-target="#target_{{ forloop.counter0 }}" aria-expanded="true"
-                                                     aria-controls="target_{{ forloop.counter0 }}">{{ category }} <i
+                                                     aria-controls="target_{{ forloop.counter0 }}">{{ step }} <i
                                                         class="la la-plus-circle"></i>
                                                 </div>
                                                 <div id="target_{{ forloop.counter0 }}" class="collapse collapseBody"
-                                                     aria-labelledby="{{ category.pk }}"
+                                                     aria-labelledby="{{ step.pk }}"
                                                      data-parent="#accordion">
                                                     <ul class="guideline-list">
-                                                        {% for material in category.materials.all %}
+                                                        {% for sub_step in step.sub_steps.all %}
                                                             <li>
                                                                 <h6>
-                                                                    <a href="{% url 'core:material_detail' material.pk %}">{{ material }}</a>
+                                                                    <a href="{% url 'core:construction_step_update' sub_step.pk %}">{{ sub_step }}</a>
                                                                 </h6>
-                                                                <small>Created By: {{ material.created_by.username }}
+                                                                <small>Created By: {{ sub_step.created_by.username }}
                                                                 </small>
                                                                 <div class="guideline-action">
-                                                                    <a href="{% url 'core:material_update' material.pk %}"
+                                                                    <a href=""
                                                                        data-toggle="tooltip" data-placement="top"
                                                                        title="Edit"><i class="la la-edit"></i></a>
                                                                 </div>
                                                                 {% empty %}
-                                                                <small>No Guidelines Found.</small>
+                                                                <small>No Sub Steps Found.</small>
                                                             </li>
                                                         {% endfor %}
                                                     </ul>
