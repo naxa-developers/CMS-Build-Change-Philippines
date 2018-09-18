@@ -884,8 +884,9 @@ class SiteStepsCreate(FormView):
     form_class = SiteConstructionStepsForm
 
     def get(self, request, *args, **kwargs):
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
         form = self.form_class()
-        construction_steps = ConstructionSteps.objects.all()
+        construction_steps = ConstructionSteps.objects.filter(project_id=project_id)
         return self.render_to_response(
             self.get_context_data(form=form, construction_steps=construction_steps
 
