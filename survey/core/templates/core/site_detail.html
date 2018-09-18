@@ -124,7 +124,7 @@
 
                                 <div class="guidelines-wrap">
                                     <ul id="accordion" class="collapseableWrap">
-                                        {% for step in step_list %}
+                                        {% for step in construction_steps_list %}
                                             <li>
                                                 <div class="collapseHeader" id="{{ step.pk }}"
                                                      data-toggle="collapse"
@@ -136,20 +136,13 @@
                                                      aria-labelledby="{{ step.pk }}"
                                                      data-parent="#accordion">
                                                     <ul class="guideline-list">
-                                                        {% for checklist in step.checklist_steps.all %}
+                                                        {% for sub_step in step.step.sub_steps.all %}
 
 
 
                                                             <li>
                                                                 <h6>
-                                                                        {% if checklist.status %}
-                                                                        <i class="la la-check-circle"></i>
-                                                                            {% else %}
-                                                                            <i class="la la-times-circle-o"></i>
-
-                                                                        {% endif %}
-
-                                                                    {{ checklist.text }}
+                                                                    {{ sub_step.title }}
                                                                 </h6>
                                                                 <small>
                                                                 </small>
@@ -159,12 +152,15 @@
                                                                        title="Edit"></a>
                                                                 </div>
                                                                 {% empty %}
-                                                                <small>No Checklist Found.</small>
-                                                            </li>
+                                                                <small>No Sub Steps Found.</small>
+
                                                         {% endfor %}
                                                     </ul>
                                                 </div>
                                             </li>
+                                              </li>
+                                                        {% empty %}
+                                                        <small>No Steps Found </small>
                                         {% endfor %}
                                     </ul>
 

@@ -350,6 +350,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
                                     .values_list('user__username', flat=True)
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         context['site_pictures'] = Report.objects.filter(checklist__step__site__id=self.kwargs['pk']).values_list('photo')
+        context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk'])
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
         if total_site_checklist_count:
@@ -898,3 +899,17 @@ class SiteStepsCreate(FormView):
 
         url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
         return HttpResponseRedirect(url)
+
+
+class ConfigureProjectSteps(CreateView):
+    model = ConstructionSteps
+    fields = ('name', 'order')
+    template_name = 'core/configure_project_steps_form.html'
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
