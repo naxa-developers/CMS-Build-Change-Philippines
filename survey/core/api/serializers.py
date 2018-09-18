@@ -35,40 +35,40 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
         model = ConstructionSubSteps
         fields = ('title', 'description', 'good_photo', 'bad_photo', 'primary_photo', 'order', 'created_by')
 
-
-class SiteStepsSerializer(serializers.ModelSerializer):
-    step = serializers.CharField(source="step.name")
-    order = serializers.CharField(source="step.order")
-    # sub_steps = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SiteSteps
-        fields = ('step', 'order')
-
-    def get_sub_steps(self, obj):
-        sub_steps = ConstructionSubSteps.objects.filter(
-            step=obj.step,
-        )
-        serializer = ConstructionSubstepSerializer(sub_steps, many=True)
-
-        return serializer.data
-
-
-class SitesSerializer(serializers.ModelSerializer):
-    steps = ProjectStepsSerializer(many=True)
-    site_steps = SiteStepsSerializer(many=True)
-
-    class Meta:
-        model = Site
-        fields = ('id', 'name', 'steps', 'site_steps')
+#
+# class SiteStepsSerializer(serializers.ModelSerializer):
+#     step = serializers.CharField(source="step.name")
+#     order = serializers.CharField(source="step.order")
+#     sub_steps = serializers.SerializerMethodField()
+#
+#     class Meta:
+#         model = SiteSteps
+#         fields = ('step', 'order', 'sub_steps')
+#
+#     def get_sub_steps(self, obj):
+#         sub_steps = ConstructionSubSteps.objects.filter(
+#             step=obj.step,
+#         )
+#         serializer = ConstructionSubstepSerializer(sub_steps, many=True)
+#
+#         return serializer.data
+#
+#
+# class SitesSerializer(serializers.ModelSerializer):
+#     steps = ProjectStepsSerializer(many=True)
+#     site_steps = SiteStepsSerializer(many=True)
+#
+#     class Meta:
+#         model = Site
+#         fields = ('id', 'name', 'steps', 'site_steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    sites = SitesSerializer(many=True)
+    # sites = SitesSerializer(many=True)
 
     class Meta:
         model = Project
-        fields = ('id', 'name', 'sites')
+        fields = ('id', 'name')
 
 
 class MaterialSerializer(serializers.ModelSerializer):
