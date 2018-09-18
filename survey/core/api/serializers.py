@@ -39,11 +39,11 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
     order = serializers.CharField(source="step.order")
-    sub_steps = serializers.SerializerMethodField()
+    # sub_steps = serializers.SerializerMethodField()
 
     class Meta:
         model = SiteSteps
-        fields = ('step', 'order', 'sub_steps')
+        fields = ('step', 'order')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.filter(
