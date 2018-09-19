@@ -21,6 +21,6 @@ class Command(BaseCommand):
 
              ]
         for construction_step in CONSTRUCTION_STEPS_LIST:
-            new_construction_step, created = ConstructionSteps.objects.get_or_create(title=construction_step, project_id=project_id)
+            new_construction_step, created = ConstructionSteps.objects.get_or_create(name=construction_step, project_id=project_id)
             if created:
                 self.stdout.write('Successfully created construction_step .. "%s"' % construction_step)
