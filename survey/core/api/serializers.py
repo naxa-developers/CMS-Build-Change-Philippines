@@ -31,6 +31,7 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_title = serializers.CharField(source="title_de")
     local_description = serializers.CharField(source="description_de")
+    created_by = serializers.CharField(source="created_by.username")
 
     class Meta:
         model = ConstructionSubSteps
@@ -40,7 +41,7 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
     local_step = serializers.CharField(source="step.name_de")
-    order = serializers.CharField(source="step.order")
+    order = serializers.IntegerField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
 
     class Meta:
