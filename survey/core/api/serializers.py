@@ -29,20 +29,23 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
+    local_title = serializers.CharField(source="title_de")
+    local_description = serializers.CharField(source="description_de")
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'description', 'good_photo', 'bad_photo', 'primary_photo', 'order')
+        fields = ('title', 'local_title', 'description', 'local_description', 'good_photo', 'bad_photo', 'primary_photo', 'order')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
+    local_step = serializers.CharField(source="step.name_de")
     order = serializers.CharField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
 
     class Meta:
         model = SiteSteps
-        fields = ('step', 'order', 'sub_steps')
+        fields = ('step', 'local_step', 'order', 'sub_steps')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.filter(
@@ -55,6 +58,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
+
     site_steps = SiteStepsSerializer(many=True)
 
     class Meta:

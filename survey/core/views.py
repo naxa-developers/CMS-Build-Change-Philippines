@@ -906,7 +906,7 @@ class SiteStepsCreate(FormView):
 
 class ConfigureProjectSteps(CreateView):
     model = ConstructionSteps
-    fields = ('name', 'order')
+    fields = ('name', 'name_de', 'order')
     template_name = 'core/configure_project_steps_form.html'
 
     def form_valid(self, form):

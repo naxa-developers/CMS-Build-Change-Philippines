@@ -118,6 +118,7 @@
                                 <div class="guidelines-wrap">
                                     <ul id="accordion" class="collapseableWrap">
                                         {% for step in construction_steps_list %}
+                                        {{step.all}}
                                             <li>
                                                 <div class="collapseHeader" id="{{ step.pk }}"
                                                      data-toggle="collapse"
