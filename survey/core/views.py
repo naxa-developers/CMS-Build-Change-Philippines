@@ -243,7 +243,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
                                                user_roles__group__name__exact="Project Manager")[:5]
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         # context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
-        context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('id')
+        context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
         site_geojson = Site.objects.filter(\
@@ -717,9 +717,6 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         sitematerials = SiteMaterials.objects.filter(site=site)
         sitematerials_list=[]
         [sitematerials_list.append(sm.materials.all()) for sm in sitematerials]
-        print(sitematerials_list)
-        import ipdb
-        ipdb.set_trace()
         success_url = reverse_lazy('core:site_material_list', args=(self.object.site.pk,))
         self.object.materials.remove(materials)
         return HttpResponseRedirect(success_url)
