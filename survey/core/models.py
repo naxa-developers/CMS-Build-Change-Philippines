@@ -301,9 +301,10 @@ CONSTRUCTION_SUB_STEPS_LIST = [
 #     def __str__(self):
 #         return self.title
 
+
 class SiteSteps(models.Model):
-    site = models.ForeignKey(Site, related_name="site_step", on_delete=models.CASCADE, null=True, blank=True)
-    step = models.ForeignKey(ConstructionSteps, related_name="site_step", on_delete=models.CASCADE, null=True, blank=True)
+    site = models.ForeignKey(Site, related_name="site_steps", on_delete=models.CASCADE, null=True, blank=True)
+    step = models.ForeignKey(ConstructionSteps, related_name="site_steps", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.step.name

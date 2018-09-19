@@ -37,11 +37,12 @@ class StepsSerializer(serializers.ModelSerializer):
 
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
+    order = serializers.CharField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
 
     class Meta:
         model = SiteSteps
-        fields = ('step', 'sub_steps')
+        fields = ('step', 'order', 'sub_steps')
 
     def get_sub_steps(self, obj):
         sub_steps = Material.objects.filter(
@@ -53,11 +54,11 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
 
 class SitesSerializer(serializers.ModelSerializer):
-    site_step = SiteStepsSerializer(many=True)
+    site_steps = SiteStepsSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'site_step')
+        fields = ('id', 'name', 'site_steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -75,7 +76,7 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'created_by',)
+        fields = ('id', 'title', 'description', 'primary_photo', 'good_photo', 'bad_photo', 'project', 'created_by', 'order')
 
         # fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
 
@@ -85,7 +86,7 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('id','name', 'site', 'project', 'order','localname')
+        fields = ('id', 'name', 'site', 'project', 'order', 'localname')
 
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
