@@ -54,12 +54,12 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
 
 class SitesSerializer(serializers.ModelSerializer):
-    steps = ProjectStepsSerializer(many=True)
+    #steps = ProjectStepsSerializer(many=True)
     site_steps = SiteStepsSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'steps', 'site_steps')
+        fields = ('id', 'name', 'site_steps')
 
 
 class ProjectSerializer(serializers.ModelSerializer):

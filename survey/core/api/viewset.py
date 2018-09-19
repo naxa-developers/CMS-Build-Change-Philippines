@@ -38,7 +38,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
-    queryset = Project.objects.prefetch_related('sites', 'sites__steps')
+    queryset = Project.objects.all()
 
 
 class ProjectSiteStepsViewSet(viewsets.ReadOnlyModelViewSet):
