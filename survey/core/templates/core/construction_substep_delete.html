@@ -1,0 +1,15 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    Are you sure you want to delete {{object}} ?
+    <input type="submit">
+</form>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

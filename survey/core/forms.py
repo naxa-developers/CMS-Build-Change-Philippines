@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps
+from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, ConstructionSubSteps
 
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -46,6 +46,13 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = Material
+        exclude = ('project', 'title_en', 'description_en', 'created_by')
+
+
+class ConstructionSubStepsForm(forms.ModelForm):
+
+    class Meta:
+        model = ConstructionSubSteps
         exclude = ('project', 'title_en', 'description_en', 'created_by')
 
 

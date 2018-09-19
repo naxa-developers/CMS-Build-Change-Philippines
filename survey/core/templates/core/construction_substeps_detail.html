@@ -1,0 +1,86 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a>
+                </li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ object.title }} Detail</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-8 col-lg-9">
+        <div class="dash-left">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Materials &nbsp</a></h4>
+                            <a href="{% url 'core:construction_substeps_delete' object.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-delete"></i>Delete</a>
+                            <a href="{% url 'core:construction_substeps_update' object.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-edit"></i>Edit &nbsp</a>
+                        </div>
+                        <div class="widget-body">
+                            {% if object.title %}
+                            <h5>Name</h5><br>
+                            {{ object.title }}
+                            </p><br>{% endif %}{% if object.step %}
+                            <p>
+                            <h5>Step</h5><br>
+                            <p>
+                                {{ object.step }}
+                            </p><br>{% endif %}
+
+                            {% if object.primary_photo %}
+                            <h5>Primary Photo</h5><br>
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ object.primary_photo }}">
+                            </p><br>{% endif %}
+
+
+                            {% if object.good_photo %}
+                            <h5>Good Photo</h5><br>
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ object.good_photo }}">
+                            </p><br>{% endif %}{% if object.bad_photo %}
+                            <h5>Bad Photo</h5><br>
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ object.bad_photo }}">
+                            </p><br>{% endif %}{% if object.description %}
+                            <h5>Description</h5><br>
+                            <p>
+                                {{ object.description }}
+                            </p><br>
+                            {% endif %}
+
+                            {% if object.order %}
+                            <p>
+                            <h5>Step</h5><br>
+                            <p>
+                                {{ object.order }}
+                            </p><br>{% endif %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+{% block extra_script %}
+{% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

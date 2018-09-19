@@ -51,6 +51,10 @@ urlpatterns = [
     path('construction-step-update/<int:pk>/', views.ConstructionStepUpdate.as_view(), name="construction_step_update"),
     path('site-steps-create/<int:site_id>/', views.SiteStepsCreate.as_view(), name="site_steps_create"),
     path('configure-project-steps/<int:project_id>', views.ConfigureProjectSteps.as_view(), name="configure_project_steps"),
+    path('construction-substeps-detail/<int:pk>/', views.ConstructionSubstepsDetail.as_view(), name="construction_substeps_detail"),
+    path('construction-substeps-update/<int:pk>/', views.ConstructionSubstepsUpdate.as_view(), name="construction_substeps_update"),
+    path('construction-substeps-delete/<int:pk>/', views.ConstructionSubstepsDelete.as_view(),
+         name="construction_substeps_delete"),
 
 ]
 

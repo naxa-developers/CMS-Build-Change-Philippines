@@ -23,7 +23,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm, SiteConstructionStepsForm
+    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -921,7 +921,12 @@ class ConfigureProjectSteps(CreateView):
 class ConstructionSubstepCreate(CreateView):
     model = ConstructionSubSteps
     template_name = 'core/construction_substep_form.html'
-    fields = '__all__'
+    form_class = ConstructionSubStepsForm
+
+    def get_form(self, form_class=None):
+        form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(project=self.kwargs['project_id'])
+        return form
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
@@ -930,3 +935,33 @@ class ConstructionSubstepCreate(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+
+
+class ConstructionSubstepsDetail(DetailView):
+    template_name = "core/construction_substeps_detail.html"
+    form_class = ConstructionSubStepsForm
+    model = ConstructionSubSteps
+
+
+class ConstructionSubstepsUpdate(UpdateView):
+    template_name = "core/construction_substep_form.html"
+    form_class = ConstructionSubStepsForm
+    model = ConstructionSubSteps
+
+    def get_form(self, form_class=None):
+        form = super(ConstructionSubstepsUpdate, self).get_form(form_class=self.form_class)
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.object.project.id)
+        return form
+
+    def get_success_url(self):
+            success_url = reverse_lazy('core:construction_substeps_detail', args=(self.object.pk,))
+            return success_url
+
+
+class ConstructionSubstepsDelete(DeleteView):
+    model = ConstructionSubSteps
+    template_name = 'core/construction_substep_delete.html'
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+        return success_url

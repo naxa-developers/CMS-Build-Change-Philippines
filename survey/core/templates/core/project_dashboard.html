@@ -132,7 +132,7 @@
                                                         {% for sub_step in step.sub_steps.all %}
                                                             <li>
                                                                 <h6>
-                                                                    <a href="{% url 'core:construction_step_update' sub_step.pk %}">{{ sub_step }}</a>
+                                                                    <a href="{% url 'core:construction_substeps_detail' sub_step.pk %}">{{ sub_step }}</a>
                                                                 </h6>
                                                                 <small>Created By: {{ sub_step.created_by.username }}
                                                                 </small>
