@@ -106,7 +106,7 @@ class Step(models.Model):
         except:
             return "No Translation in Warray"
 
-
+# not used
 class Category(models.Model):
     name = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="category", on_delete=models.CASCADE, null=True, blank=True)
@@ -123,19 +123,41 @@ class Category(models.Model):
         except:
             return "No Translation in Warray"
 
-    @property
-    def materials(self):
-        return self.material
+    # @property
+    # def materials(self):
+    #     return self.material
+
+
+class ConstructionSteps(models.Model):
+    name = models.CharField(max_length=250)
+    project = models.ForeignKey(Project, related_name="construction_steps", on_delete=models.CASCADE, null=True,
+                                blank=True)
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+    def get_localname(self):
+        try:
+            if self.project.setting.local_language:
+                return getattr(self, 'name_' + self.project.setting.local_language)
+            else:
+                return "No Translation in Warray"
+        except:
+            return "No Translation in Warray"
 
 
 class Material(models.Model):
     title = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
+    # category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
+    step = models.ForeignKey(ConstructionSteps, related_name="materials", on_delete=models.CASCADE, null=True, blank=True)
+    primary_photo = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
     description = models.TextField(max_length=300, blank=True, null=True)
     good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
     bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    order = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -264,43 +286,24 @@ CONSTRUCTION_SUB_STEPS_LIST = [
         ]
 
 
-class ConstructionSteps(models.Model):
-    name = models.CharField(max_length=250)
-    project = models.ForeignKey(Project, related_name="construction_steps", on_delete=models.CASCADE, null=True,
-                                blank=True)
-    order = models.IntegerField(default=0)
 
-    def __str__(self):
-        return self.name
-
-    def get_localname(self):
-        try:
-            if self.project.setting.local_language:
-                return getattr(self, 'name_' + self.project.setting.local_language)
-            else:
-                return "No Translation in Warray"
-        except:
-            return "No Translation in Warray"
-
-
-class ConstructionSubSteps(models.Model):
-    title = models.CharField(max_length=250)
-    project = models.ForeignKey(Project, related_name="construction_substeps", on_delete=models.CASCADE, null=True, blank=True)
-    step = models.ForeignKey(ConstructionSteps, related_name="sub_steps", on_delete=models.CASCADE)
-    description = models.TextField(max_length=300, blank=True, null=True)
-    good_photo = models.ImageField(upload_to="materials/update_good_photo", blank=True, null=True)
-    bad_photo = models.ImageField(upload_to="materials/update_bad_photo", blank=True, null=True)
-    primary_photo = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
-    order = models.IntegerField(default=0)
-    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.title
-
+# class ConstructionSubSteps(models.Model):
+#     title = models.CharField(max_length=250)
+#     project = models.ForeignKey(Project, related_name="construction_substeps", on_delete=models.CASCADE, null=True, blank=True)
+#     step = models.ForeignKey(ConstructionSteps, related_name="sub_steps", on_delete=models.CASCADE)
+#     description = models.TextField(max_length=300, blank=True, null=True)
+#     good_photo = models.ImageField(upload_to="materials/update_good_photo", blank=True, null=True)
+#     bad_photo = models.ImageField(upload_to="materials/update_bad_photo", blank=True, null=True)
+#     primary_photo = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
+#     order = models.IntegerField(default=0)
+#     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return self.title
 
 class SiteSteps(models.Model):
-    site = models.ForeignKey(Site, related_name="site_steps", on_delete=models.CASCADE, null=True, blank=True)
-    step = models.ForeignKey(ConstructionSteps, related_name="site_steps", on_delete=models.CASCADE, null=True, blank=True)
+    site = models.ForeignKey(Site, related_name="site_step", on_delete=models.CASCADE, null=True, blank=True)
+    step = models.ForeignKey(ConstructionSteps, related_name="site_step", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.step.name

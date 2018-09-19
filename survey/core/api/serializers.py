@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSubSteps
+from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps
 from userrole.models import UserRole
 
 
@@ -21,45 +21,43 @@ class StepsSerializer(serializers.ModelSerializer):
         return step
 
 
-class ProjectStepsSerializer(serializers.ModelSerializer):
+# class ProjectStepsSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Step
+#         fields = ('id', 'name', 'order', 'checklist')
 
-    class Meta:
-        model = Step
-        fields = ('id', 'name', 'order', 'checklist')
 
-
-class ConstructionSubstepSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = ConstructionSubSteps
-        fields = ('title', 'description', 'good_photo', 'bad_photo', 'primary_photo', 'order')
+# class ConstructionSubstepSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = ConstructionSubSteps
+#         fields = ('title', 'description', 'good_photo', 'bad_photo', 'primary_photo', 'order')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
-    order = serializers.CharField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
 
     class Meta:
         model = SiteSteps
-        fields = ('step', 'order', 'sub_steps')
+        fields = ('step', 'sub_steps')
 
     def get_sub_steps(self, obj):
-        sub_steps = ConstructionSubSteps.objects.filter(
+        sub_steps = Material.objects.filter(
             step=obj.step,
         )
-        serializer = ConstructionSubstepSerializer(sub_steps, many=True)
+        serializer = MaterialSerializer(sub_steps, many=True)
 
         return serializer.data
 
 
 class SitesSerializer(serializers.ModelSerializer):
-    #steps = ProjectStepsSerializer(many=True)
-    site_steps = SiteStepsSerializer(many=True)
+    site_step = SiteStepsSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'site_steps')
+        fields = ('id', 'name', 'site_step')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -71,13 +69,15 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class MaterialSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source='category.name')
-    local_category = serializers.CharField(source='category.get_localname')
+    # category = serializers.CharField(source='category.name')
+    # local_category = serializers.CharField(source='category.get_localname')
     created_by = serializers.ReadOnlyField(source='created_by.username')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'created_by',)
+
+        # fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
 
 
 class StepSerializer(serializers.ModelSerializer):

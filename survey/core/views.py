@@ -20,8 +20,7 @@ from rest_framework.utils import json
 from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
+from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
@@ -552,7 +551,7 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
 
     def get_form(self, form_class=None):
         form = super(MaterialFormView, self).get_form(form_class=self.form_class)
-        form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
         return form
 
     def form_valid(self, form):
@@ -874,10 +873,10 @@ class UserProfileDetailView(DetailView):
 
 
 # updated views
-class ConstructionStepUpdate(UpdateView):
-    model = ConstructionSubSteps
-    fields = '__all__'
-    template_name = 'core/construction_substep_form.html'
+# class ConstructionStepUpdate(UpdateView):
+#     model = ConstructionSubSteps
+#     fields = '__all__'
+#     template_name = 'core/construction_substep_form.html'
 
 
 class SiteStepsCreate(FormView):
@@ -917,16 +916,16 @@ class ConfigureProjectSteps(CreateView):
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
 
-
-class ConstructionSubstepCreate(CreateView):
-    model = ConstructionSubSteps
-    template_name = 'core/construction_substep_form.html'
-    fields = '__all__'
-
-    def form_valid(self, form):
-        form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
-
-        return super().form_valid(form)
-
-    def get_success_url(self):
-        return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+#
+# class ConstructionSubstepCreate(CreateView):
+#     model = ConstructionSubSteps
+#     template_name = 'core/construction_substep_form.html'
+#     fields = '__all__'
+#
+#     def form_valid(self, form):
+#         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+#
+#         return super().form_valid(form)
+#
+#     def get_success_url(self):
+#         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
