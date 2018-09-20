@@ -67,7 +67,7 @@ def project_material_photos(request, project_id):
 
     response = HttpResponse(content_type='application/zip')
     zip_file = zipfile.ZipFile(response, 'w')
-    material_photos = Material.objects.filter(project_id=project_id)
+    material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
     project = get_object_or_404(Project, id=project_id)
 
     for filename in material_photos:
@@ -75,6 +75,8 @@ def project_material_photos(request, project_id):
             zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
         if filename.bad_photo:
             zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
+        if filename.primary_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.primary_photo.url, arcname=filename.primary_photo.url)
 
     response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
     return response
