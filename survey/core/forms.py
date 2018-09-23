@@ -50,7 +50,7 @@ class MaterialForm(forms.ModelForm):
 
 
 class ConstructionSubStepsForm(forms.ModelForm):
-    primary_photo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    # primary_photo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
         model = ConstructionSubSteps
