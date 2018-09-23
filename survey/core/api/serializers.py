@@ -31,7 +31,7 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_title = serializers.CharField(source="title_de")
     local_description = serializers.CharField(source="description_de")
-    created_by = serializers.CharField(source="created_by.username")
+    #created_by = serializers.CharField(source="created_by.username")
 
     class Meta:
         model = ConstructionSubSteps
