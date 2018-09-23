@@ -50,10 +50,12 @@ class MaterialForm(forms.ModelForm):
 
 
 class ConstructionSubStepsForm(forms.ModelForm):
+    primary_photo = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
 
     class Meta:
         model = ConstructionSubSteps
-        exclude = ('project', 'title_en', 'description_en', 'created_by')
+        fields = ('title', 'title_de', 'description', 'description_de', 'step', 'primary_photo', 'good_photo', 'bad_photo', 'order', 'call_inspector')
+        #exclude = ('project', 'title_en', 'description_en', 'created_by')
 
 
 class SiteForm(forms.ModelForm):
