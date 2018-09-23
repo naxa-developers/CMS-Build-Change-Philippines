@@ -35,7 +35,7 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'local_title', 'description', 'local_description', 'good_photo', 'bad_photo', 'primary_photo', 'order', 'call_inspector', 'created_by')
+        fields = ('title', 'local_title', 'description', 'local_description', 'good_photo', 'bad_photo', 'primary_photo', 'order', 'call_inspector')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
