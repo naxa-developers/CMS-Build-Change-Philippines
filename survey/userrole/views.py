@@ -9,8 +9,8 @@ from core.views import SuperAdminMixin, ManagerSuperAdminMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
-from .models import UserRole
-from .forms import AssignProjectManagerForm, AssignFieldEnginnerForm, ProjectUserForm, SendInvitationForm
+from .models import UserRole, FieldEngineerProfile
+from .forms import AssignProjectManagerForm, AssignFieldEnginnerForm, ProjectUserForm, SendInvitationForm, FieldEngineerForm
 
 
 class Redirection(RedirectView):
@@ -61,7 +61,7 @@ class AssignProjectManagerView(SuperAdminMixin, CreateView):
 
 class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     """
-    Field Engineer
+    Assign Field Engineer
     """
     model = UserRole
     form_class = AssignFieldEnginnerForm
@@ -73,8 +73,7 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
         if form.is_valid():
             group = Group.objects.get(name='Field Engineer')
             user = form.cleaned_data['user']
-            phone_number = form.cleaned_data['phone_number']
-            UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'], phone_number=phone_number)
+            UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'])
             return redirect(reverse('core:site_detail', kwargs={'pk': self.kwargs['site_id']}))
 
         return render(request, self.template_name, {'form': form})
@@ -89,8 +88,37 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     def get_form(self, form_class=None):
         form = super(FieldEngineerUserRoleFormView, self).get_form(form_class=self.form_class)
         project_id = Project.objects.get(sites=self.kwargs.get('site_id'))
-        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=project_id.id)
+        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=project_id.id,
+                                                                           user_roles__group__name="Field Engineer")
         return form
+
+
+class FieldEngineerCreate(CreateView):
+    template_name = 'userrole/field_engineer_form.html'
+
+    def get(self, request, *args, **kwargs):
+        form = FieldEngineerForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = FieldEngineerForm(data=request.POST)
+        if form.is_valid():
+            project_id = self.kwargs['project_id']
+            print(project_id)
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.save()
+            UserRole.objects.get_or_create(user=user, group=Group.objects.get(name='Field Engineer'), project_id=project_id)
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            phone_number = form.cleaned_data['phone_number']
+            FieldEngineerProfile.objects.create(user=user, first_name=first_name, last_name=last_name, email=email,
+                                                phone_number=phone_number)
+
+            return redirect(reverse('core:project_dashboard', kwargs={'project_id': self.kwargs['project_id']}))
+
+        return render(request, self.template_name, {'form': form})
 
 
 class ProjectUserFormView(CreateView):

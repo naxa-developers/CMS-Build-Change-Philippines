@@ -1,0 +1,25 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center" style="margin-top: 20px">
+    <div class="col-md-2 col-lg-5">
+        <div class="dash-right">
+            <div class="widget-info margin-top-large">
+                 <a href="{% url 'userrole:field_engineer_create' project.id %}" title="" class="btn btn-sm btn-xs btn-primary" style="float: right;"><i
+                                        class="la la-caret-right"></i> Create Field Engineer</a>
+                   <p>
+                <h3>Project Personnel</h3>
+                {% for project_personnel in project_personnel_list %}
+                {{forloop.counter}}. {{project_personnel.user}} <br>
+                {% empty %}
+                <p>
+                    Project Personnel not found.
+                </p>
+                {% endfor %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

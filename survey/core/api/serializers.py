@@ -59,6 +59,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
 class SiteEngineerSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username')
+    phone_number = serializers.CharField(source='user.field_engineer.phone_number')
 
     class Meta:
         model = UserRole

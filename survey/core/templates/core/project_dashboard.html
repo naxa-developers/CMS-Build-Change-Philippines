@@ -77,7 +77,7 @@
                                         </a>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="#" title="" class="stat-item margin-top">
+                                        <a href="{% url 'core:project_personnel' project.pk %}" title="" class="stat-item margin-top">
                                             <span class="stat-count">{{ project.total_personnel }}</span>
                                             <span class="stat-label">Project Personnel</span>
                                             <i class="la la-user"></i>

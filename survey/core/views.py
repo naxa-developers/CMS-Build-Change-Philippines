@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
+from django.db.models import Q
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -95,6 +96,24 @@ def site_documents_zip(request, site_id):
 
     response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
     return response
+
+
+class ProjectPersonnelList(TemplateView):
+    """
+    List of Project Manage and Field Engineers
+    """
+    template_name = 'core/project_personnel_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_id = self.kwargs['project_id']
+        context['project'] = get_object_or_404(Project, id=project_id)
+        context['project_personnel_list'] = UserRole.objects.filter(Q(group__name='Field Engineer') |
+                                                                    Q(group__name='Project Manager') |
+                                                                    Q(group__name='Community Member'),
+                                                                    project_id=project_id)
+
+        return context
 
 
 class SuperAdminMixin(LoginRequiredMixin):
