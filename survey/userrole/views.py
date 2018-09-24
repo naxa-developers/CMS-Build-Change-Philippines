@@ -1,4 +1,3 @@
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, RedirectView, ListView, FormView, TemplateView
 from django.contrib.auth.models import Group
