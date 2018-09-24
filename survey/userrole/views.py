@@ -11,7 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 
 from .models import UserRole
-from .forms import UserRoleForm, ProjectUserForm, SendInvitationForm
+from .forms import AssignProjectManagerForm, AssignFieldEnginnerForm, ProjectUserForm, SendInvitationForm
 
 
 class Redirection(RedirectView):
@@ -27,12 +27,12 @@ class Redirection(RedirectView):
             return reverse("login")
 
 
-class UserRoleCreateView(SuperAdminMixin, CreateView):
+class AssignProjectManagerView(SuperAdminMixin, CreateView):
     """
     Project Manager
     """
     model = UserRole
-    form_class = UserRoleForm
+    form_class = AssignProjectManagerForm
     template_name = "userrole/userrole_create_form.html"
 
     def post(self, request, *args, **kwargs):
@@ -55,7 +55,7 @@ class UserRoleCreateView(SuperAdminMixin, CreateView):
         return context
 
     def get_form(self, form_class=None):
-        form = super(UserRoleCreateView, self).get_form(form_class=self.form_class)
+        form = super(AssignProjectManagerView, self).get_form(form_class=self.form_class)
         form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id'])
         return form
 
@@ -65,7 +65,7 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
     Field Engineer
     """
     model = UserRole
-    form_class = UserRoleForm
+    form_class = AssignFieldEnginnerForm
     template_name = 'userrole/userrole_form.html'
 
     def post(self, request, *args, **kwargs):
@@ -74,7 +74,8 @@ class FieldEngineerUserRoleFormView(ManagerSuperAdminMixin, CreateView):
         if form.is_valid():
             group = Group.objects.get(name='Field Engineer')
             user = form.cleaned_data['user']
-            UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'])
+            phone_number = form.cleaned_data['phone_number']
+            UserRole.objects.get_or_create(user=user, group=group, site_id=self.kwargs['site_id'], phone_number=phone_number)
             return redirect(reverse('core:site_detail', kwargs={'pk': self.kwargs['site_id']}))
 
         return render(request, self.template_name, {'form': form})

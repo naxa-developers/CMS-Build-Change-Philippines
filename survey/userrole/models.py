@@ -9,6 +9,7 @@ class UserRole(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="group_roles")
     project = models.ForeignKey(Project, null=True, blank=True, related_name="project_roles", on_delete=models.SET_NULL)
     site = models.ForeignKey(Site, null=True, blank=True, related_name="site_roles", on_delete=models.SET_NULL)
+    phone_number = models.CharField(max_length=300, null=True, blank=True)
 
     # def clean(self):
     #     if self.group.name in ['Field Engineer', 'Community Member'] and not self.site_id:

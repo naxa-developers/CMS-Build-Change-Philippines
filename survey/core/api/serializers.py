@@ -245,4 +245,4 @@ class SiteEngineerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserRole
-        fields = ('id', 'user')
+        fields = ('id', 'user', 'phone_number')

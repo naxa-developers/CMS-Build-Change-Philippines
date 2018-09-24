@@ -149,7 +149,7 @@ class SiteReportViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SiteEngineerViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SiteEngineerSerializer
-    queryset = UserRole.objects.all()
+    queryset = UserRole.objects.filter(group__name="Field Engineer")
 
     def get_queryset(self):
         site = self.kwargs.get('site', False)

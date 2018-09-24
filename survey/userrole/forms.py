@@ -8,7 +8,8 @@ from survey import settings
 from .models import UserRole, Project
 from django.core.mail import EmailMultiAlternatives
 
-class UserRoleForm(forms.ModelForm):
+
+class AssignProjectManagerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -23,6 +24,23 @@ class UserRoleForm(forms.ModelForm):
     class Meta:
         model = UserRole
         fields = ('user',)
+
+
+class AssignFieldEnginnerForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].empty_label = None
+
+        for field in iter(self.fields):
+
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control'
+        })
+
+    class Meta:
+        model = UserRole
+        fields = ('user', 'phone_number')
 
 
 class UserProfileForm(UserCreationForm):
