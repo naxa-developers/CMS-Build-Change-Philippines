@@ -1,0 +1,18 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+  <div class="d-flex justify-content-center" style="margin-top: 20px">
+        <div class="col-md-2 col-lg-5">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+    <h3>{{site}} Steps List</h3>
+    {% for step in site_steps %}
+    {{forloop.counter}}. {{step}} <a href="{% url 'core:construction_site_steps_delete' step.pk %}">Delete</a><br>
+    {% empty %}
+    <p>
+        No site steps.
+    </p>
+    {% endfor %}
+                </div></div></div></div>
+{% endblock content %}

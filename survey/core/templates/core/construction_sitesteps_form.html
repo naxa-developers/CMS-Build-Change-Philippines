@@ -5,13 +5,11 @@
 <h5>Site Construction steps</h5>
     <ul id="id_construction_steps">
         {% for step in construction_steps %}
-        {% if step.site_steps %}
         <li><label for="id_construction_steps_{{forloop.counter0}}"><input type="checkbox" name="construction_steps" value="{{step.id}}"
                                                         id="id_construction_steps_{{forloop.counter0}}">
             {{step}}</label>
 
         </li>
-        {% endif %}
         {% endfor %}
 
     </ul>

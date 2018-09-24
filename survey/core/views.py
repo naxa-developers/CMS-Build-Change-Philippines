@@ -146,7 +146,6 @@ class ProjectCreateView(SuperAdminMixin, ProjectMixin, CreateView):
     def form_valid(self, form):
         self.object = form.save()
         project_id = self.object.id
-        print(project_id)
         for step in CONSTRUCTION_STEPS_LIST:
             ConstructionSteps.objects.create(name=step, project_id=project_id)
 
@@ -887,7 +886,6 @@ class SiteStepsCreate(FormView):
         project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
         form = self.form_class()
         construction_steps = ConstructionSteps.objects.filter(project_id=project_id)
-        print(construction_steps)
         return self.render_to_response(
             self.get_context_data(form=form, construction_steps=construction_steps
 
@@ -957,10 +955,30 @@ class ConstructionSubstepsUpdate(UpdateView):
             return success_url
 
 
+class ConstructionSitetepsList(TemplateView):
+    template_name = "core/construction_site_steps_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site'] = get_object_or_404(Site, id=self.kwargs['site_id'])
+        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id'])
+
+        return context
+
+
 class ConstructionSubstepsDelete(DeleteView):
     model = ConstructionSubSteps
     template_name = 'core/construction_substep_delete.html'
 
     def get_success_url(self):
         success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+        return success_url
+
+
+class ConstructionSiteStepsDelete(DeleteView):
+    model = SiteSteps
+    template_name = 'core/construction_site_steps_delete.html'
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail', args=(self.object.site.pk,))
         return success_url
