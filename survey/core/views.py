@@ -24,7 +24,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm
+    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -934,20 +934,76 @@ class ConfigureProjectSteps(CreateView):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
 
 
-class ConstructionSubstepCreate(CreateView):
-    model = ConstructionSubSteps
-    template_name = 'core/construction_substep_form.html'
+# class ConstructionSubstepCreate(CreateView):
+#     model = ConstructionSubSteps
+#     template_name = 'core/construction_substep_form.html'
     form_class = ConstructionSubStepsForm
+#
+#     def get_form(self, form_class=None):
+#         form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
+#         form.fields['step'].queryset = form.fields['step'].queryset.filter(project=self.kwargs['project_id'])
+#         return form
+#
+#     def form_valid(self, form):
+#         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+#
+#         return super().form_valid(form)
+#
+#     def get_success_url(self):
+#         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+
+
+class ConstructionSubstepCreate(CreateView):
+    template_name = 'core/construction_substep_form.html'
+    model = ConstructionSubSteps
+    form_class = ConstructionSubStepsForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        project_id = self.kwargs['project_id']
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset()
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  primary_photo_form=primary_photo_form,
+                                  project_id=project_id
+
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset(self.request.POST, self.request.FILES)
+
+        if (
+                form.is_valid() and primary_photo_form.is_valid()):
+            return self.form_valid(form, primary_photo_form)
+        else:
+            return self.form_invalid(form, primary_photo_form)
 
     def get_form(self, form_class=None):
         form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(project=self.kwargs['project_id'])
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
         return form
 
-    def form_valid(self, form):
+    def form_valid(self, form, primary_photo_form):
+        self.object = form.save(commit=False)
         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
 
-        return super().form_valid(form)
+        form.save()
+
+        primary_photo_form.instance = self.object
+        primary_photo_form.save()
+
+        return super(ConstructionSubstepCreate, self).form_valid(form)
+
+    def form_invalid(self, form, primary_photo_form):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, primary_photo_form=primary_photo_form))
 
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
@@ -959,19 +1015,68 @@ class ConstructionSubstepsDetail(DetailView):
     model = ConstructionSubSteps
 
 
-class ConstructionSubstepsUpdate(UpdateView):
-    template_name = "core/construction_substep_form.html"
-    form_class = ConstructionSubStepsForm
-    model = ConstructionSubSteps
+# class ConstructionSubstepsUpdate(UpdateView):
+#     template_name = "core/construction_substep_form.html"
+#     form_class = ConstructionSubStepsForm
+#     model = ConstructionSubSteps
+#
+#     def get_form(self, form_class=None):
+#         form = super(ConstructionSubstepsUpdate, self).get_form(form_class=self.form_class)
+#         form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.object.project.id)
+#         return form
+#
+#     def get_success_url(self):
+#             success_url = reverse_lazy('core:construction_substeps_detail', args=(self.object.pk,))
+#             return success_url
 
-    def get_form(self, form_class=None):
-        form = super(ConstructionSubstepsUpdate, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.object.project.id)
-        return form
+
+class ConstructionSubstepsUpdate(UpdateView):
+    template_name = 'core/construction_substep_form.html'
+    model = ConstructionSubSteps
+    form_class = ConstructionSubStepsForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset(instance=self.object)
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  primary_photo_form=primary_photo_form,
+
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset(self.request.POST, self.request.FILES, instance=self.object)
+
+        if (
+                form.is_valid() and primary_photo_form.is_valid()):
+            return self.form_valid(form, primary_photo_form)
+        else:
+            return self.form_invalid(form, primary_photo_form)
+
+    def form_valid(self, form, primary_photo_form):
+        self.object = form.save()
+        primary_photo_form.instance = self.object
+        primary_photo_form.save()
+
+        return super(ConstructionSubstepsUpdate, self).form_valid(form)
+
+    def form_invalid(self, form, primary_photo_form):
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  primary_photo_form=primary_photo_form,
+
+                                  ))
 
     def get_success_url(self):
-            success_url = reverse_lazy('core:construction_substeps_detail', args=(self.object.pk,))
-            return success_url
+        success_url = reverse_lazy('core:construction_substeps_detail', args=(self.object.pk,))
+        return success_url
 
 
 class ConstructionSitetepsList(TemplateView):

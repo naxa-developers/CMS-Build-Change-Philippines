@@ -33,11 +33,15 @@
                                 {{ object.step }}
                             </p><br>{% endif %}
 
-                            {% if object.primary_photo %}
+                            {% if object.primary_photos.all %}
                             <h5>Primary Photo</h5><br>
+                            {% for primary_photo in object.primary_photos.all %}
                             <p>
-                                <img src="{{ MEDIA_URL }}{{ object.primary_photo }}">
-                            </p><br>{% endif %}
+                                <img src="{{ MEDIA_URL }}{{ primary_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            <br>
+                            {% endif %}
 
 
                             {% if object.good_photo %}

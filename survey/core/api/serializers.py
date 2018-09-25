@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSubSteps
+from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
+    ConstructionSubSteps, PrimaryPhoto
 from userrole.models import UserRole
 
 
@@ -28,14 +29,22 @@ class ProjectStepsSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'order', 'checklist')
 
 
+class PrimaryPhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PrimaryPhoto
+        fields = ('image',)
+
+
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_title = serializers.CharField(source="title_de")
     local_description = serializers.CharField(source="description_de")
     #created_by = serializers.CharField(source="created_by.username")
+    primary_photos = PrimaryPhotoSerializer(many=True)
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'local_title', 'description', 'local_description', 'good_photo', 'bad_photo', 'primary_photo', 'order', 'call_inspector', 'created_by')
+        fields = ('title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
@@ -106,7 +115,7 @@ class StepSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Step
-        fields = ('id','name', 'site', 'project', 'order','localname')
+        fields = ('id','name', 'site', 'project', 'order', 'localname')
 
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""

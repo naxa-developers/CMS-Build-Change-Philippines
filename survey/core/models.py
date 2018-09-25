@@ -283,10 +283,6 @@ class ConstructionSteps(models.Model):
             return "No Translation in Warray"
 
 
-class PrimaryPhoto(models.Model):
-    image = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
-
-
 class ConstructionSubSteps(models.Model):
     title = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="construction_substeps", on_delete=models.CASCADE, null=True, blank=True)
@@ -301,6 +297,11 @@ class ConstructionSubSteps(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PrimaryPhoto(models.Model):
+    construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="primary_photos", on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to="materials/updated_primary_photo", blank=True, null=True)
 
 
 class SiteSteps(models.Model):

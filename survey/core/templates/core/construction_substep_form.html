@@ -1,10 +1,48 @@
 {% extends "_base.html" %}
 
+{% load static %}
+{% block extra_css %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+    <script type="text/javascript" src="{% static 'assets/formset/jquery.formset.js' %}"></script>
+{% endblock %}
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+<script type="text/javascript">
+        $(function() {
+            $(".inline.{{ primary_photo_form.prefix }}").formset({
+                prefix: "{{ primary_photo_form.prefix }}",
+            })
 
-    {{form.as_p}}
+        })
+    </script>
+</head>
 
-    <input type="submit" value="Submit">
-</form>
-{% endblock content %}
+<body>
+    <div class="container">
+        <h3> Construction Sub Steps Form </h3>
+        <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}
+            <div>
+                {{ form.as_p }}
+            </div>
+            <fieldset>
+                <legend>Primary Photo</legend>
+                {{ primary_photo_form.management_form }}
+                {{ primary_photo_form.non_form_errors }}
+                {% for form in primary_photo_form %}
+                    {{ form.id }}
+                    <div class="inline {{ primary_photo_form.prefix }}">
+                        {{ form.image.errors }}
+                        {{ form.image.label_tag }}
+                        {{ form.image }}
+
+
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+
+
+            <input type="submit" class="btn-primary"/>
+        </form>
+    </div>
+{% endblock %}

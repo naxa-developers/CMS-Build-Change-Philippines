@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, ConstructionSubSteps
+from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, \
+    ConstructionSubSteps, PrimaryPhoto
+from django.forms.models import inlineformset_factory
 
 from mapwidgets.widgets import GooglePointFieldWidget
 
@@ -54,8 +56,7 @@ class ConstructionSubStepsForm(forms.ModelForm):
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'title_de', 'description', 'description_de', 'step', 'primary_photo', 'good_photo', 'bad_photo', 'order', 'call_inspector')
-        #exclude = ('project', 'title_en', 'description_en', 'created_by')
+        fields = ('title', 'title_de', 'description', 'description_de', 'step', 'good_photo', 'bad_photo', 'order', 'call_inspector')
 
 
 class SiteForm(forms.ModelForm):
@@ -103,7 +104,6 @@ class UserCreateForm(forms.ModelForm):
 
 # Updated form
 class SiteConstructionStepsForm(forms.ModelForm):
-    """ Form to create prakop, baali, mausam, prakop starikaran list for project """
 
     construction_steps = forms.ModelMultipleChoiceField(
         queryset=ConstructionSteps.objects.all(),
@@ -112,6 +112,12 @@ class SiteConstructionStepsForm(forms.ModelForm):
 
     class Meta:
         model = ConstructionSteps
-        fields = ['construction_steps',]
+        fields = ['construction_steps', ]
+
+
+PrimaryPhotoFormset = inlineformset_factory(ConstructionSubSteps, PrimaryPhoto, fields=['image', ], extra=1)
+
+
+
 
 
