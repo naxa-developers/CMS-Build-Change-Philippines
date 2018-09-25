@@ -31,4 +31,6 @@ urlpatterns = [
     path('site-documents/<int:site>/', viewset.SiteDocumentViewSet.as_view({'get': 'list', }), name="api_site_documents"),
     path('category-list/', viewset.CategoryViewSet.as_view({'get': 'list'})),
 
+    path('construction-site-steps-update/', viewset.construction_site_steps_update),
+
 ]

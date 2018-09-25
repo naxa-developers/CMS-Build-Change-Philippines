@@ -123,11 +123,13 @@
                             <a href="{% url 'core:construction_site_steps_list' site.id %}" title=""
                                class="btn btn-sm btn-xs btn-primary"><i
                                     class="la la-plus"></i> Update Step</a>
-                            {% endif %}
-
-                            <a href="{% url 'core:site_steps_create' object.id %}" title=""
+                            {% else %}
+                              <a href="{% url 'core:site_steps_create' object.id %}" title=""
                                class="btn btn-sm btn-xs btn-primary"><i
                                     class="la la-plus"></i> Add New Step</a>
+                            {% endif %}
+
+
                         </div>
 
 

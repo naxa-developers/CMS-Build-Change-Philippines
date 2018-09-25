@@ -3,11 +3,13 @@ from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, serializers
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
     SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer
 
@@ -167,3 +169,23 @@ class SiteDocumentViewSet(viewsets.ReadOnlyModelViewSet):
         if site:
             self.queryset = self.queryset.filter(site=site)
         return self.queryset
+
+
+@api_view(['GET'])
+def construction_site_steps_update(request):
+    value = request.GET.get('value', None)
+    checkbox_value = request.GET.get('checkbox_value', None)
+    site_id = request.GET.get('site_id', None)
+
+    if checkbox_value is '1':
+
+        SiteSteps.objects.get_or_create(site_id=site_id, step=ConstructionSteps.objects.get(name=value))
+    else:
+        SiteSteps.objects.filter(site_id=site_id, step=ConstructionSteps.objects.get(name=value)).delete()
+
+    data = {
+        'success': 'hello',
+
+    }
+
+    return Response(data)

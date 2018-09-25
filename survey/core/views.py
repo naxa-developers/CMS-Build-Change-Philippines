@@ -1051,6 +1051,10 @@ class ConstructionSitetepsList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        checked_steps = SiteSteps.objects.filter(site_id=self.kwargs['site_id']).values('step__name').distinct()
+        unchecked_steps = ConstructionSteps.objects.filter(project_id=1).values('name')
+        context['checked_steps'] = checked_steps
+        context['unchecked_steps'] = unchecked_steps.difference(checked_steps)
         context['site'] = get_object_or_404(Site, id=self.kwargs['site_id'])
         context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id'])
 
