@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.shortcuts import render
 
 from rest_framework import viewsets, serializers
 from rest_framework.permissions import AllowAny
@@ -9,7 +10,7 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
     SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
 
@@ -189,3 +190,10 @@ def construction_site_steps_update(request):
     }
 
     return Response(data)
+
+
+@api_view(['GET'])
+def load_substeps(request):
+    step_id = request.GET.get('step_id', None)
+    substeps= ConstructionSubSteps.objects.filter(step__site_steps=step_id).values('title')
+    return render(request, 'core/substeps_dropdown.html', {'substeps': substeps})

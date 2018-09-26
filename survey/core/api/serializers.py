@@ -37,9 +37,11 @@ class PrimaryPhotoSerializer(serializers.ModelSerializer):
 
 
 class SubStepsCheckListSerializer(serializers.ModelSerializer):
+    site = serializers.CharField(source='site.name')
+
     class Meta:
         model = SubStepCheckList
-        fields = ('id', 'text', 'step', 'substep', 'status')
+        fields = ('id', 'text', 'step', 'substep', 'status', 'site')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
@@ -47,7 +49,7 @@ class SubstepReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'substep', 'user', 'comment', 'photo', 'date')
+        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'photo', 'date')
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
@@ -55,24 +57,23 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_description = serializers.CharField(source="description_de")
     #created_by = serializers.CharField(source="created_by.username")
     primary_photos = PrimaryPhotoSerializer(many=True)
-    checklists = SubStepsCheckListSerializer(many=True)
-    reports = SubstepReportSerializer(many=True)
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by', 'checklists', 'reports')
+        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
-    step_id = serializers.IntegerField(source="step.id")
     local_step = serializers.CharField(source="step.name_de")
     order = serializers.IntegerField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
+    checklists = SubStepsCheckListSerializer(many=True)
+    reports = SubstepReportSerializer(many=True)
 
     class Meta:
         model = SiteSteps
-        fields = ('step_id', 'step', 'local_step', 'order', 'sub_steps')
+        fields = ('id', 'step', 'local_step', 'order', 'sub_steps', 'checklists', 'reports')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.filter(

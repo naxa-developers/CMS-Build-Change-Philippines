@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, \
-    ConstructionSubSteps, PrimaryPhoto
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList
 from django.forms.models import inlineformset_factory
 
 from mapwidgets.widgets import GooglePointFieldWidget
@@ -113,6 +113,26 @@ class SiteConstructionStepsForm(forms.ModelForm):
     class Meta:
         model = ConstructionSteps
         fields = ['construction_steps', ]
+
+
+class SubStepCheckListForm(forms.ModelForm):
+
+    class Meta:
+        model = SubStepCheckList
+        fields = ('text', 'step', 'substep')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['substep'].queryset = ConstructionSubSteps.objects.none()
+
+        if 'step' in self.data:
+            try:
+                step_id = int(self.data.get('step'))
+                self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(step__site_steps=step_id)
+            except (ValueError, TypeError):
+                pass
+        if self.instance.pk:
+            self.fields['substep'].queryset = self.instance.step.sub_steps
 
 
 PrimaryPhotoFormset = inlineformset_factory(ConstructionSubSteps, PrimaryPhoto, fields=['image', ], extra=1)

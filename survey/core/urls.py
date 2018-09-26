@@ -60,6 +60,7 @@ urlpatterns = [
          name="construction_substeps_delete"),
     path('construction-site-steps-delete/<int:pk>/', views.ConstructionSiteStepsDelete.as_view(),
          name="construction_site_steps_delete"),
+    path('checklist-create/<int:site_id>/', views.ChecklistCreateView.as_view(), name="checklist_create"),
 
 
 ]

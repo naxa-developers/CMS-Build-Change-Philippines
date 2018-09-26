@@ -32,5 +32,6 @@ urlpatterns = [
     path('category-list/', viewset.CategoryViewSet.as_view({'get': 'list'})),
 
     path('construction-site-steps-update/', viewset.construction_site_steps_update),
+    path('load-substeps/', viewset.load_substeps, name='ajax_load_substeps'),
 
 ]

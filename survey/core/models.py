@@ -313,9 +313,10 @@ class SiteSteps(models.Model):
 
 
 class SubStepCheckList(models.Model):
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="checklists", null=True, blank=True)
     text = models.TextField(blank=True)
-    step = models.ForeignKey(ConstructionSteps, related_name="checklists", on_delete=models.CASCADE)
-    substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", null=True, blank=True, on_delete=models.SET_NULL)
+    step = models.ForeignKey(SiteSteps, related_name="checklists", on_delete=models.CASCADE)
+    substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
 
     # @property
@@ -343,6 +344,8 @@ class SubStepCheckList(models.Model):
 
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="reports", null=True, blank=True)
+    step = models.ForeignKey(SiteSteps, related_name="reports", on_delete=models.CASCADE, null=True, blank=True)
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
     photo = models.ImageField(upload_to='reports/', null=True, blank=True)

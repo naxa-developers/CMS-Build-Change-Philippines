@@ -1,0 +1,49 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center">
+
+    <div class="col-md-2 col-lg-6">
+        <div class="dash-right"><h3 style="text-align: center">CheckList Form</h3>
+            <div class="widget-info margin-top-large">
+
+
+                <form action="" method="post">{% csrf_token %}
+                                    {{form.as_p}}
+                    <input type="submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+ <script>
+
+     var baseUrl = 'http://localhost:8009/';
+
+    $("#id_step").change(function () {
+      var stepId = $(this).val();
+         var current_url = document.URL;
+            var siteId = current_url.split('/')[5];
+
+      $.ajax({
+        url: baseUrl+'core/api/load-substeps',
+        data: {
+          'step_id': stepId,
+            'site_id': siteId,
+        },
+        success: function (data) {
+          $("#id_substep").html(data);
+            console.log(data);
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}

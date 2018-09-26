@@ -1,0 +1,4 @@
+<option value="">---------</option>
+{% for substep in substeps %}
+<option value="{{ substep.pk }}">{{ substep.title }}</option>
+{% endfor %}

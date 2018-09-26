@@ -1,7 +1,7 @@
 import os
 import zipfile
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, get_object_or_404
@@ -22,9 +22,9 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset
+    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -1077,3 +1077,24 @@ class ConstructionSiteStepsDelete(DeleteView):
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail', args=(self.object.site.pk,))
         return success_url
+
+
+class ChecklistCreateView(CreateView):
+    model = SubStepCheckList
+    template_name = 'core/checklist_form.html'
+    form_class = SubStepCheckListForm
+
+    def get_form(self, form_class=None):
+        form = super(ChecklistCreateView, self).get_form(form_class=self.form_class)
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.kwargs['site_id'])
+        return form
+
+    def form_valid(self, form):
+        form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+        return success_url
+
