@@ -345,7 +345,7 @@ class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='report/', null=True, blank=True)
+    photo = models.ImageField(upload_to='reports/', null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):

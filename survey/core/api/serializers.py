@@ -43,11 +43,11 @@ class SubStepsCheckListSerializer(serializers.ModelSerializer):
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
-    substep = serializers.IntegerField(source='substep.id')
+    # substep = serializers.IntegerField(source='substep.id')
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'user', 'substep', 'comment', 'photo', 'date')
+        fields = ('id', 'substep', 'user', 'comment', 'photo', 'date')
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
@@ -154,41 +154,41 @@ class StepSerializer(serializers.ModelSerializer):
 
 class ChecklistSerializer(serializers.ModelSerializer):
     localtext = serializers.ReadOnlyField(source="get_localtext")
-    materials = serializers.SerializerMethodField()
-    last_submission = serializers.SerializerMethodField()
+    # materials = serializers.SerializerMethodField()
+    # last_submission = serializers.SerializerMethodField()
 
     class Meta:
         model = Checklist
-        fields = ('id', 'text', 'step', 'localtext', 'materials', 'material', 'status', 'last_submission')
+        fields = ('id', 'text', 'step', 'localtext', 'material', 'status')
 
-    def get_materials(self, obj):
-        if obj.material:
-            serializer = MaterialSerializer(instance=obj.material, many=False)
-            return serializer.data
-        return {}
-
-    def get_last_submission(self, obj):
-        latest_submission = obj.checklist_report.all().first()
-        if latest_submission:
-            return ReportSerializer(latest_submission).data
-        return {}
-
-    def create(self, validated_data):
-        localname = validated_data.pop('localtext') if 'localtext' in validated_data else ""
-        instance = super(ChecklistSerializer, self).create(validated_data)
-        project = instance.step.site.project
-        if project.setting.local_language:
-            setattr(instance, 'text_'+project.setting.local_language, localname)
-        instance.save()
-        return instance
-
-    def update(self, instance, validated_data):
-        localname = self.context['request'].data.get('localtext', "")
-        instance = super(ChecklistSerializer, self).update(instance, validated_data)
-        project = instance.step.site.project
-        setattr(instance, 'text_' + project.setting.local_language, localname)
-        instance.save()
-        return instance
+    # def get_materials(self, obj):
+    #     if obj.material:
+    #         serializer = MaterialSerializer(instance=obj.material, many=False)
+    #         return serializer.data
+    #     return {}
+    #
+    # def get_last_submission(self, obj):
+    #     latest_submission = obj.checklist_report.all().first()
+    #     if latest_submission:
+    #         return ReportSerializer(latest_submission).data
+    #     return {}
+    #
+    # def create(self, validated_data):
+    #     localname = validated_data.pop('localtext') if 'localtext' in validated_data else ""
+    #     instance = super(ChecklistSerializer, self).create(validated_data)
+    #     project = instance.step.site.project
+    #     if project.setting.local_language:
+    #         setattr(instance, 'text_'+project.setting.local_language, localname)
+    #     instance.save()
+    #     return instance
+    #
+    # def update(self, instance, validated_data):
+    #     localname = self.context['request'].data.get('localtext', "")
+    #     instance = super(ChecklistSerializer, self).update(instance, validated_data)
+    #     project = instance.step.site.project
+    #     setattr(instance, 'text_' + project.setting.local_language, localname)
+    #     instance.save()
+    #     return instance
 
 
 class StepDetailSerializer(serializers.ModelSerializer):
