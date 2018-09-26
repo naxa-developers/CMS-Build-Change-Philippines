@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto
+from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList
 from userrole.models import FieldEngineerProfile
 
 
@@ -19,4 +19,4 @@ admin.site.register(SiteDocument)
 admin.site.register(ConstructionSteps)
 admin.site.register(ConstructionSubSteps, ConstructionSubStepsAdmin)
 admin.site.register(SiteSteps)
-# admin.site.register(FieldEngineerProfile)
+admin.site.register(SubStepCheckList)

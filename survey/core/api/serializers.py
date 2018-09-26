@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList
 from userrole.models import UserRole
 
 
@@ -36,26 +36,34 @@ class PrimaryPhotoSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
+class SubStepsCheckListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubStepCheckList
+        fields = ('id', 'text', 'step', 'substep', 'status')
+
+
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_title = serializers.CharField(source="title_de")
     local_description = serializers.CharField(source="description_de")
     #created_by = serializers.CharField(source="created_by.username")
     primary_photos = PrimaryPhotoSerializer(many=True)
+    checklists = SubStepsCheckListSerializer(many=True)
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by')
+        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by', 'checklists')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
+    step_id = serializers.IntegerField(source="step.id")
     local_step = serializers.CharField(source="step.name_de")
     order = serializers.IntegerField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
 
     class Meta:
         model = SiteSteps
-        fields = ('step', 'local_step', 'order', 'sub_steps')
+        fields = ('step_id', 'step', 'local_step', 'order', 'sub_steps')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.filter(

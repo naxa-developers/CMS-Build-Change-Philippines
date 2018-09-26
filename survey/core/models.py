@@ -312,6 +312,35 @@ class SiteSteps(models.Model):
         return self.step.name
 
 
+class SubStepCheckList(models.Model):
+    text = models.TextField(blank=True)
+    step = models.ForeignKey(ConstructionSteps, related_name="checklists", on_delete=models.CASCADE)
+    substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", null=True, blank=True, on_delete=models.SET_NULL)
+    status = models.BooleanField(default=False)
+
+    # @property
+    # def step_checklist(self):
+    #     return "step_id:" + str(self.step) + "------ id:" + str(self.id)
+    #
+    # def get_materials(self):
+    #     if self.material_id:
+    #         return reverse('core:material_update', kwargs={'pk': self.material_id})
+    #     else:
+    #         return None
+    #
+    def get_localtext(self):
+        try:
+            if self.step.site.project.setting.local_language:
+                return getattr(self, 'text_' + self.step.site.project.setting.local_language)
+            else:
+                return "No Translation in Warray"
+        except:
+            return "No Translation in Warray"
+
+    # def get_status(self):
+    #     return self.status
+
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

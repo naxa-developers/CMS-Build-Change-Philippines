@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer
 
 # Serializers define the API representation.
 
@@ -82,8 +82,8 @@ class StepViewset(viewsets.ModelViewSet):
 
 
 class ChecklistViewset(viewsets.ModelViewSet):
-    serializer_class = ChecklistSerializer
-    queryset = Checklist.objects.all()
+    serializer_class = SubStepsCheckListSerializer
+    queryset = SubStepCheckList.objects.all()
     
     def get_queryset(self):
         step = self.kwargs.get('step', False)
@@ -91,10 +91,10 @@ class ChecklistViewset(viewsets.ModelViewSet):
             self.queryset = self.queryset.filter(step__id=step)
         return self.queryset
 
-    def perform_create(self, serializer, **kwargs):
-        localtext = serializer.initial_data.get('localtext', '')
-        data = serializer.save(localtext=localtext)
-        return data
+    # def perform_create(self, serializer, **kwargs):
+    #     localtext = serializer.initial_data.get('localtext', '')
+    #     data = serializer.save(localtext=localtext)
+    #     return data
 
 
 class MaterialViewset(viewsets.ModelViewSet):
