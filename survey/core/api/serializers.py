@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport
 from userrole.models import UserRole
 
 
@@ -42,16 +42,25 @@ class SubStepsCheckListSerializer(serializers.ModelSerializer):
         fields = ('id', 'text', 'step', 'substep', 'status')
 
 
+class SubstepReportSerializer(serializers.ModelSerializer):
+    substep = serializers.IntegerField(source='substep.id')
+
+    class Meta:
+        model = SubstepReport
+        fields = ('id', 'user', 'substep', 'comment', 'photo', 'date')
+
+
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_title = serializers.CharField(source="title_de")
     local_description = serializers.CharField(source="description_de")
     #created_by = serializers.CharField(source="created_by.username")
     primary_photos = PrimaryPhotoSerializer(many=True)
     checklists = SubStepsCheckListSerializer(many=True)
+    reports = SubstepReportSerializer(many=True)
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by', 'checklists')
+        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by', 'checklists', 'reports')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
@@ -212,13 +221,6 @@ class StepDetailSerializer(serializers.ModelSerializer):
 #         model = Project
 #         fields = ('id', 'name', 'sites')
 
-
-class ReportSerializer(serializers.ModelSerializer):
-    step_id = serializers.IntegerField(source='checklist.step.id', read_only=True)
-
-    class Meta:
-        model = Report
-        fields = ('id', 'user', 'step_id', 'checklist', 'comment', 'photo', 'report_status', 'date')
 
 
 class CategorySerializer(serializers.ModelSerializer):

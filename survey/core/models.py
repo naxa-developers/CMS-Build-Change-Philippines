@@ -328,17 +328,31 @@ class SubStepCheckList(models.Model):
     #     else:
     #         return None
     #
-    def get_localtext(self):
-        try:
-            if self.step.site.project.setting.local_language:
-                return getattr(self, 'text_' + self.step.site.project.setting.local_language)
-            else:
-                return "No Translation in Warray"
-        except:
-            return "No Translation in Warray"
-
+    # def get_localtext(self):
+    #     try:
+    #         if self.step.site.project.setting.local_language:
+    #             return getattr(self, 'text_' + self.step.site.project.setting.local_language)
+    #         else:
+    #             return "No Translation in Warray"
+    #     except:
+    #         return "No Translation in Warray"
+    #
     # def get_status(self):
     #     return self.status
+
+
+class SubstepReport(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
+    substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
+    comment = models.TextField()
+    photo = models.ImageField(upload_to='report/', null=True, blank=True)
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.comment
+
+    class Meta:
+        ordering = ('-date',)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

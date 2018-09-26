@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList
-from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, ReportSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport
+from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
 
 # Serializers define the API representation.
 
@@ -81,7 +81,7 @@ class StepViewset(viewsets.ModelViewSet):
         return data
 
 
-class ChecklistViewset(viewsets.ModelViewSet):
+class ChecklistViewset(viewsets.ReadOnlyModelViewSet):
     serializer_class = SubStepsCheckListSerializer
     queryset = SubStepCheckList.objects.all()
     
@@ -113,8 +113,8 @@ class MaterialViewset(viewsets.ModelViewSet):
 
 
 class ReportViewset(viewsets.ModelViewSet):
-    serializer_class = ReportSerializer
-    queryset = Report.objects.all()
+    serializer_class = SubstepReportSerializer
+    queryset = SubstepReport.objects.all()
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
