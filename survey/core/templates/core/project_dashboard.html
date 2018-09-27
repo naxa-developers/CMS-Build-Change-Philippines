@@ -171,14 +171,14 @@
                                         <ul class="update-list">
                                             {% for report in recent_activities_report %}
                                                 <li>
-                                                    <img src="assets/img/Patanjali.jpg" alt="">
+                                                    <img src="#" alt="">
                                                     <a href="#" title=""><strong>{{ report.user }}</strong></a>
                                                     submitted a
                                                     response for general form <a
-                                                        href="{% url 'core:report_detail' report.pk %}"
+                                                        href="#"
                                                         title=""><strong>{{ report.comment }}
                                                     </strong></a> in site <a href="#" title=""><strong>
-                                                    {{ report.checklist.step.site }}
+                                                    {{ report.site }}
                                                 </strong></a>.
                                                     <span class="time"><i class="la la-clock-o"
                                                                           aria-hidden="true"></i>{{ report.date }}</span>

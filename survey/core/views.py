@@ -22,7 +22,7 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm, BadPhotoFormset, GoodPhotoFormset
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
@@ -280,8 +280,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
-        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')[:5]
-        context['recent_activities_checklist'] = Checklist.objects.select_related('material', 'step')[:5]
+        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['recent_activities_checklist'] = SubStepCheckList.objects.all()
 
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
@@ -299,7 +299,7 @@ class RecentUpdates(ProjectRoleMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['project'] = self.kwargs['project_id']
-        context['recent_activities_report'] = Report.objects.select_related('user', 'checklist__step__site').order_by('-date')
+        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')
         return context
 
 
@@ -373,7 +373,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username', flat=True)
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = Report.objects.filter(checklist__step__site__id=self.kwargs['pk']).values_list('photo')
+        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk'])
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()

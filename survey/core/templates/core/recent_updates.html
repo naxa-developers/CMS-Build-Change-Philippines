@@ -25,7 +25,7 @@
         <ul class="submission-list">
             {% for report in recent_activities_report %}
                 <li>
-                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment }}</strong></a>
+                    <a href="#"><strong>{{ report.comment }}</strong></a>
                     <br>
                     {% if report.user %}
                         <a href="#" title="View details of user">
