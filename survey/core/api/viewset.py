@@ -82,7 +82,7 @@ class StepViewset(viewsets.ModelViewSet):
         return data
 
 
-class ChecklistViewset(viewsets.ReadOnlyModelViewSet):
+class ChecklistViewset(viewsets.ModelViewSet):
     serializer_class = SubStepsCheckListSerializer
     queryset = SubStepCheckList.objects.all()
     

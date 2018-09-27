@@ -1036,25 +1036,36 @@ class ConstructionSubstepsUpdate(UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         primary_photo_form = PrimaryPhotoFormset(self.request.POST, self.request.FILES, instance=self.object)
+        good_photo_form = GoodPhotoFormset(self.request.POST, self.request.FILES, instance=self.object)
+        bad_photo_form = BadPhotoFormset(self.request.POST, self.request.FILES, instance=self.object)
+
 
         if (
-                form.is_valid() and primary_photo_form.is_valid()):
-            return self.form_valid(form, primary_photo_form)
+                form.is_valid() and primary_photo_form.is_valid() and good_photo_form.is_valid() and bad_photo_form.is_valid()):
+            return self.form_valid(form, primary_photo_form, good_photo_form, bad_photo_form)
         else:
-            return self.form_invalid(form, primary_photo_form)
+            return self.form_invalid(form, primary_photo_form, good_photo_form, bad_photo_form)
 
-    def form_valid(self, form, primary_photo_form):
+    def form_valid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
         self.object = form.save()
         primary_photo_form.instance = self.object
         primary_photo_form.save()
 
+        good_photo_form.instance = self.object
+        good_photo_form.save()
+
+        bad_photo_form.instance = self.object
+        bad_photo_form.save()
+
         return super(ConstructionSubstepsUpdate, self).form_valid(form)
 
-    def form_invalid(self, form, primary_photo_form):
+    def form_invalid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
 
         return self.render_to_response(
             self.get_context_data(form=form,
                                   primary_photo_form=primary_photo_form,
+                                  good_photo_form=good_photo_form,
+                                  bad_photo_form=bad_photo_form
 
                                   ))
 
@@ -1114,4 +1125,37 @@ class ChecklistCreateView(CreateView):
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
         return success_url
+
+
+class ChecklistUpdateView(UpdateView):
+    model = SubStepCheckList
+    template_name = "core/checklist_form.html"
+    form_class = SubStepCheckListForm
+
+    def get_form(self, form_class=None):
+        form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
+        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.object.site.id)
+        return form
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        return success_url
+
+
+class ChecklistDeleteView(DeleteView):
+    model = SubStepCheckList
+    template_name = "core/checklist_delete_form.html"
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        return success_url
+
+
+class ChecklistView(ListView):
+    model = SubStepCheckList
+    template_name = 'core/substep_checklist.html'
+    context_object_name = 'checklists'
+
+    def get_queryset(self):
+        return SubStepCheckList.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id'])
 
