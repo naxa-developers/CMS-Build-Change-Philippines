@@ -266,6 +266,7 @@ CONSTRUCTION_SUB_STEPS_LIST = [
 
 class ConstructionSteps(models.Model):
     name = models.CharField(max_length=250)
+    image = models.ImageField(upload_to='construction_step/', null=True, blank=True)
     project = models.ForeignKey(Project, related_name="construction_steps", on_delete=models.CASCADE, null=True,
                                 blank=True)
     order = models.IntegerField(default=0)

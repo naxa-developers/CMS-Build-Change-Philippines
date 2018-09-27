@@ -131,7 +131,7 @@ class SubStepCheckListForm(forms.ModelForm):
                 self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(step__site_steps=step_id)
             except (ValueError, TypeError):
                 pass
-        if self.instance.pk:
+        elif self.instance.pk:
             self.fields['substep'].queryset = self.instance.step.sub_steps
 
 
