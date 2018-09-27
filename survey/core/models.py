@@ -289,12 +289,14 @@ class ConstructionSubSteps(models.Model):
     project = models.ForeignKey(Project, related_name="construction_substeps", on_delete=models.CASCADE, null=True, blank=True)
     step = models.ForeignKey(ConstructionSteps, related_name="sub_steps", on_delete=models.CASCADE)
     description = models.TextField(max_length=300, blank=True, null=True)
-    good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
-    bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
-    primary_photo = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
     order = models.IntegerField(default=0)
     call_inspector = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+
+    # good,bad annd primary photo field not used
+    good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
+    bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
+    primary_photo = models.ImageField(upload_to="materials/primary_photo", blank=True, null=True)
 
     def __str__(self):
         return self.title
@@ -303,6 +305,16 @@ class ConstructionSubSteps(models.Model):
 class PrimaryPhoto(models.Model):
     construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="primary_photos", on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(upload_to="materials/updated_primary_photo", blank=True, null=True)
+
+
+class GoodPhoto(models.Model):
+    construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="good_photos", on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to="materials/updated_good_photo", blank=True, null=True)
+
+
+class BadPhoto(models.Model):
+    construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="bad_photos", on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to="materials/updated_bad_photo", blank=True, null=True)
 
 
 class SiteSteps(models.Model):

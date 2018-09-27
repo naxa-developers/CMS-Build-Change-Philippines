@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList
+from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto
 from userrole.models import FieldEngineerProfile
 
 
@@ -10,8 +10,18 @@ class PrimaryPhotoInline(admin.StackedInline):
     extra = 1
 
 
+class GoodPhotoInline(admin.StackedInline):
+    model = GoodPhoto
+    extra = 1
+
+
+class BadPhotoInline(admin.StackedInline):
+    model = BadPhoto
+    extra = 1
+
+
 class ConstructionSubStepsAdmin(admin.ModelAdmin):
-    inlines = (PrimaryPhotoInline,)
+    inlines = (PrimaryPhotoInline, GoodPhotoInline, BadPhotoInline)
 
 
 admin.site.register(Report)

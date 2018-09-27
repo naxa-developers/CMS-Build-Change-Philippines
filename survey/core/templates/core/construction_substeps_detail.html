@@ -44,15 +44,26 @@
                             {% endif %}
 
 
-                            {% if object.good_photo %}
+                            {% if object.good_photos.all %}
                             <h5>Good Photo</h5><br>
+                            {% for good_photo in object.good_photos.all %}
+
                             <p>
-                                <img src="{{ MEDIA_URL }}{{ object.good_photo }}">
-                            </p><br>{% endif %}{% if object.bad_photo %}
+                                <img src="{{ MEDIA_URL }}{{ good_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            {% endif %}
+
+                            {% if object.bad_photos.all %}
+                            {% for bad_photo in object.bad_photos.all %}
+
                             <h5>Bad Photo</h5><br>
                             <p>
-                                <img src="{{ MEDIA_URL }}{{ object.bad_photo }}">
-                            </p><br>{% endif %}{% if object.description %}
+                                <img src="{{ MEDIA_URL }}{{ bad_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            {% endif %}
+                            {% if object.description %}
                             <h5>Description</h5><br>
                             <p>
                                 {{ object.description }}

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport, GoodPhoto, BadPhoto
 from userrole.models import UserRole
 
 
@@ -36,6 +36,19 @@ class PrimaryPhotoSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
+class GoodPhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GoodPhoto
+        fields = ('image',)
+
+
+class BadPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BadPhoto
+        fields = ('image',)
+
+
 class SubStepsCheckListSerializer(serializers.ModelSerializer):
     site = serializers.CharField(source='site.name')
 
@@ -57,10 +70,12 @@ class ConstructionSubstepSerializer(serializers.ModelSerializer):
     local_description = serializers.CharField(source="description_de")
     #created_by = serializers.CharField(source="created_by.username")
     primary_photos = PrimaryPhotoSerializer(many=True)
+    good_photos = PrimaryPhotoSerializer(many=True)
+    bad_photos = PrimaryPhotoSerializer(many=True)
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photo', 'bad_photo', 'order', 'call_inspector', 'created_by')
+        fields = ('id', 'title', 'local_title', 'description', 'local_description', 'primary_photos', 'good_photos', 'bad_photos', 'order', 'call_inspector', 'created_by')
 
 
 class SiteStepsSerializer(serializers.ModelSerializer):
