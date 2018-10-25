@@ -899,11 +899,6 @@ class UserProfileDetailView(DetailView):
 
 
 # updated views
-class ConstructionStepUpdate(UpdateView):
-    model = ConstructionSubSteps
-    fields = '__all__'
-    template_name = 'core/construction_substep_form.html'
-
 
 class SiteStepsCreate(FormView):
     template_name = "core/construction_sitesteps_form.html"
@@ -940,6 +935,38 @@ class ConfigureProjectSteps(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+
+
+class ConstructionStepUpdate(UpdateView):
+    model = ConstructionSteps
+    fields = ('name', 'name_de', 'order', 'image')
+    template_name = 'core/configure_project_steps_form.html'
+
+    def form_valid(self, form):
+        form.instance.project = get_object_or_404(Project, id=self.object.project.id)
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('core:project_dashboard', args=(self.object.project.id,))
+
+
+class ConstructionStepList(TemplateView):
+    template_name = 'core/configure_steps_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
+
+        return context
+
+
+class ConstructionStepDelete(DeleteView):
+    model = ConstructionSteps
+    template_name = 'core/construction_step_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('core:project_dashboard', args=(self.object.project.id,))
 
 
 class ConstructionSubstepCreate(CreateView):
@@ -979,14 +1006,16 @@ class ConstructionSubstepCreate(CreateView):
         else:
             return self.form_invalid(form, primary_photo_form, good_photo_form, bad_photo_form)
 
-    def get_form(self, form_class=None):
-        form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
-        return form
+    # def get_form(self, form_class=None):
+    #     form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
+    #     form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
+    #     return form
 
     def form_valid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
         self.object = form.save(commit=False)
+        form.instance.step = get_object_or_404(ConstructionSteps, id=self.kwargs['step_id'])
         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+
         form.save()
 
         primary_photo_form.instance = self.object

@@ -1,0 +1,10 @@
+{% extends '_base.html' %}
+
+{% load static %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    Are you sure you want to delete {{object}} ?
+    <input type="submit">
+</form>
+{% endblock content %}

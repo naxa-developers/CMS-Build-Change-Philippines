@@ -56,7 +56,7 @@ class ConstructionSubStepsForm(forms.ModelForm):
 
     class Meta:
         model = ConstructionSubSteps
-        fields = ('title', 'title_de', 'description', 'description_de', 'step', 'order', 'call_inspector')
+        fields = ('title', 'title_de', 'description', 'description_de', 'order', 'call_inspector')
 
 
 class SiteForm(forms.ModelForm):

@@ -49,8 +49,10 @@ urlpatterns = [
     path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
 
     # Updated urls
-    path('construction-substep-create/<int:project_id>', views.ConstructionSubstepCreate.as_view(), name="construction_substep_create"),
+    path('construction-substep-create/<int:project_id>/<int:step_id>', views.ConstructionSubstepCreate.as_view(), name="construction_substep_create"),
     path('construction-step-update/<int:pk>/', views.ConstructionStepUpdate.as_view(), name="construction_step_update"),
+    path('construction-step-list/<int:project_id>/', views.ConstructionStepList.as_view(), name="construction_step_list"),
+    path('construction-step-delete/<int:pk>/', views.ConstructionStepDelete.as_view(), name="construction_step_delete"),
     path('site-steps-create/<int:site_id>/', views.SiteStepsCreate.as_view(), name="site_steps_create"),
     path('configure-project-steps/<int:project_id>', views.ConfigureProjectSteps.as_view(), name="configure_project_steps"),
     path('construction-substeps-detail/<int:pk>/', views.ConstructionSubstepsDetail.as_view(), name="construction_substeps_detail"),

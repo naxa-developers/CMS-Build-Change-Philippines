@@ -4,6 +4,7 @@
 {% load get_files from webpack_loader %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
           integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
@@ -110,8 +111,7 @@
                                 <h4><a href="#" title="">Construction Steps</a></h4>
                                 <a href="{% url 'core:configure_project_steps' project.pk %}" title=""
                                    class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>Configure Steps</a>
-                                <a href="{% url 'core:construction_substep_create' project.pk %}" title=""
-                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Substeps</a>
+                               
                             </div>
                             <div class="widget-body">
 
@@ -126,11 +126,22 @@
                                                      aria-controls="target_{{ forloop.counter0 }}">{{ step }} <i
                                                         class="la la-plus-circle"></i>
                                                 </div>
+                                                
                                                 <div id="target_{{ forloop.counter0 }}" class="collapse collapseBody"
                                                      aria-labelledby="{{ step.pk }}"
                                                      data-parent="#accordion">
                                                     <ul class="guideline-list">
+                                                            <a href="{% url 'core:construction_step_update' step.pk %}"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            title="Edit {{step}}"><i class="la la-edit"></i></a>
+                                                            <a href="{% url 'core:construction_step_update' step.pk %}"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            title="Delete {{step}}"><i class="la la-delete"></i></a>
+                                                            <a href="{% url 'core:construction_step_delete' step.pk %}" title="Delete {{step}}"><i class="fa fa-trash-o"></i></a><br>
+
+            
                                                         {% for sub_step in step.sub_steps.all %}
+                                                        
                                                             <li>
                                                                 <h6>
                                                                     <a href="{% url 'core:construction_substeps_detail' sub_step.pk %}">{{ sub_step }}</a>
@@ -138,16 +149,24 @@
                                                                 <small>Created By: {{ sub_step.created_by.username }}
                                                                 </small>
                                                                 <div class="guideline-action">
-                                                                    <a href=""
+                                                                    <a href="{% url 'core:construction_substeps_update' sub_step.pk %}"
                                                                        data-toggle="tooltip" data-placement="top"
                                                                        title="Edit"><i class="la la-edit"></i></a>
                                                                 </div>
+                                                                
+                                                                
                                                                 {% empty %}
+                                                               
+
                                                                 <small>No Sub Steps Found.</small>
                                                             </li>
                                                         {% endfor %}
-                                                    </ul>
+                                                        
+                                                    </ul><br>
+                                                    <a href="{% url 'core:construction_substep_create' project.pk step.pk %}" title=""
+                                                    class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Substeps</a>
                                                 </div>
+                                                
                                             </li>
                                         {% endfor %}
                                     </ul>
