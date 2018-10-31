@@ -2,7 +2,7 @@ from .settings import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'survey',
+        'NAME': 'survey1',
         'USER': 'postgres',
         'PASSWORD': '',
         'HOST': '',
