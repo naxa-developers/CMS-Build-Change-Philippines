@@ -203,10 +203,10 @@ def load_substeps(request):
 def houses_and_general_construction(request):
 
     data = [
-        {'more_about_materials': HousesAndGeneralConstructionMaterials.objects.all().values('name')},
+        {'more_about_materials': HousesAndGeneralConstructionMaterials.objects.all().values('name', 'good_photo','good_photo_desc', 'bad_photo', 'bad_photo_desc')},
         {'build_a_house': [
-            {'my_house_strong': BuildAHouseMakesHouseStrong.objects.all().values('name')}, 
-            {'key_parts_of_house': BuildAHouseKeyPartsOfHouse.objects.all().values('name')}
+            {'my_house_strong': BuildAHouseMakesHouseStrong.objects.all().values('name', 'pdf')}, 
+            {'key_parts_of_house': BuildAHouseKeyPartsOfHouse.objects.all().values('name', 'good_photo', 'good_photo_desc', 'bad_photo', 'bad_photo_desc')}
             ],
         }
     ]

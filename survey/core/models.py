@@ -390,7 +390,7 @@ class HousesAndGeneralConstructionMaterials(models.Model):
 
 class BuildAHouseMakesHouseStrong(models.Model):
     name = models.CharField(max_length=300)
-    pdf = models.FileField(upload_to='BuildAHouseMakesHouseStrong/pdf/', null=True, blank=True)
+    pdf = models.FileField(upload_to='HousesAndGeneralConstruction/BuildAHouseMakesHouseStrong/pdf/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -398,9 +398,9 @@ class BuildAHouseMakesHouseStrong(models.Model):
 
 class BuildAHouseKeyPartsOfHouse(models.Model):
     name = models.CharField(max_length=300)
-    good_photo = models.ImageField(upload_to='BuildAHouse/KeyPartsOfHouse/good_photo/', null=True, blank=True)
+    good_photo = models.ImageField(upload_to='HousesAndGeneralConstruction/KeyPartsOfHouse/good_photo/', null=True, blank=True)
     good_photo_desc = models.TextField(null=True, blank=True)
-    bad_photo = models.ImageField(upload_to='BuildAHouse/KeyPartsOfHouse/bad_photo/', null=True, blank=True)
+    bad_photo = models.ImageField(upload_to='HousesAndGeneralConstruction/KeyPartsOfHouse/bad_photo/', null=True, blank=True)
     bad_photo_desc = models.TextField(null=True, blank=True)    
     def __str__(self):
         return self.name
