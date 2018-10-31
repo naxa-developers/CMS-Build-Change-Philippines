@@ -1,0 +1,85 @@
+
+.opq66{opacity: 0.66;}
+.bcatext{color:#555;}
+h2.mt15{margin-top:15px;}
+h2.mt30{margin-top:30px;}
+.mb40{margin-bottom:30px;}
+p.mtb30{margin-top:30px;margin-bottom:30px;}
+.loginOuter{background:linear-gradient(45deg,#2cafe3,#8cc63f);width:100%;min-height: 100vh;
+    display:flex;align-items:center;justify-content: center;}
+.loginInner{
+    width:400px;
+    height:465px;
+    background:rgba(255,255,255,0.8);
+    padding:20px;
+    box-shadow: 0px 2px 40px -11px rgba(0,0,0,0.75);
+
+}
+.loginInner input, .loginInner select, .loginInner .custom-file-label {
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    border: 1px solid rgba(0, 150, 136, 0.2901960784313726);
+}
+.fa.password{  position: absolute;
+z-index: 2;
+color: #1abc9c;
+font-size: 25px;
+top: 10px;
+left: 15px;}
+input.iconInput{padding-left: 40px!important;background:#fff;}
+.fa.user.overIcon{position: absolute;
+    position: absolute;
+    top: 11px;
+    left: 15px;
+    z-index: 12px;
+    font-size: 23px;}
+.iconform{position: relative;}
+.fa.overIcon{position: absolute;z-index: 2; color:#19bc9b;}
+
+.formHolder{width:100%;max-width:800px;margin:auto;}
+.formHolder .widget-info .widget-body {
+    position: relative;
+    overflow: hidden;
+    /* background: #FFF; */
+    border-radius: 4px;
+    background: rgba(255,255,255,0.9);
+    padding: 1.5rem;
+}
+.forgot a{color:#3498db;}
+.forgot a:hover{color:#2980b9;}
+.formHolder input,.formHolder select,.formHolder .custom-file-label {background:rgba(255,255,255,0.7);border-radius: 2px;border: 1px solid rgba(0, 150, 136, 0.2901960784313726);}
+.formHolder .custom-file-label{background:rgba(255,255,255,0.7);border-radius:2px;}
+.mt-2{margin-top: 200px;}
+.horizontalForm label{min-width: 250px;padding-right:15px;color:#333;}
+.horizontalForm input{min-width:calc(100% - 250px);}
+.horizontalForm   .form-inline label{justify-content: flex-start;}
+ .widget-info .widget-head>h4 a.createSchool{
+    color: #fff;font-size: 18px;
+}
+/* .formHolder .form-control:focus , .formHolder input.custom-file-input:focus{
+    color: #495057;
+    background-color: #fff;
+    border-color: #4fb7946e;
+
+    -webkit-box-shadow: 0 0 0 0.2rem rgba(81,132,172,0.25);
+    box-shadow: 0 0 0 0.1rem rgb(106, 189, 134,0.2);
+} */
+#Login .form-group{margin-bottom:1.5rem;}
+.forgot{margin-bottom:30px;margin-top:30px;}
+
+/* overwriting the contents */
+.btn-success {
+    color: #fff;
+    background-color: #1abc9c;
+    border-color: #17ab8d;
+}
+.btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active, .show>.btn-success.dropdown-toggle {
+    color: #fff;
+    background-color: #16a085;
+    border-color: #138b73;
+}
+.btn-success:hover {
+    color: #fff;
+    background-color: #16a085;
+    border-color: #138b73;
+}
