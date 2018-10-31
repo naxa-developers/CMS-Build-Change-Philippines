@@ -375,3 +375,32 @@ class SubstepReport(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class HousesAndGeneralConstructionMaterials(models.Model):
+    name = models.CharField(max_length=300)
+    good_photo = models.ImageField(upload_to='HousesAndGeneralConstruction/materials/good_photo/', null=True, blank=True)
+    good_photo_desc = models.TextField(null=True, blank=True)
+    bad_photo = models.ImageField(upload_to='HousesAndGeneralConstruction/materials/bad_photo/', null=True, blank=True)
+    bad_photo_desc = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BuildAHouseMakesHouseStrong(models.Model):
+    name = models.CharField(max_length=300)
+    pdf = models.FileField(upload_to='BuildAHouseMakesHouseStrong/pdf/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BuildAHouseKeyPartsOfHouse(models.Model):
+    name = models.CharField(max_length=300)
+    good_photo = models.ImageField(upload_to='BuildAHouse/KeyPartsOfHouse/good_photo/', null=True, blank=True)
+    good_photo_desc = models.TextField(null=True, blank=True)
+    bad_photo = models.ImageField(upload_to='BuildAHouse/KeyPartsOfHouse/bad_photo/', null=True, blank=True)
+    bad_photo_desc = models.TextField(null=True, blank=True)    
+    def __str__(self):
+        return self.name

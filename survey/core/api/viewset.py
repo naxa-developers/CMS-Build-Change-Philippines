@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
     SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
 
@@ -197,3 +197,18 @@ def load_substeps(request):
     step_id = request.GET.get('step_id', None)
     substeps= ConstructionSubSteps.objects.filter(step__site_steps=step_id).values('title')
     return render(request, 'core/substeps_dropdown.html', {'substeps': substeps})
+
+
+@api_view(['GET'])
+def houses_and_general_construction(request):
+
+    data = [
+        {'more_about_materials': HousesAndGeneralConstructionMaterials.objects.all().values('name')},
+        {'build_a_house': [
+            {'my_house_strong': BuildAHouseMakesHouseStrong.objects.all().values('name')}, 
+            {'key_parts_of_house': BuildAHouseKeyPartsOfHouse.objects.all().values('name')}
+            ],
+        }
+    ]
+
+    return Response(data)

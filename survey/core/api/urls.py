@@ -33,5 +33,7 @@ urlpatterns = [
 
     path('construction-site-steps-update/', viewset.construction_site_steps_update),
     path('load-substeps/', viewset.load_substeps, name='ajax_load_substeps'),
+    path('houses-and-general-construction/', viewset.houses_and_general_construction, name='houses_and_general_construction'),
+
 
 ]
