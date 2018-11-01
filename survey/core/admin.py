@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong
+from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF
 from userrole.models import FieldEngineerProfile
 
 
@@ -33,3 +33,4 @@ admin.site.register(SubStepCheckList)
 admin.site.register(HousesAndGeneralConstructionMaterials)
 admin.site.register(BuildAHouseMakesHouseStrong)
 admin.site.register(BuildAHouseKeyPartsOfHouse)
+admin.site.register(StandardSchoolDesignPDF)
