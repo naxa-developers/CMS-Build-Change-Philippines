@@ -385,7 +385,7 @@ class HousesAndGeneralConstructionMaterials(models.Model):
     bad_photo_desc = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name    
 
 
 class BuildAHouseMakesHouseStrong(models.Model):
