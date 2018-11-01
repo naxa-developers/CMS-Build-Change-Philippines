@@ -24,6 +24,12 @@ class ConstructionSubStepsAdmin(admin.ModelAdmin):
     inlines = (PrimaryPhotoInline, GoodPhotoInline, BadPhotoInline)
 
 
+class StandardSchoolDesignPDFAdmin(admin.ModelAdmin):
+
+    def has_add_permission(self, request):
+        return StandardSchoolDesignPDF.objects.all().count() == 0
+
+
 admin.site.register(Report)
 admin.site.register(SiteDocument)
 admin.site.register(ConstructionSteps)
@@ -33,4 +39,4 @@ admin.site.register(SubStepCheckList)
 admin.site.register(HousesAndGeneralConstructionMaterials)
 admin.site.register(BuildAHouseMakesHouseStrong)
 admin.site.register(BuildAHouseKeyPartsOfHouse)
-admin.site.register(StandardSchoolDesignPDF)
+admin.site.register(StandardSchoolDesignPDF, StandardSchoolDesignPDFAdmin)

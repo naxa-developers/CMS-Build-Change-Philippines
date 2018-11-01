@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
     SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
 
@@ -209,6 +209,17 @@ def houses_and_general_construction(request):
             {'key_parts_of_house': BuildAHouseKeyPartsOfHouse.objects.all().values('name','name_de', 'good_photo', 'good_photo_desc','good_photo_desc_de', 'bad_photo', 'bad_photo_desc', 'bad_photo_desc_de')}
             ],
         }
+    ]
+
+    return Response(data)
+
+
+@api_view(['GET'])
+def standard_school_design(request):
+
+    data = [
+        {'standard_school_design_pdf': StandardSchoolDesignPDF.objects.all().values('pdf',)},
+       
     ]
 
     return Response(data)
