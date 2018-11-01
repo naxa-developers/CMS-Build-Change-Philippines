@@ -217,9 +217,7 @@ def houses_and_general_construction(request):
 @api_view(['GET'])
 def standard_school_design(request):
 
-    data = [
-        {'standard_school_design_pdf': StandardSchoolDesignPDF.objects.all().values('pdf',)},
+    data = StandardSchoolDesignPDF.objects.all().values('pdf',)
        
-    ]
 
     return Response(data)
