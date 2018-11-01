@@ -404,3 +404,7 @@ class BuildAHouseKeyPartsOfHouse(models.Model):
     bad_photo_desc = models.TextField(null=True, blank=True)    
     def __str__(self):
         return self.name
+
+
+class StandardSchoolDesignPDF(models.Model):
+    pdf = models.FileField(upload_to='HousesAndGeneralConstruction/', null=True, blank=True)

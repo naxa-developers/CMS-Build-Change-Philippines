@@ -22,7 +22,7 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm, BadPhotoFormset, GoodPhotoFormset
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
@@ -74,6 +74,7 @@ def project_material_photos(request, project_id):
     more_about_materials = HousesAndGeneralConstructionMaterials.objects.all()
     my_house_strong = BuildAHouseMakesHouseStrong.objects.all()
     key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all()
+    standard_school_design_pdf = StandardSchoolDesignPDF.objects.all()
 
     for filename in material_photos:
         if filename.good_photos:
@@ -105,6 +106,10 @@ def project_material_photos(request, project_id):
             zip_file.write(os.path.join(BASE_DIR) + img.bad_photo.url, arcname=img.bad_photo.url)
 
     for data in my_house_strong:
+        if data.pdf:
+            zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
+    
+    for data in standard_school_design_pdf:
         if data.pdf:
             zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
 
