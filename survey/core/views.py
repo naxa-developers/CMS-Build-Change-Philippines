@@ -955,7 +955,7 @@ class SiteStepsCreate(FormView):
 
 class ConfigureProjectSteps(CreateView):
     model = ConstructionSteps
-    fields = ('name', 'name_de', 'order', 'image')
+    fields = ('name', 'name_de', 'order', 'image', 'icon')
     template_name = 'core/configure_project_steps_form.html'
 
     def form_valid(self, form):
@@ -969,7 +969,7 @@ class ConfigureProjectSteps(CreateView):
 
 class ConstructionStepUpdate(UpdateView):
     model = ConstructionSteps
-    fields = ('name', 'name_de', 'order', 'image')
+    fields = ('name', 'name_de', 'order', 'image', 'icon')
     template_name = 'core/configure_project_steps_form.html'
 
     def form_valid(self, form):
