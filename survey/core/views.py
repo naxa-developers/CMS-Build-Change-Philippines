@@ -90,6 +90,9 @@ def project_material_photos(request, project_id):
     for img in step_image:
         if img.image:
             zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
+        if img.icon:
+            print(img.icon)
+            zip_file.write(os.path.join(BASE_DIR) + img.icoon.url, arcname=img.icon.url)
     
     for img in more_about_materials:
         if img.good_photo:

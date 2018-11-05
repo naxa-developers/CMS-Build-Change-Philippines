@@ -82,6 +82,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
     step = serializers.CharField(source="step.name")
     local_step = serializers.CharField(source="step.name_de")
     image = serializers.CharField(source="step.image")
+    icon = serializers.CharField(source="step.icon")
     order = serializers.IntegerField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
     checklists = SubStepsCheckListSerializer(many=True)
@@ -89,7 +90,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteSteps
-        fields = ('id', 'step', 'local_step', 'order', 'image', 'sub_steps', 'checklists', 'reports')
+        fields = ('id', 'step', 'local_step', 'order', 'image', 'icon', 'sub_steps', 'checklists', 'reports')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.filter(

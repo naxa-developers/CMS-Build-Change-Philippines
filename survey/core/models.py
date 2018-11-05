@@ -269,6 +269,8 @@ class ConstructionSteps(models.Model):
     image = models.ImageField(upload_to='construction_step/', null=True, blank=True)
     project = models.ForeignKey(Project, related_name="construction_steps", on_delete=models.CASCADE, null=True,
                                 blank=True)
+    icon = models.ImageField(upload_to='construction_step/icons/', null=True, blank=True)
+
     order = models.IntegerField(default=0)
 
     def __str__(self):
