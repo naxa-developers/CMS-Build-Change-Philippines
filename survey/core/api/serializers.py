@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
     ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport, GoodPhoto, BadPhoto, CallLog
-from userrole.models import UserRole
+from userrole.models import UserRole, AdminProfile
 
 
 class EagerLoadingMixin:
@@ -147,14 +147,26 @@ class SitesSerializer(serializers.ModelSerializer):
 
         return {}
 
+class AdminProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = AdminProfile
+        fields = ('id',)
+
 
 class ProjectSerializer(serializers.ModelSerializer, EagerLoadingMixin):
     sites = SitesSerializer(many=True)
-    _PREFETCH_RELATED_FIELDS = ['sites__site_steps__reports', 'sites__site_steps__checklists']
+    admin = serializers.SerializerMethodField()
 
+    _PREFETCH_RELATED_FIELDS = ['sites__site_steps__reports', 'sites__site_steps__checklists']
+    
     class Meta:
         model = Project
-        fields = ('id', 'name', 'sites')
+        fields = ('id', 'name', 'sites', 'admin')
+    
+    def get_admin(self, obj):
+        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Super Admin").values('user', 'phone_number')
+        return  qs
    
 
 class MaterialSerializer(serializers.ModelSerializer):
