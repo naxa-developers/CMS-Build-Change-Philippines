@@ -1,20 +1,23 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<form action="" method="post">{% csrf_token %}
-<h5>Site Construction steps</h5>
-    <ul id="id_construction_steps">
-        {% for step in construction_steps %}
-        <li><label for="id_construction_steps_{{forloop.counter0}}"><input type="checkbox" name="construction_steps" value="{{step.id}}"
+<div class="d-flex justify-content-center">
+	<div class="col-md-2 col-lg-5">
+		<div class="dash-right">
+			<div class="widget-info margin-top-large">
+				<form action="" method="post">{% csrf_token %}
+					<h5>Site Construction steps</h5>
+					<ul id="id_construction_steps">
+						{% for step in construction_steps %}
+						<li><label for="id_construction_steps_{{forloop.counter0}}"><input type="checkbox" name="construction_steps" value="{{step.id}}"
                                                         id="id_construction_steps_{{forloop.counter0}}">
-            {{step}}</label>
-
-        </li>
-        {% endfor %}
-
-    </ul>
-
-    <input type="submit">
-
-</form>
+                                                    {{step}}</label></li>
+                        {% endfor %}
+                    </ul>
+                    <input type="submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
