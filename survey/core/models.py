@@ -1,4 +1,6 @@
 import os
+from django.utils.timezone import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -411,3 +413,9 @@ class BuildAHouseKeyPartsOfHouse(models.Model):
 class StandardSchoolDesignPDF(models.Model):
     pdf = models.FileField(upload_to='HousesAndGeneralConstruction/', null=True, blank=True)
     
+
+
+class CallLog(models.Model):
+    call_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="call_to_log")
+    call_from = models.ForeignKey(User, on_delete = models.CASCADE, related_name="call_from_log")
+    time = models.DateTimeField(default=datetime.now)

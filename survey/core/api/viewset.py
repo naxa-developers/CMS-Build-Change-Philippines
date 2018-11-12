@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer
 
 # Serializers define the API representation.
 
@@ -41,7 +41,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+
+        # Set up eager loading to avoid N+1 selects
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)  
+        return queryset
 
 
 class ProjectSiteStepsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -116,6 +122,11 @@ class MaterialViewset(viewsets.ModelViewSet):
 class ReportViewset(viewsets.ModelViewSet):
     serializer_class = SubstepReportSerializer
     queryset = SubstepReport.objects.all()
+
+
+class CallLogViewset(viewsets.ModelViewSet):
+    serializer_class = CallLogSerializer
+    queryset = CallLog.objects.all()
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
