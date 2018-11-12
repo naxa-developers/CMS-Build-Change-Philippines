@@ -332,6 +332,7 @@ class SiteSteps(models.Model):
 class SubStepCheckList(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="checklists", null=True, blank=True)
     text = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     step = models.ForeignKey(SiteSteps, related_name="checklists", on_delete=models.CASCADE)
     substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
