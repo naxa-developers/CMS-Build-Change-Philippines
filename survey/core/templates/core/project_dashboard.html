@@ -188,6 +188,20 @@
                                     <div class="update-item">
                                         <h6>Today</h6>
                                         <ul class="update-list">
+                                            
+                                            {% for call_log in call_logs %}
+                                            <li>
+                                                    
+                                                    <a href="#" title=""><strong>{{ call_log.call_from }}</strong></a>
+                                                    phoned to <a
+                                                        href="#"
+                                                        title=""><strong>{{ call_log.call_to }}
+                                                </strong></a>.
+                                                    <span class="time"><i class="la la-clock-o"
+                                                                          aria-hidden="true"></i>{{ call_log.time }}</span>
+                                                </li>
+                                            {% endfor %}
+                                                
                                             {% for report in recent_activities_report %}
                                                 <li>
                                                     <img src="#" alt="">
