@@ -318,7 +318,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
         context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from')
-        context['event_logs'] = EventLog.objects.all().order_by('-date')
+        # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
@@ -337,6 +337,8 @@ class RecentUpdates(ProjectRoleMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['project'] = self.kwargs['project_id']
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')
+        # context['event_logs'] = EventLog.objects.all().order_by('-date')
+
         return context
 
 

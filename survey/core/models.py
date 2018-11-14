@@ -378,13 +378,13 @@ class SubstepReport(models.Model):
     def __str__(self):
         return self.comment
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name})
-        else:
-            EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name})
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
+    #     else:
+    #         EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
 
-        super(SubstepReport, self).save(args, kwargs)
+    #     super(SubstepReport, self).save(args, kwargs)
 
 
     class Meta:
@@ -436,13 +436,13 @@ class CallLog(models.Model):
     call_from = models.ForeignKey(User, on_delete = models.CASCADE, related_name="call_from_log")
     time = models.DateTimeField(default=datetime.now)
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
-        else:
-            EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+    #     else:
+    #         EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
 
-        super(CallLog, self).save(args, kwargs)
+    #     super(CallLog, self).save(args, kwargs)
 
 
 
