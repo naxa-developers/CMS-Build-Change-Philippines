@@ -64,7 +64,7 @@ class SubStepsCheckListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubStepCheckList
-        fields = ('id', 'text', 'text_de', 'description_de', 'step', 'substep', 'status', 'site', 'site_name')
+        fields = ('id', 'text', 'description', 'step', 'substep', 'status', 'site', 'site_name')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
