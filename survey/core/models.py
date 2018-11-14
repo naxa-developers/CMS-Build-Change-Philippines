@@ -15,6 +15,12 @@ from django.contrib.gis.db.models import PointField
 
 from rest_framework.authtoken.models import Token
 
+LOG_ACTIONS = (
+        ('phoned_to', 'phoned to'),
+        ('submitted_a_response', 'submitted a response for general form'),
+        ('updated_a_response', 'updated a response for general form'),
+        # ('buy_object', 'User buy object'),
+    )
 
 PROJECT_TYPES = (
     (0, 'School'),
@@ -372,6 +378,15 @@ class SubstepReport(models.Model):
     def __str__(self):
         return self.comment
 
+    def save(self, *args, **kwargs):
+        if not self.id:
+            EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name})
+        else:
+            EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name})
+
+        super(SubstepReport, self).save(args, kwargs)
+
+
     class Meta:
         ordering = ('-date',)
 
@@ -420,3 +435,25 @@ class CallLog(models.Model):
     call_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="call_to_log")
     call_from = models.ForeignKey(User, on_delete = models.CASCADE, related_name="call_from_log")
     time = models.DateTimeField(default=datetime.now)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+        else:
+            EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+
+        super(CallLog, self).save(args, kwargs)
+
+
+
+class EventLog(models.Model):
+    user = models.ForeignKey(User, related_name="event_logs", on_delete=models.CASCADE)
+    action = models.CharField(max_length=300, choices=LOG_ACTIONS)
+    project = models.ForeignKey(Project, related_name="event_logs", on_delete=models.CASCADE)
+    extra = JSONField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.action
+    

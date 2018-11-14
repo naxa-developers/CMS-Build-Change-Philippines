@@ -1,5 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import Step, Checklist, Material, Category, ConstructionSteps, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse
+from .models import Step, Checklist, Material, Category, ConstructionSteps, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, SubStepCheckList
 
 
 @register(Step)
@@ -45,3 +45,8 @@ class BuildAHouseMakesHouseStrongTranslationOptions(TranslationOptions):
 @register(BuildAHouseKeyPartsOfHouse)
 class BuildAHouseKeyPartsOfHouseTranslationOptions(TranslationOptions):
     fields = ('name', 'good_photo_desc', 'bad_photo_desc')
+
+
+@register(SubStepCheckList)
+class SubStepCheckListTranslationOptions(TranslationOptions):
+    fields = ('text', 'description')

@@ -189,19 +189,38 @@
                                         <h6>Today</h6>
                                         <ul class="update-list">
                                             
-                                            {% for call_log in call_logs %}
-                                            <li>
-                                                    
-                                                    <a href="#" title=""><strong>{{ call_log.call_from }}</strong></a>
-                                                    phoned to <a
+                                            {% for log in event_logs %}
+                                                
+                                                {% if log.action == 'phoned_to' %}
+                                                <li>
+                
+                                                        <a href="#" title=""><strong>{{ log.user }}</strong></a>
+                                                        {{log.get_action_display}} <a
+                                                            href="#"
+                                                            title=""><strong>{{ log.extra.call_to }}
+                                                    </strong></a>.
+                                                        <span class="time"><i class="la la-clock-o"
+                                                                              aria-hidden="true"></i>{{ log.date }}</span>
+                                                    </li>
+                                               {% else %}
+                                               <li>
+                                                    <img src="#" alt="">
+                                                    <a href="#" title=""><strong>{{ log.user }}</strong></a>
+                                                   {{log.get_action_display}} <a
                                                         href="#"
-                                                        title=""><strong>{{ call_log.call_to }}
+                                                        title=""><strong>{{ log.comment }}
+                                                    </strong></a> in site <a href="#" title=""><strong>
+                                                    {{ log.extra.site }}
                                                 </strong></a>.
                                                     <span class="time"><i class="la la-clock-o"
-                                                                          aria-hidden="true"></i>{{ call_log.time }}</span>
+                                                                          aria-hidden="true"></i>{{ log.date }}</span>
                                                 </li>
+                                                {% endif %}
+                                                
                                             {% endfor %}
                                                 
+                                           
+<!--                                                 
                                             {% for report in recent_activities_report %}
                                                 <li>
                                                     <img src="#" alt="">
@@ -216,7 +235,7 @@
                                                     <span class="time"><i class="la la-clock-o"
                                                                           aria-hidden="true"></i>{{ report.date }}</span>
                                                 </li>
-                                            {% endfor %}
+                                            {% endfor %} -->
 
 
 
