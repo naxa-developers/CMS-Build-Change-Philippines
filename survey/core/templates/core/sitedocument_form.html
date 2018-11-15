@@ -15,7 +15,7 @@
             <li class="breadcrumb-item active" aria-current="page">Document Form</li>
         </ol>
     </nav>
-    <div class="d-flex justify-content-center">
+<!--     <div class="d-flex justify-content-center">
         <div class="col-md-2 col-lg-5">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
@@ -23,6 +23,28 @@
                         {{ form.as_p }}
                         <input type="submit" class="btn btn-primary">
 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">File</label>
+                                {{ form.file }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Document Name</label>
+                                {{ form.document_name }}
+                            </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success"></i> Submit</button>
+                         </div>                    
                     </form>
                 </div>
             </div>
