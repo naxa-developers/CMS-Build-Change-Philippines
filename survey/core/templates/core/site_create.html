@@ -4,7 +4,7 @@
 {% load render_bundle from webpack_loader %}
 {% load get_files from webpack_loader %}
 
-{% block extra_css %}
+{% block extra_css %}    
     <script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}"></script>
 {% endblock extra_css %}
 
@@ -33,7 +33,7 @@
         </ol>
     </nav>
 </div>
-<div class="d-flex justify-content-center">
+<!-- <div class="d-flex justify-content-center">
     <div class="col-md-1 col-lg-8">
         <div class="dash-right">
             <div class="widget-info margin-top-large">
@@ -45,8 +45,88 @@
             </div>
         </div>
     </div>
+</div> -->
+<!-- <div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <form method="post">{% csrf_token %}
+                    <div class="">
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Name</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Type</label>
+                            {{ form.type }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Photo</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Address</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Location</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Contact Number</label>
+                            {{ form.contact_number }}
+                        </div>                        
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                     </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <form method="post">{% csrf_token %}
+                    {{ form.media }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputType">Type</label>
+                            {{ form.type }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputPhoto">Photo</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputAddress">Address</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputLocation">Location</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputContactNumber">Contact Number</label>
+                            {{ form.contact_number }}
+                        </div>                        
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                     </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'site' 'js' %}
 {% endblock extra_script %}
+
