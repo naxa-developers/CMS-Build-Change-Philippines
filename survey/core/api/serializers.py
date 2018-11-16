@@ -273,10 +273,14 @@ class StepDetailSerializer(serializers.ModelSerializer):
 
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer, EagerLoadingMixin):
     localname = serializers.ReadOnlyField(source="get_localname")
     project_name = serializers.CharField(source='project.name')
     materials = MaterialSerializer(many=True)
+
+    _PREFETCH_RELATED_FIELDS = ['materials', 'material__created_by']
+    _SELECT_RELATED_FIELDS = ['project',]
+
 
     class Meta:
         model = Category

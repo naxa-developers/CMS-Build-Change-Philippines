@@ -138,11 +138,12 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
         return data
     
     def get_queryset(self):
-        queryset = Category.objects.select_related()
+        queryset = Category.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
         project_id = self.request.query_params.get('project_id')
 
         if project_id:
-            queryset = Category.objects.select_related().filter(project_id=project_id)
+            queryset = queryset.filter(project_id=project_id)
         
         return queryset
 
