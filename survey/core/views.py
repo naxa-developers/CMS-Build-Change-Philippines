@@ -70,11 +70,22 @@ def project_material_photos(request, project_id):
     zip_file = zipfile.ZipFile(response, 'w')
     material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
     project = get_object_or_404(Project, id=project_id)
+    category_materials = Material.objects.filter(project_id=project_id)
     step_image = ConstructionSteps.objects.filter(project_id=project_id)
     more_about_materials = HousesAndGeneralConstructionMaterials.objects.all()
     my_house_strong = BuildAHouseMakesHouseStrong.objects.all()
     key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all()
     standard_school_design_pdf = StandardSchoolDesignPDF.objects.all()
+
+    # import ipdb; ipdb.set_trace()
+    for filename in category_materials:
+        if filename.good_photo:
+            for file in filename.good_photo:
+                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+        if filename.bad_photo:
+            for file in filename.bad_photo:
+                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+    
 
     for filename in material_photos:
         if filename.good_photos:
