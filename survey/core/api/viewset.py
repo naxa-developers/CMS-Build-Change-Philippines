@@ -131,12 +131,20 @@ class CallLogViewset(viewsets.ModelViewSet):
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.select_related()
 
     def perform_create(self, serializer, **kwargs):
         localname = serializer.initial_data.get('localname', '')
         data = serializer.save(localname=localname)
         return data
+    
+    def get_queryset(self):
+        queryset = Category.objects.select_related()
+        project_id = self.request.query_params.get('project_id')
+
+        if project_id:
+            queryset = Category.objects.select_related().filter(project_id=project_id)
+        
+        return queryset
 
 
 class SiteMaterialViewSet(viewsets.ReadOnlyModelViewSet):
