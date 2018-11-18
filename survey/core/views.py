@@ -77,14 +77,11 @@ def project_material_photos(request, project_id):
     key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all()
     standard_school_design_pdf = StandardSchoolDesignPDF.objects.all()
 
-    # import ipdb; ipdb.set_trace()
     for filename in category_materials:
         if filename.good_photo:
-            for file in filename.good_photo:
-                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+            zip_file.write(os.path.join(BASE_DIR) + filename.image.url, arcname=filename.image.url)
         if filename.bad_photo:
-            for file in filename.bad_photo:
-                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+            zip_file.write(os.path.join(BASE_DIR) + filename.image.url, arcname=filename.image.url)
     
 
     for filename in material_photos:
