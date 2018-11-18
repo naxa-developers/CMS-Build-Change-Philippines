@@ -79,9 +79,9 @@ def project_material_photos(request, project_id):
 
     for filename in category_materials:
         if filename.good_photo:
-            zip_file.write(os.path.join(BASE_DIR) + filename.image.url, arcname=filename.image.url)
+            zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
         if filename.bad_photo:
-            zip_file.write(os.path.join(BASE_DIR) + filename.image.url, arcname=filename.image.url)
+            zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
     
 
     for filename in material_photos:
