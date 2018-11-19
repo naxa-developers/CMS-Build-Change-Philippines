@@ -7,6 +7,7 @@
     <script type="text/javascript" src="{% static 'assets/formset/jquery.formset.js' %}"></script>
 {% endblock %}
 {% block content %}
+<head>
 <script type="text/javascript">
         $(function() {
             $(".inline.{{ primary_photo_form.prefix }}").formset({
@@ -32,13 +33,6 @@
 </head>
 
 <body>
-    <div class="row no-gutters">
-        <div class="col-md-12">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">Create Construction Substep</li>
-                </ol>
-            </nav>
 <!--                 </div>
                     <div class="col-md-8 col-lg-9">
                         <div class="dash-left">

@@ -7,6 +7,8 @@
 {% block content %}
     <div class="row no-gutters">
         <div class="col-md-12">
+<!--         <div class="d-flex justify-content-center">
+            <div class="col-md-2 col-lg-5"> -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>

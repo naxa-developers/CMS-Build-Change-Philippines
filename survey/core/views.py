@@ -963,6 +963,11 @@ class ConfigureProjectSteps(CreateView):
 
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        return context
+
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
 
@@ -976,6 +981,18 @@ class ConstructionStepUpdate(UpdateView):
         form.instance.project = get_object_or_404(Project, id=self.object.project.id)
 
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        step = context['object']
+        project = step.project
+        # site = step.site
+        if project:
+            context['project'] = project
+        else:
+            context['project'] = step.project
+        return context
 
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.object.project.id,))
@@ -1058,6 +1075,11 @@ class ConstructionSubstepCreate(CreateView):
         bad_photo_form.save()
 
         return super(ConstructionSubstepCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        return context
 
     def form_invalid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
 
