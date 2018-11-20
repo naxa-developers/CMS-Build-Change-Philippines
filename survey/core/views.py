@@ -22,7 +22,7 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog, EventLog
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm, BadPhotoFormset, GoodPhotoFormset
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
@@ -70,11 +70,19 @@ def project_material_photos(request, project_id):
     zip_file = zipfile.ZipFile(response, 'w')
     material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
     project = get_object_or_404(Project, id=project_id)
+    category_materials = Material.objects.filter(project_id=project_id)
     step_image = ConstructionSteps.objects.filter(project_id=project_id)
     more_about_materials = HousesAndGeneralConstructionMaterials.objects.all()
     my_house_strong = BuildAHouseMakesHouseStrong.objects.all()
     key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all()
     standard_school_design_pdf = StandardSchoolDesignPDF.objects.all()
+
+    for filename in category_materials:
+        if filename.good_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
+        if filename.bad_photo:
+            zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
+    
 
     for filename in material_photos:
         if filename.good_photos:
@@ -316,7 +324,9 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
-        context['recent_activities_checklist'] = SubStepCheckList.objects.all()
+        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from')
+        # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
         if self.request.group.name == "Super Admin":
             context['projects'] = Project.objects.all()
@@ -335,6 +345,8 @@ class RecentUpdates(ProjectRoleMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['project'] = self.kwargs['project_id']
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')
+        # context['event_logs'] = EventLog.objects.all().order_by('-date')
+
         return context
 
 

@@ -63,3 +63,7 @@ class FieldEngineerProfile(models.Model):
     last_name = models.CharField(max_length=250)
     email = models.EmailField(blank=True)
     phone_number = models.CharField(max_length=250, blank=True)
+
+
+class AdminProfile(UserRole):
+    phone_number = models.CharField(max_length=250, blank=True)

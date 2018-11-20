@@ -10,9 +10,9 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer
 
 # Serializers define the API representation.
 
@@ -41,7 +41,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        queryset = Project.objects.all()
+
+        # Set up eager loading to avoid N+1 selects
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)  
+        return queryset
 
 
 class ProjectSiteStepsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -118,14 +124,28 @@ class ReportViewset(viewsets.ModelViewSet):
     queryset = SubstepReport.objects.all()
 
 
+class CallLogViewset(viewsets.ModelViewSet):
+    serializer_class = CallLogSerializer
+    queryset = CallLog.objects.all()
+
+
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
-    queryset = Category.objects.select_related()
 
     def perform_create(self, serializer, **kwargs):
         localname = serializer.initial_data.get('localname', '')
         data = serializer.save(localname=localname)
         return data
+    
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        project_id = self.request.query_params.get('project_id')
+
+        if project_id:
+            queryset = queryset.filter(project_id=project_id)
+        
+        return queryset
 
 
 class SiteMaterialViewSet(viewsets.ReadOnlyModelViewSet):

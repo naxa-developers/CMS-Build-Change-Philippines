@@ -119,7 +119,7 @@ class SubStepCheckListForm(forms.ModelForm):
 
     class Meta:
         model = SubStepCheckList
-        fields = ('text', 'step', 'substep')
+        fields = ('text', 'description', 'step', 'substep')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

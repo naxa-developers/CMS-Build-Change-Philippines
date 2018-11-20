@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 # Register your models here.
-from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF
-from userrole.models import FieldEngineerProfile
+from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF, EventLog, CallLog, SubstepReport
+from userrole.models import FieldEngineerProfile, AdminProfile
 
 
 class PrimaryPhotoInline(admin.StackedInline):
@@ -30,7 +30,6 @@ class StandardSchoolDesignPDFAdmin(admin.ModelAdmin):
         return StandardSchoolDesignPDF.objects.all().count() == 0
 
 
-admin.site.register(Report)
 admin.site.register(SiteDocument)
 admin.site.register(ConstructionSteps)
 admin.site.register(ConstructionSubSteps, ConstructionSubStepsAdmin)
@@ -40,3 +39,7 @@ admin.site.register(HousesAndGeneralConstructionMaterials)
 admin.site.register(BuildAHouseMakesHouseStrong)
 admin.site.register(BuildAHouseKeyPartsOfHouse)
 admin.site.register(StandardSchoolDesignPDF, StandardSchoolDesignPDFAdmin)
+admin.site.register(AdminProfile)
+admin.site.register(EventLog)
+admin.site.register(CallLog)
+admin.site.register(SubstepReport)

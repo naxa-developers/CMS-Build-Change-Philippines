@@ -1,7 +1,17 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport, GoodPhoto, BadPhoto
-from userrole.models import UserRole
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport, GoodPhoto, BadPhoto, CallLog
+from userrole.models import UserRole, AdminProfile
+
+
+class EagerLoadingMixin:
+    @classmethod
+    def setup_eager_loading(cls, queryset):
+        if hasattr(cls, "_SELECT_RELATED_FIELDS"):
+            queryset = queryset.select_related(*cls._SELECT_RELATED_FIELDS)
+        if hasattr(cls, "_PREFETCH_RELATED_FIELDS"):
+            queryset = queryset.prefetch_related(*cls._PREFETCH_RELATED_FIELDS)
+        return queryset
 
 
 class StepsSerializer(serializers.ModelSerializer):
@@ -54,7 +64,7 @@ class SubStepsCheckListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubStepCheckList
-        fields = ('id', 'text', 'step', 'substep', 'status', 'site', 'site_name')
+        fields = ('id', 'text', 'description', 'step', 'substep', 'status', 'site', 'site_name')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
@@ -93,7 +103,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
         fields = ('id', 'step', 'local_step', 'order', 'image', 'icon', 'sub_steps', 'checklists', 'reports')
 
     def get_sub_steps(self, obj):
-        sub_steps = ConstructionSubSteps.objects.filter(
+        sub_steps = ConstructionSubSteps.objects.select_related('project', 'step', 'created_by').prefetch_related('primary_photos', 'good_photos', 'bad_photos').filter(
             step=obj.step,
         )
         serializer = ConstructionSubstepSerializer(sub_steps, many=True)
@@ -103,6 +113,7 @@ class SiteStepsSerializer(serializers.ModelSerializer):
 
 class SiteEngineerSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username')
+    id = serializers.CharField(source='user.id')
     phone_number = serializers.CharField(source='user.field_engineer.phone_number')
 
     class Meta:
@@ -119,30 +130,51 @@ class SitesSerializer(serializers.ModelSerializer):
         model = Site
         fields = ('id', 'name', 'address', 'location', 'site_steps', 'site_engineers')
 
+    # def get_site_engineers(self, obj):
+    #     if obj.site_roles:
+            
+    #         serializer = SiteEngineerSerializer(instance=obj.site_roles, many=True)
+    #         return serializer.data
+
+    #     return {}
     def get_site_engineers(self, obj):
         if obj.site_roles:
-            serializer = SiteEngineerSerializer(instance=obj.site_roles, many=True)
+            site_engineers = UserRole.objects.select_related('project', 'user', 'site').filter(
+            site=obj.id,
+        )
+            serializer = SiteEngineerSerializer(site_engineers, many=True)
             return serializer.data
 
         return {}
 
+class AdminProfileSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = AdminProfile
+        fields = ('id',)
 
-class ProjectSerializer(serializers.ModelSerializer):
+
+class ProjectSerializer(serializers.ModelSerializer, EagerLoadingMixin):
     sites = SitesSerializer(many=True)
+    admin = serializers.SerializerMethodField()
 
+    _PREFETCH_RELATED_FIELDS = ['sites__site_steps__reports', 'sites__site_steps__checklists']
+    
     class Meta:
         model = Project
-        fields = ('id', 'name', 'sites')
-
+        fields = ('id', 'name', 'sites', 'admin')
+    
+    def get_admin(self, obj):
+        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Super Admin").values('user', 'phone_number')
+        return  qs
+   
 
 class MaterialSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source='category.name')
-    local_category = serializers.CharField(source='category.get_localname')
     created_by = serializers.ReadOnlyField(source='created_by.username')
 
     class Meta:
         model = Material
-        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'category', 'local_category', 'created_by',)
+        fields = ('id', 'title', 'description', 'good_photo', 'bad_photo', 'project', 'created_by',)
 
 
 class StepSerializer(serializers.ModelSerializer):
@@ -241,13 +273,18 @@ class StepDetailSerializer(serializers.ModelSerializer):
 
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer, EagerLoadingMixin):
     localname = serializers.ReadOnlyField(source="get_localname")
     project_name = serializers.CharField(source='project.name')
+    materials = MaterialSerializer(many=True)
+
+    _PREFETCH_RELATED_FIELDS = ['materials', 'material__created_by']
+    _SELECT_RELATED_FIELDS = ['project',]
+
 
     class Meta:
         model = Category
-        fields = ('id', 'name', 'localname', 'project', 'project_name')
+        fields = ('id', 'name', 'localname', 'project', 'project_name', 'materials')
 
     def create(self, validated_data):
         localname = validated_data.pop('localname') if 'localname' in validated_data else ""
@@ -291,3 +328,10 @@ class SiteReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('id', 'username', 'checklist_id', 'checklist', 'date')
+
+
+class CallLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CallLog
+        exclude = ()

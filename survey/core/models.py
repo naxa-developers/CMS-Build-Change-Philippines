@@ -1,4 +1,6 @@
 import os
+from django.utils.timezone import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -13,6 +15,12 @@ from django.contrib.gis.db.models import PointField
 
 from rest_framework.authtoken.models import Token
 
+LOG_ACTIONS = (
+        ('phoned_to', 'phoned to'),
+        ('submitted_a_response', 'submitted a response for general form'),
+        ('updated_a_response', 'updated a response for general form'),
+        # ('buy_object', 'User buy object'),
+    )
 
 PROJECT_TYPES = (
     (0, 'School'),
@@ -330,6 +338,7 @@ class SiteSteps(models.Model):
 class SubStepCheckList(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="checklists", null=True, blank=True)
     text = models.TextField(blank=True)
+    description = models.TextField(blank=True, null=True)
     step = models.ForeignKey(SiteSteps, related_name="checklists", on_delete=models.CASCADE)
     substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
@@ -368,6 +377,15 @@ class SubstepReport(models.Model):
 
     def __str__(self):
         return self.comment
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
+    #     else:
+    #         EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
+
+    #     super(SubstepReport, self).save(args, kwargs)
+
 
     class Meta:
         ordering = ('-date',)
@@ -410,4 +428,32 @@ class BuildAHouseKeyPartsOfHouse(models.Model):
 
 class StandardSchoolDesignPDF(models.Model):
     pdf = models.FileField(upload_to='HousesAndGeneralConstruction/', null=True, blank=True)
+    
+
+
+class CallLog(models.Model):
+    call_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name="call_to_log")
+    call_from = models.ForeignKey(User, on_delete = models.CASCADE, related_name="call_from_log")
+    time = models.DateTimeField(default=datetime.now)
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+    #     else:
+    #         EventLog.objects.create(user=self.call_from, action='phoned_to', project_id=1, extra={'call_to':self.call_to.username})
+
+    #     super(CallLog, self).save(args, kwargs)
+
+
+
+class EventLog(models.Model):
+    user = models.ForeignKey(User, related_name="event_logs", on_delete=models.CASCADE)
+    action = models.CharField(max_length=300, choices=LOG_ACTIONS)
+    project = models.ForeignKey(Project, related_name="event_logs", on_delete=models.CASCADE)
+    extra = JSONField()
+    date = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.action
     
