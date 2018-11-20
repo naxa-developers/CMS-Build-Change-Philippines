@@ -49,7 +49,7 @@
             </div>
         </div>
     </div>
-</div> --> 
+</div> -->
    <div class="formHolder">
         <div class="widget-info margin-top-large">
             <div class="widget-head">
@@ -58,6 +58,7 @@
                         <h4><a href="#" title="">Step</a></h4>
                     </div>
                     <form method="post">{% csrf_token %}
+                        <!--{{ form.as_p }}-->
                         <div class="form-row">
                             <div class="form-group col-md-6">
                             <label for="inputSchoolName">Name</label>
@@ -68,6 +69,10 @@
                                 {{ form.name_de }}
                             </div>
                             <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Order</label>
+                                {{ form.order }}
+                            </div>
+                            <div class="form-group col-md-12">
                             <label for="inputSchoolName">Image</label>
                                 {{ form.image }}
                             </div>
@@ -75,13 +80,9 @@
                             <label for="inputSchoolName">Icon</label>
                                 {{ form.icon }}
                             </div>
-                            <div class="form-group col-md-12">
-                            <label for="inputSchoolName">Order</label>
-                                {{ form.order }}
-                            </div>
                         <div class="">
                             <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
-                         </div>                    
+                         </div>
                     </form>
                 </div>
             </div>
