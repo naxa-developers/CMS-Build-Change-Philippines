@@ -47,50 +47,50 @@
             </div>
         </div>
     </div>
-  <!--   <div class="formHolder">
-        <div class="widget-info margin-top-large">
-            <div class="widget-head">
-                <div class="widget-body mt-2 horizontalForm">
-                    <div class="widget-head">
-                        <h4><a href="#" title="">{{site}} Steps List</a></h4>
-                    </div>
-                    <form action="" method="">
-                        <ul id="id_step_checked">
-                            <div class="form-row">
-                            <div class="form-group col-md-12">
-                                {% for step in checked_steps %}
-                                <label for="id_checked_step_{{ forloop.counter0 }}"><input type="checkbox"
-                                                                                                    name="checked_step"
-                                                                                                    value="{{ step.step__name }}"
-                                                                                                    checked
-                                                                                                    id="id_checked_step_{{ forloop.counter0 }}"
-                                                                                                    class="chk"
-                            >
-                                {{ step.step__name}} </label><br>
-                                {% endfor %}
-                            <div class="form-row">
-                            <div class="form-group col-md-12">
-                                {% for step in unchecked_steps %}
-                                <label for="id_unchecked_step_{{ forloop.counter0 }}"><input type="checkbox"
-                                                                                                  name="unchecked_step"
-                                                                                                  value="{{ step.name }}"
-                                                                                                  id="id_unchecked_step_{{ forloop.counter0 }}"
-                                                                                                  class="chk"
-                        >
-                            {{ step.name }}</label><br>
+<!--<div class="d-flex justify-content-center" style="margin-top: 20px">-->
+    <!--<div class="formHolder">-->
+        <!--<div class="widget-info margin-top-large">-->
+            <!--<div class="widget-head">-->
+                <!--<div class="widget-body mt-2 horizontalForm">-->
+                    <!--<div class="widget-info margin-top-large">-->
+                    <!--<h3>{{site}} Steps List</h3>-->
+
+                    <!--<p>-->
+                    <!--<form action="" method="">-->
+                        <!--<ul id="id_step_checked">-->
+                            <!--{% for step in checked_steps %}-->
+                            <!--<label for="id_checked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
+                                                                                                    <!--name="checked_step"-->
+                                                                                                    <!--value="{{ step.step__name }}"-->
+                                                                                                    <!--checked-->
+                                                                                                    <!--id="id_checked_step_{{ forloop.counter0 }}"-->
+                                                                                                    <!--class="chk"-->
+                            <!--&gt;-->
+                                <!--{{ step.step__name}} </label><br>-->
 
 
-                        {% endfor %}
-                        </ul>
-                        <div class="">
-                            <button type="submit" class="btn btn-success"></i> Update</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> -->
-</div>
+                            <!--{% endfor %}-->
+                            <!--{% for step in unchecked_steps %}-->
+                            <!--<label for="id_unchecked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
+                                                                                                      <!--name="unchecked_step"-->
+                                                                                                      <!--value="{{ step.name }}"-->
+                                                                                                      <!--id="id_unchecked_step_{{ forloop.counter0 }}"-->
+                                                                                                      <!--class="chk"-->
+                            <!--&gt;-->
+                                <!--{{ step.name }}</label><br>-->
+
+
+                            <!--{% endfor %}-->
+                            <!--<button type="button" id="refresh" class="btn-primary"> Update</button>-->
+                        <!--</ul>-->
+                    <!--</form>-->
+                    <!--</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 {% endblock content %}
 
 {% block extra_script %}

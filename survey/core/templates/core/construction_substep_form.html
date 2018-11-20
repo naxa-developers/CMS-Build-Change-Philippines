@@ -31,7 +31,29 @@
         })
     </script>
 </head>
-
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% if step %}
+            <li class="breadcrumb-item"><a href="{% url 'core:construction_substeps_update' step.pk %}">{{ step }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ step }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Construction Substep</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if step %}
+            <li class="breadcrumb-item"><a href="{% url 'core:construction_substeps_update' step.pk %}">{{ step }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ step }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Construction Substep</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
 <body>
 <!--                 </div>
                     <div class="col-md-8 col-lg-9">

@@ -952,6 +952,13 @@ class SiteStepsCreate(FormView):
         url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
         return HttpResponseRedirect(url)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
+
 
 class ConfigureProjectSteps(CreateView):
     model = ConstructionSteps
@@ -1155,6 +1162,18 @@ class ConstructionSubstepsUpdate(UpdateView):
 
                                   ))
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+        step = context['object']
+        project = step.project
+        # site = step.site
+        if project:
+            context['project'] = project
+        else:
+            context['project'] = step.project
+        return context
+
     def get_success_url(self):
         success_url = reverse_lazy('core:construction_substeps_detail', args=(self.object.pk,))
         return success_url
@@ -1208,6 +1227,13 @@ class ChecklistCreateView(CreateView):
         form.save()
         return super().form_valid(form)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
+
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
         return success_url
@@ -1222,6 +1248,13 @@ class ChecklistUpdateView(UpdateView):
         form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
         form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.object.site.id)
         return form
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
 
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))

@@ -1,7 +1,30 @@
 {% extends '_base.html' %}
 
 {% block content %}
-
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
 <!-- <div class="d-flex justify-content-center">
 
     <div class="col-md-2 col-lg-6">
@@ -14,8 +37,8 @@
                     <input type="submit">
                 </form>
             </div> -->
-        </div>
-    </div>
+        <!--</div>-->
+    <!--</div>-->
 
     <div class="formHolder">
         <div class="widget-info margin-top-large">
@@ -56,8 +79,8 @@
 
  <script>
 
-     //var baseUrl = 'http://localhost:8000/';
-     var baseUrl = 'http://bccms.naxa.com.np/';
+     var baseUrl = 'http://localhost:8000/';
+     //var baseUrl = 'http://bccms.naxa.com.np/';
 
 
     $("#id_step").change(function () {
