@@ -17,34 +17,37 @@
                 </ol>
             </nav>
         </div>
-    <div class="widget-body">
-        <ul class="submission-list">
-            {% for report in reports  %}
-            <li>
-                    <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment }}</strong></a>
-                    <br>
-                    {% if report.user %}
-                        <a href="#" title="View details of user">
-                            <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
-                        </a><br>{% endif %}{% if object.date %}
-                    <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                               aria-hidden="true"></i>{{ report.date }}
-                    </small><br>{% endif %}{% if object.checklist.step %}
-                    <small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small><br>{% endif %}
+        <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                    {% for report in reports  %}
+                    <li>
+                            <a href="{% url 'core:report_detail' report.pk %}"><strong>{{ report.comment }}</strong></a>
+                            <br>
+                            {% if report.user %}
+                                <a href="#" title="View details of user">
+                                    <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
+                                </a><br>{% endif %}{% if object.date %}
+                            <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                       aria-hidden="true"></i>{{ report.date }}
+                            </small><br>{% endif %}{% if object.checklist.step %}
+                            <small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small><br>{% endif %}
 
-                    {% if report.date %}
-                        <small class="site_icon_float" style="">{{ report.date }}</small><br>{% endif %}
+                            {% if report.date %}
+                                <small class="site_icon_float" style="">{{ report.date }}</small><br>{% endif %}
 
 
-                </li>
-            {% empty %}
-                No Reports Found.
+                        </li>
+                    {% empty %}
+                        No Reports Found.
 
-           {% endfor %}
-
-        </ul>
-    </div>
-
+                   {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+     </div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
