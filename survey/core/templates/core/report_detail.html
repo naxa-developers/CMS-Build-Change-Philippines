@@ -17,38 +17,68 @@
             </ol>
         </nav>
     </div>
-     <div class="widget-body">
-        <ul class="submission-list">
-            <li>
-                   <strong>{{ object.comment }}</strong>
-                    <br>
-                    {% if object.user %}
-                        <a href="#" title="View details of user">
-                            <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
-                        </a><br>{% endif %}
-                    {% if object.checklist.step %}
-                    <small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}
+     <!--<div class="widget-body">-->
+        <!--<ul class="submission-list">-->
+            <!--<li>-->
+                   <!--<strong>{{ object.comment }}</strong>-->
+                    <!--<br>-->
+                    <!--{% if object.user %}-->
+                        <!--<a href="#" title="View details of user">-->
+                            <!--<small><i class="la la-user"></i>Created by: {{ object.user }}</small>-->
+                        <!--</a><br>{% endif %}-->
+                    <!--{% if object.checklist.step %}-->
+                    <!--<small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}-->
 
-                    {% if object.comment %}
-                        <small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}
-                     {% if object.date %}
-                    <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                               aria-hidden="true"></i>{{ object.date }}
-                    </small><br>
+                    <!--{% if object.comment %}-->
+                        <!--<small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}-->
+                     <!--{% if object.date %}-->
+                    <!--<small class="site_icon_float" style=""><i class="la la-clock-o"-->
+                                                               <!--aria-hidden="true"></i>{{ object.date }}-->
+                    <!--</small><br>-->
 
-                     {% endif %}
+                     <!--{% endif %}-->
 
+                <!--</li>-->
+        <!--{% if object.photo %}-->
+            <!--<img src="{{ object.photo.url }}" alt="">-->
+
+
+        <!--{% endif %}-->
+
+
+
+        <!--</ul>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                <li>
+                       <strong>{{ object.comment }}</strong>
+                        <br>
+                        {% if object.user %}
+                            <a href="#" title="View details of user">
+                                <small><i class="la la-user"></i>Created by: {{ object.user }}</small>
+                            </a><br>{% endif %}
+                        {% if object.checklist.step %}
+                        <small class="site_icon_float" style="">Step: {{ object.checklist.step }}</small><br>{% endif %}
+
+                        {% if object.comment %}
+                            <small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}
+                         {% if object.date %}
+                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                   aria-hidden="true"></i>{{ object.date }}
+                        </small><br>
+
+                         {% endif %}
                 </li>
-        {% if object.photo %}
-            <img src="{{ object.photo.url }}" alt="">
-
-
-        {% endif %}
-
-
-
-        </ul>
-    </div>
+                    {% if object.photo %}
+                    <img src="{{ object.photo.url }}" alt="">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
 {% block extra_script %}

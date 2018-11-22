@@ -343,7 +343,7 @@ class RecentUpdates(ProjectRoleMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['project'] = self.kwargs['project_id']
+        context['project'] = get_object_or_404(Project, id=self.kwargs['project_id'])
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
