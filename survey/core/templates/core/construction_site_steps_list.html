@@ -1,9 +1,78 @@
 {% extends '_base.html' %}
 
 {% block content %}
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' site.project.pk %}">{{ site.project }}</a></li>
+            {% if site %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Update Sitestep</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ site }}</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' site.project.pk %}">Dashboard</a></li>
+            {% if site %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Update Sitestep</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ site }}</li>
+            {% endif %}
 
-    <div class="d-flex justify-content-center" style="margin-top: 20px">
-        <div class="col-md-2 col-lg-5">
+            {% endif %}
+        </ol>
+    </nav>
+<!--</div>-->
+
+    <!--<div class="d-flex justify-content-center" style="margin-top: 20px">-->
+        <!--<div class="col-md-2 col-lg-5">-->
+            <!--<div class="dash-right">-->
+                <!--<div class="widget-info margin-top-large">-->
+                    <!--<h3>{{site}} Steps List</h3>-->
+
+                    <!--<p>-->
+                    <!--<form action="" method="">-->
+                        <!--<ul id="id_step_checked">-->
+                            <!--{% for step in checked_steps %}-->
+                            <!--<label for="id_checked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
+                                                                                                    <!--name="checked_step"-->
+                                                                                                    <!--value="{{ step.step__name }}"-->
+                                                                                                    <!--checked-->
+                                                                                                    <!--id="id_checked_step_{{ forloop.counter0 }}"-->
+                                                                                                    <!--class="chk"-->
+                            <!--&gt;-->
+                                <!--{{ step.step__name}} </label><br>-->
+
+
+                            <!--{% endfor %}-->
+                            <!--{% for step in unchecked_steps %}-->
+                            <!--<label for="id_unchecked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
+                                                                                                      <!--name="unchecked_step"-->
+                                                                                                      <!--value="{{ step.name }}"-->
+                                                                                                      <!--id="id_unchecked_step_{{ forloop.counter0 }}"-->
+                                                                                                      <!--class="chk"-->
+                            <!--&gt;-->
+                                <!--{{ step.name }}</label><br>-->
+
+
+                            <!--{% endfor %}-->
+                            <!--<button type="button" id="refresh" class="btn-primary"> Update</button>-->
+
+
+                        <!--</ul>-->
+
+                    <!--</form>-->
+                    <!--</p>-->
+
+
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+       <div class="formHolder">
+        <div class="widget-info margin-top-large">
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
                     <h3>{{site}} Steps List</h3>
@@ -34,9 +103,9 @@
 
 
                             {% endfor %}
-                            <button type="button" id="refresh" class="btn-primary"> Update</button>
-
-
+                            <div>
+                                <button type="submit" id="refresh" class="btn btn-success"></i>Update</button>
+                            </div>
                         </ul>
 
                     </form>
@@ -47,50 +116,6 @@
             </div>
         </div>
     </div>
-<!--<div class="d-flex justify-content-center" style="margin-top: 20px">-->
-    <!--<div class="formHolder">-->
-        <!--<div class="widget-info margin-top-large">-->
-            <!--<div class="widget-head">-->
-                <!--<div class="widget-body mt-2 horizontalForm">-->
-                    <!--<div class="widget-info margin-top-large">-->
-                    <!--<h3>{{site}} Steps List</h3>-->
-
-                    <!--<p>-->
-                    <!--<form action="" method="">-->
-                        <!--<ul id="id_step_checked">-->
-                            <!--{% for step in checked_steps %}-->
-                            <!--<label for="id_checked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
-                                                                                                    <!--name="checked_step"-->
-                                                                                                    <!--value="{{ step.step__name }}"-->
-                                                                                                    <!--checked-->
-                                                                                                    <!--id="id_checked_step_{{ forloop.counter0 }}"-->
-                                                                                                    <!--class="chk"-->
-                            <!--&gt;-->
-                                <!--{{ step.step__name}} </label><br>-->
-
-
-                            <!--{% endfor %}-->
-                            <!--{% for step in unchecked_steps %}-->
-                            <!--<label for="id_unchecked_step_{{ forloop.counter0 }}"><input type="checkbox"-->
-                                                                                                      <!--name="unchecked_step"-->
-                                                                                                      <!--value="{{ step.name }}"-->
-                                                                                                      <!--id="id_unchecked_step_{{ forloop.counter0 }}"-->
-                                                                                                      <!--class="chk"-->
-                            <!--&gt;-->
-                                <!--{{ step.name }}</label><br>-->
-
-
-                            <!--{% endfor %}-->
-                            <!--<button type="button" id="refresh" class="btn-primary"> Update</button>-->
-                        <!--</ul>-->
-                    <!--</form>-->
-                    <!--</p>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-<!--</div>-->
 {% endblock content %}
 
 {% block extra_script %}
