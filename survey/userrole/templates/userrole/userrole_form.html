@@ -11,6 +11,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">{% if request.user.is_superuser %}
                     <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
                     {% else %}
                     <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
                     {% endif %}
@@ -20,18 +21,32 @@
         </div>
         </div>
 
-        <div class="d-flex justify-content-center">
-        <div class="col-md-4 col-lg-7">
-            <div class="dash-right">
-                <div class="widget-info margin-top-large">
-                           <form action="" method="post">{% csrf_token %}
+        <!--<div class="d-flex justify-content-center">-->
+        <!--<div class="col-md-4 col-lg-7">-->
+            <!--<div class="dash-right">-->
+                <!--<div class="widget-info margin-top-large">-->
+                           <!--<form action="" method="post">{% csrf_token %}-->
+                        <!--{{ form.as_p }}-->
+                        <!--<input type="submit" class="btn btn-primary">-->
+                    <!--</form>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <form action="" method="post">{% csrf_token %}
                         {{ form.as_p }}
-                        <input type="submit" class="btn btn-primary">
-                    </form>
+                        <div>
+                            <button type="submit" class="btn btn-success">Submit Query</button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
+        </div>
+    </div>
 
 {% endblock content %}
 {% block extra_script %}

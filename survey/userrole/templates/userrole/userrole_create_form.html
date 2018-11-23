@@ -12,19 +12,33 @@
             <li class="breadcrumb-item active" aria-current="page">User Create</li>
         </ol>
     </nav>
-    <div class="d-flex justify-content-center">
-        <div class="col-md-4 col-lg-6">
-            <div class="dash-right">
-                <div class="widget-info margin-top-large">
+    <!--<div class="d-flex justify-content-center">-->
+        <!--<div class="col-md-4 col-lg-6">-->
+            <!--<div class="dash-right">-->
+                <!--<div class="widget-info margin-top-large">-->
+                    <!--<form action="" method="post">{% csrf_token %}-->
+                        <!--{{ form.as_p }}-->
+                        <!--<input type="submit" value="Create" class="btn btn-primary"></input>-->
+
+                    <!--</form>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+   <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
                     <form action="" method="post">{% csrf_token %}
                         {{ form.as_p }}
-                        <input type="submit" value="Create" class="btn btn-primary"></input>
-
+                        <div class="">
+                            <button type="submit" class="btn btn-success"></i> Create</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
+   </div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
