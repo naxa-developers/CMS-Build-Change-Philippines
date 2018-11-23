@@ -1287,6 +1287,13 @@ class ChecklistView(ListView):
     template_name = 'core/substep_checklist.html'
     context_object_name = 'checklists'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        return context
+
+
     def get_queryset(self):
         return SubStepCheckList.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id'])
 

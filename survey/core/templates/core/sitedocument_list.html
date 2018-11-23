@@ -8,6 +8,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">{% if request.user.is_superuser %}
         <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
         {% else %}
         <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
         {% endif %}
