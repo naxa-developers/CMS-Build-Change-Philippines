@@ -45,30 +45,39 @@
             <div class="widget-head">
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
-                        <h4><a href="#" title="">CheckList Form</a></h4>
+                        <h4><a href="#" title="">CheckList</a></h4>
                     </div>
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="inputSchoolName">Text</label>
-                                {{ form.text }}
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label for="inputSchoolName">Description</label>
-                                {{ form.text }}
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputSchoolName">Step</label>
-                                {{ form.step }}
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="inputSchoolName">Sub Step</label>
-                                {{ form.substep }}
-                            </div>
-                        </div>
-                        <div class="">
-                            <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                        <div class="mb-3 pb-3 bg-white">
+                        <div class="table-responsive">
+                            <table id="gislayer" class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Text</th>
+                                    <th>Description</th>
+                                    <th>Step</th>
+                                    <th>Sub-Step</th>
+                                    <th>Edit</th>
+                                    {% if request.user.is_superuser %}
+                                    <th>Delete</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for gis in gislayer %}
+                                <tr>
+                                    <td>{{gis.name}}</a></td>
+                                    <td>{{gis.file}}</td>
+                                    <td><a href="{% url 'core:gis_style' gis.id %}"><button>Style</button></td>
+                                    <td><a href="{% url 'core:gislayer_edit' gis.id %}">Edit</a></td>
+                                    {% if request.user.is_superuser %}
+                                    <td><a href="{% url 'core:gislayer_delete' gis.id %}">Delete</a></td>
+                                    {% endif %}
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
                         </div>
                     </form>
                 </div>
