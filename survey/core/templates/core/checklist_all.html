@@ -1,45 +1,8 @@
 {% extends '_base.html' %}
 
 {% block content %}
-<div class="col-md-12">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">{% if request.user.is_superuser %}
-            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
-            {% if object %}
-            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
-            {% else %}
-            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
-            {% endif %}
-            {% else %}
-            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
-            {% if object %}
-            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
-            {% else %}
-            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
-            {% endif %}
-            {% endif %}
-        </ol>
-    </nav>
-</div>
+
 <div class="d-flex justify-content-center">
-
-    <!--<div class="col-md-2 col-lg-6">-->
-        <!--<div class="dash-right"><h3 style="text-align: center">CheckList Form</h3>-->
-            <!--<div class="widget-info margin-top-large">-->
-
-
-                <!--<form action="" method="post">{% csrf_token %}-->
-                                    <!--{{form.as_p}}-->
-                    <!--<input type="submit">-->
-                <!--</form>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
-
     <div class="formHolder">
         <div class="widget-info margin-top-large">
             <div class="widget-head">
@@ -50,34 +13,30 @@
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->
                         <div class="mb-3 pb-3 bg-white">
-                        <div class="table-responsive">
-                            <table id="gislayer" class="table table-hover table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Text</th>
-                                    <th>Description</th>
-                                    <th>Step</th>
-                                    <th>Sub-Step</th>
-                                    <th>Edit</th>
-                                    {% if request.user.is_superuser %}
-                                    <th>Delete</th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for gis in gislayer %}
-                                <tr>
-                                    <td>{{gis.name}}</a></td>
-                                    <td>{{gis.file}}</td>
-                                    <td><a href="{% url 'core:gis_style' gis.id %}"><button>Style</button></td>
-                                    <td><a href="{% url 'core:gislayer_edit' gis.id %}">Edit</a></td>
-                                    {% if request.user.is_superuser %}
-                                    <td><a href="{% url 'core:gislayer_delete' gis.id %}">Delete</a></td>
-                                    {% endif %}
-                                </tr>
-                                {%endfor%}
-                            </tbody>
-                        </table>
+                            <div class="table-responsive">
+                                <table id="checklist" class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Text</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for checklist in checklists %}
+                                        <tr>
+                                            <td>{% if checklist.status is True %}
+                                                <i class="fa fa-check-circle">fdgrt</i>
+                                                {% else %}
+                                                <i class="fa fa-times-circle">ergrg</i>
+                                                {% endif %}{{checklist.text}}</td>
+                                            <td>Edit</td>
+                                            <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </form>
                 </div>

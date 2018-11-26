@@ -67,6 +67,7 @@ urlpatterns = [
     path('checklist-delete/<int:pk>/', views.ChecklistDeleteView.as_view(), name="checklist_delete"),
 
     path('checklist/<int:site_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
+    path('checklists-all/', views.CheckListAllView.as_view(), name='checklist_all'),
 
 ]
 

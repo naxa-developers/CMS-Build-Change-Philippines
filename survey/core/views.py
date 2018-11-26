@@ -1297,3 +1297,14 @@ class ChecklistView(ListView):
     def get_queryset(self):
         return SubStepCheckList.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id'])
 
+
+
+class CheckListAllView(TemplateView):
+	template_name = 'core/checklist_all.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['checklists'] = SubStepCheckList.objects.all()
+		return context
+
+
