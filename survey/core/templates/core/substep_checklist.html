@@ -65,24 +65,41 @@
                     <div class="widget-head">
                         <h4><a href="#" title="">Checklist</a></h4>
                     </div>
-                    <div class="widget-body">
-                        {% for checklist in checklists %}
-                        {{forloop.counter}}.
-                            {% if checklist.status is True %}
+                    <form method="post">{% csrf_token %}
+                        <!--{{form.as_p}}-->
+                        <div class="mb-3 pb-3 bg-white">
+                            <div class="table-responsive">
+                                <table id="checklist" class="table table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>S.N</th>
+                                            <th>Text</th>
+                                            <th>Status</th>
 
-                            <i class="fa fa-check-circle"></i>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for checklist in checklists %}
+                                        <tr>
+                                            <td>{{forloop.counter}}</td>
+                                            <td>{{checklist.text}}</td>
+                                            <td>{% if checklist.status is True %}
+                                                <i class="fa fa-check-circle"></i>
+                                                {% else %}
+                                                <i class="fa fa-times-circle"></i>
+                                                {% endif %}</td>
 
-                        {% else %}
-                        <i class="fa fa-times-circle"></i>
-
-                        {% endif %}
-
-                        {{checklist.text}} <a
-                            href="#">Edit</a> <a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a><br>
-                        {% empty %}
-                        <p>Checklist not found</p>
-                        {% endfor %}
-                    </div>
+                                            <td>Edit</td>
+                                            <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
