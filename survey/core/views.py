@@ -2,6 +2,7 @@ import os
 import zipfile
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
 from django.shortcuts import reverse, get_object_or_404
@@ -18,6 +19,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
 
+from django.conf import settings
 from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
@@ -28,6 +30,7 @@ from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMateri
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
+from .admin import SubStepCheckListResource
 
 
 @api_view(['POST'])
@@ -1307,4 +1310,40 @@ class CheckListAllView(TemplateView):
 		context['checklists'] = SubStepCheckList.objects.all()
 		return context
 
+# import csv
+#
+# def export(request):
+#     data = []
+#     query_set = SubStepCheckList.objects.values('text')
+#     for query in query_set:
+#         data.append(query['text'])
+#     print(data)
+#     # substepchecklist_resource = SubStepCheckListResource()
+#     # dataset = substepchecklist_resource.export()
+#     with open('export.csv', 'w') as f:
+#         writer = csv.writer(f)
+#         for item in data:
+#             writer.writerow(item)
+#
+#     file_path = os.path.join(settings.MEDIA_ROOT, 'export.csv')
+#     if os.path.exists(file_path):
+#         with open(file_path, 'rb') as fh:
+#             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+#             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+#             return response
+#
+#     return render(request, 'core/checklist_all.html')
+import csv
 
+def export(request):
+    output = []
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response)
+    query_set = SubStepCheckList.objects.all()
+    print(query_set)
+    # Header
+    writer.writerow(['S.N', 'Checklist', 'Status'])
+    for query in query_set:
+        writer.writerow([query.id, query.text, query.status])
+    # CSV Data
+    return response

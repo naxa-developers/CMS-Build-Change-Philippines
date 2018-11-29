@@ -10,6 +10,7 @@
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
                         <h4><a href="#" title="">CheckList</a></h4>
+                            <span class="tools pull-right"><a href="{% url 'core:export' %}"><button>Export</button></a></span>
                     </div>
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->
@@ -19,7 +20,7 @@
                                     <thead>
                                         <tr>
                                             <th>S.N</th>
-                                            <th>Text</th>
+                                            <th>Checklist</th>
                                             <th>Status</th>
 
                                             <th>Edit</th>
