@@ -344,7 +344,7 @@ class SubStepCheckList(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.text
+        return "{}-{}".format(self.text,self.substep)
 
     # @property
     # def step_checklist(self):
