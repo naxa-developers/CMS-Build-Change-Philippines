@@ -343,6 +343,9 @@ class SubStepCheckList(models.Model):
     substep = models.ForeignKey(ConstructionSubSteps, related_name="checklists", on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.text
+
     # @property
     # def step_checklist(self):
     #     return "step_id:" + str(self.step) + "------ id:" + str(self.id)

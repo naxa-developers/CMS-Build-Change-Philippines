@@ -1303,36 +1303,17 @@ class ChecklistView(ListView):
 
 
 class CheckListAllView(TemplateView):
-	template_name = 'core/checklist_all.html'
+    model = SubStepCheckList
+    template_name = 'core/checklist_all.html'
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['checklists'] = SubStepCheckList.objects.all()
-		return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['checklists'] = SubStepCheckList.objects.all()
+        return context
 
-# import csv
-#
-# def export(request):
-#     data = []
-#     query_set = SubStepCheckList.objects.values('text')
-#     for query in query_set:
-#         data.append(query['text'])
-#     print(data)
-#     # substepchecklist_resource = SubStepCheckListResource()
-#     # dataset = substepchecklist_resource.export()
-#     with open('export.csv', 'w') as f:
-#         writer = csv.writer(f)
-#         for item in data:
-#             writer.writerow(item)
-#
-#     file_path = os.path.join(settings.MEDIA_ROOT, 'export.csv')
-#     if os.path.exists(file_path):
-#         with open(file_path, 'rb') as fh:
-#             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-#             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-#             return response
-#
-#     return render(request, 'core/checklist_all.html')
+    def get_queryset(self, *args, **kwargs):
+        return SubStepCheckList.objects.filter(site=self.kwargs['site_id'])
+
 import csv
 
 def export(request):
@@ -1347,3 +1328,5 @@ def export(request):
         writer.writerow([query.id, query.text, query.status])
     # CSV Data
     return response
+
+
