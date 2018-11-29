@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_swagger',
     'mapwidgets',
+    'import_export',
 
     # local apps
     'core',
