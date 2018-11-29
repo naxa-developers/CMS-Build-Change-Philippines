@@ -84,16 +84,16 @@ def project_material_photos(request, project_id):
             zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
     
 
-    for filename in material_photos:
-        if filename.good_photos:
-            for file in filename.good_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
-        if filename.bad_photos:
-            for file in filename.bad_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
-        if filename.primary_photos:
-            for file in filename.primary_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+    # for filename in material_photos:
+    #     if filename.good_photos:
+    #         for file in filename.good_photos.all():
+    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+    #     if filename.bad_photos:
+    #         for file in filename.bad_photos.all():
+    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+    #     if filename.primary_photos:
+    #         for file in filename.primary_photos.all():
+    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
 
     for img in step_image:
         if img.image:
