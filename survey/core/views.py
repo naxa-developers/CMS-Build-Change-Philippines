@@ -87,42 +87,42 @@ def project_material_photos(request, project_id):
             zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
     
 
-    # for filename in material_photos:
-    #     if filename.good_photos:
-    #         for file in filename.good_photos.all():
-    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
-    #     if filename.bad_photos:
-    #         for file in filename.bad_photos.all():
-    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
-    #     if filename.primary_photos:
-    #         for file in filename.primary_photos.all():
-    #             zip_file.write(os.path.join(BASE_DIR) + file.image.url, arcname=file.image.url)
+    for filename in material_photos:
+        if filename.good_photos:
+            for file in filename.good_photos.all():
+                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+        if filename.bad_photos:
+            for file in filename.bad_photos.all():
+                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+        if filename.primary_photos:
+            for file in filename.primary_photos.all():
+                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
 
     for img in step_image:
         if img.image:
+
             zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
         if img.icon:
-            print(img.icon)
             zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
-    
+
     for img in more_about_materials:
         if img.good_photo:
             zip_file.write(os.path.join(BASE_DIR) + img.good_photo.url, arcname=img.good_photo.url)
-        
+
         if img.bad_photo:
             zip_file.write(os.path.join(BASE_DIR) + img.bad_photo.url, arcname=img.bad_photo.url)
 
     for img in key_parts_of_house:
         if img.good_photo:
             zip_file.write(os.path.join(BASE_DIR) + img.good_photo.url, arcname=img.good_photo.url)
-        
+
         if img.bad_photo:
             zip_file.write(os.path.join(BASE_DIR) + img.bad_photo.url, arcname=img.bad_photo.url)
 
     for data in my_house_strong:
         if data.pdf:
             zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
-    
+
     for data in standard_school_design_pdf:
         if data.pdf:
             zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
