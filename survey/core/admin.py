@@ -1,4 +1,5 @@
 from django.contrib import admin
+from import_export import resources
 
 # Register your models here.
 from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF, EventLog, CallLog, SubstepReport
@@ -43,3 +44,10 @@ admin.site.register(AdminProfile)
 admin.site.register(EventLog)
 admin.site.register(CallLog)
 admin.site.register(SubstepReport)
+
+
+class SubStepCheckListResource(resources.ModelResource):
+
+    class Meta:
+        model = SubStepCheckList
+        fields = ('id', 'text', 'status',)
