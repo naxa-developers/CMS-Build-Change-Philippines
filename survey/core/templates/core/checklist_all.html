@@ -48,7 +48,7 @@
                                                 <i class="fa fa-times-circle"></i>
                                                 {% endif %}</td>
 
-                                            <td>Edit</td>
+                                            <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
                                             <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
                                         </tr>
                                         {%endfor%}
@@ -77,8 +77,8 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
  <script>
 
-     var baseUrl = 'http://localhost:8000/';
-     //var baseUrl = 'http://bccms.naxa.com.np/';
+     //var baseUrl = 'http://localhost:8000/';
+     var baseUrl = 'http://bccms.naxa.com.np/';
 
      //$(document).ready(function() {
       //  $('#checklist').DataTable( {
