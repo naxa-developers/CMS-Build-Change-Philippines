@@ -1262,13 +1262,14 @@ class ChecklistUpdateView(UpdateView):
     def get_form(self, form_class=None):
         form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
         form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.object.site.id)
+        print(self.object.site.id)
         return form
 
     def get_context_data(self, *, object_list=None, **kwargs):
 
         context = super().get_context_data(**kwargs)
-        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
-        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        context['site'] = Site.objects.get(id=self.object.site.id)
+        context['project'] = Project.objects.get(sites=self.object.site.id)
         return context
 
     def get_success_url(self):
@@ -1307,12 +1308,10 @@ class CheckListAllView(TemplateView):
     template_name = 'core/checklist_all.html'
 
     def get_context_data(self, **kwargs):
+        site_id = get_object_or_404(Site, id=self.kwargs['site_id'])
         context = super().get_context_data(**kwargs)
-        context['checklists'] = SubStepCheckList.objects.all()
+        context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
         return context
-
-    def get_queryset(self, *args, **kwargs):
-        return SubStepCheckList.objects.filter(site=self.kwargs['site_id'])
 
 import csv
 

@@ -91,7 +91,7 @@
                                                 <i class="fa fa-times-circle"></i>
                                                 {% endif %}</td>
 
-                                            <td>Edit</td>
+                                            <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
                                             <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
                                         </tr>
                                         {%endfor%}

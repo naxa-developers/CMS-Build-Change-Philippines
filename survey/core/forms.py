@@ -132,7 +132,7 @@ class SubStepCheckListForm(forms.ModelForm):
             except (ValueError, TypeError):
                 pass
         elif self.instance.pk:
-            self.fields['substep'].queryset = self.instance.step.sub_steps
+            self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(checklists=self.instance.pk)
 
 
 PrimaryPhotoFormset = inlineformset_factory(ConstructionSubSteps, PrimaryPhoto, fields=['image', ], extra=1)
