@@ -1313,9 +1313,9 @@ class CheckListAllView(TemplateView):
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
-        site_id = get_object_or_404(Site, id=self.kwargs['site_id'])
+        # site_id = get_object_or_404(Site, id=self.kwargs['site_id'])
         context = super().get_context_data(**kwargs)
-        context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
+        # context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
 
         checklist_all = SubStepCheckList.objects.all()
         paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
