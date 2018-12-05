@@ -42,7 +42,7 @@
                                     <tbody>
                                         {% for checklist in checklists_lists %}
                                         <tr>
-                                            <td>{{forloop.counter}}</td>
+                                            <td>{{ forloop.counter0|add:checklists_lists.start_index }}</td>
                                             <td>{{checklist.text}}</td>
                                             <td>{% if checklist.status is True %}
                                                 <i class="fa fa-check-circle"></i>
