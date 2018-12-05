@@ -18,6 +18,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
+# from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from django.conf import settings
 from survey.settings import BASE_DIR
@@ -1306,12 +1307,22 @@ class ChecklistView(ListView):
 class CheckListAllView(TemplateView):
     model = SubStepCheckList
     template_name = 'core/checklist_all.html'
+    paginate_by = 10
 
     def get_context_data(self, **kwargs):
         site_id = get_object_or_404(Site, id=self.kwargs['site_id'])
         context = super().get_context_data(**kwargs)
         context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
         return context
+
+    # def checklist_all(request):
+    #     checklist_all = SubStepCheckList.objects.all()
+    #     paginator = Paginator(checklist_all, 10)  # Show 10 contacts per page
+    #
+    #     page = request.GET.get('page')
+    #     checklists = paginator.get_page(page)
+    #     return render(request, 'checklist_all.html', {'checklists': checklists})
+
 
 import csv
 

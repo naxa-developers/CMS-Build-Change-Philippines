@@ -6,12 +6,14 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">{% if request.user.is_superuser %}
-        <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
-        {% endif %}
-    </ol>
-</nav>
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            {% endif %}
+        </ol>
+    </nav>
+</div>
 
 <div class="d-flex justify-content-center">
     <div class="formHolder">
@@ -54,6 +56,27 @@
                                         {%endfor%}
                                     </tbody>
                                 </table>
+                                {% if is_paginated %}
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                                    {% else %}
+                                    <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+                                    {% for i in paginator.page_range %}
+                                    {% if page_obj.number == i %}
+                                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                    {% else %}
+                                    <li><a href="?page={{ i }}">&nbsp;{{ i }}&nbsp;</a></li>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% if page_obj.has_next %}
+                                    <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                                    {% else %}
+                                    <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
+                                {% endif %}
                             </div>
                         </div>
                     </form>
