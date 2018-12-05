@@ -1325,10 +1325,6 @@ class CheckListAllView(TemplateView):
         context['checklists_lists'] = checklists
         return context
 
-    # def checklistall(request):
-    #
-    #     return render(request, 'checklist_all.html', {'checklists': checklists})
-
 
 def export(request):
     output = []
