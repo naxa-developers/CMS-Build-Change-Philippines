@@ -56,27 +56,23 @@
                                         {%endfor%}
                                     </tbody>
                                 </table>
-                                {% if is_paginated %}
-                                <ul class="pagination">
-                                    {% if page_obj.has_previous %}
-                                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
-                                    {% else %}
-                                    <li class="disabled"><span>&laquo;</span></li>
-                                    {% endif %}
-                                    {% for i in paginator.page_range %}
-                                    {% if page_obj.number == i %}
-                                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                                    {% else %}
-                                    <li><a href="?page={{ i }}">&nbsp;{{ i }}&nbsp;</a></li>
-                                    {% endif %}
-                                    {% endfor %}
-                                    {% if page_obj.has_next %}
-                                    <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
-                                    {% else %}
-                                    <li class="disabled"><span>&raquo;</span></li>
-                                    {% endif %}
-                                </ul>
-                                {% endif %}
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if page_obj.has_previous %}
+                                            <a href="?page=1">&laquo; first</a>
+                                            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                        {% endif %}
+
+                                        <span class="current">
+                                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                        </span>
+
+                                        {% if page_obj.has_next %}
+                                            <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </form>

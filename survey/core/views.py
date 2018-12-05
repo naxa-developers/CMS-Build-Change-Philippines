@@ -1317,11 +1317,11 @@ class CheckListAllView(TemplateView):
 
     # def checklist_all(request):
     #     checklist_all = SubStepCheckList.objects.all()
-    #     paginator = Paginator(checklist_all, 10)  # Show 10 contacts per page
+    #     paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
     #
     #     page = request.GET.get('page')
-    #     checklists = paginator.get_page(page)
-    #     return render(request, 'checklist_all.html', {'checklists': checklists})
+    #     page_obj = paginator.get_page(page)
+    #     return render(request, 'checklist_all.html', {'page_obj': page_obj})
 
 
 import csv
