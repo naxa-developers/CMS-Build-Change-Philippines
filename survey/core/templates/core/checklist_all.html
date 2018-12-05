@@ -58,18 +58,18 @@
                                 </table>
                                 <div class="pagination">
                                     <span class="step-links">
-                                        {% if page_obj.has_previous %}
+                                        {% if checklists_lists.has_previous %}
                                             <a href="?page=1">&laquo; first</a>
-                                            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                            <a href="?page={{ checklists_lists.previous_page_number }}">previous</a>
                                         {% endif %}
 
                                         <span class="current">
-                                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                            Page {{ checklists_lists.number }} of {{ checklists_lists.paginator.num_pages }}.
                                         </span>
 
-                                        {% if page_obj.has_next %}
-                                            <a href="?page={{ page_obj.next_page_number }}">next</a>
-                                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                        {% if checklists_lists.has_next %}
+                                            <a href="?page={{ checklists_lists.next_page_number }}">next</a>
+                                            <a href="?page={{ checklists_lists.paginator.num_pages }}">last &raquo;</a>
                                         {% endif %}
                                     </span>
                                 </div>

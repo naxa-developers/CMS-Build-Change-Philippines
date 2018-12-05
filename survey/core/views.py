@@ -1,5 +1,6 @@
 import os
 import zipfile
+import csv
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -18,7 +19,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
-# from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
 from django.conf import settings
 from survey.settings import BASE_DIR
@@ -167,6 +168,7 @@ class ProjectPersonnelList(TemplateView):
 
 
 class SuperAdminMixin(LoginRequiredMixin):
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if request.group.name == "Super Admin":
@@ -175,6 +177,7 @@ class SuperAdminMixin(LoginRequiredMixin):
 
 
 class ManagerSuperAdminMixin(LoginRequiredMixin):
+
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.is_authenticated:
@@ -321,7 +324,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         if site_geojson.exists():
             context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location'))
         else:
-            context['locations'] =  [[]]
+            context['locations'] = [[]]
         site_address = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
         json_site_address = json.dumps(list(site_address))
         context['site_address'] = json_site_address
@@ -1313,18 +1316,19 @@ class CheckListAllView(TemplateView):
         site_id = get_object_or_404(Site, id=self.kwargs['site_id'])
         context = super().get_context_data(**kwargs)
         context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
+
+        checklist_all = SubStepCheckList.objects.all()
+        paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
+
+        page = self.request.GET.get('page')
+        checklists = paginator.get_page(page)
+        context['checklists_lists'] = checklists
         return context
 
-    # def checklist_all(request):
-    #     checklist_all = SubStepCheckList.objects.all()
-    #     paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
+    # def checklistall(request):
     #
-    #     page = request.GET.get('page')
-    #     page_obj = paginator.get_page(page)
-    #     return render(request, 'checklist_all.html', {'page_obj': page_obj})
+    #     return render(request, 'checklist_all.html', {'checklists': checklists})
 
-
-import csv
 
 def export(request):
     output = []

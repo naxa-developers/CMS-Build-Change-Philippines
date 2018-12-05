@@ -6,6 +6,7 @@ from .models import Project, Site
 
 
 class ProjectView(LoginRequiredMixin):
+
     def form_valid(self, form):
         if self.request.project:
             form.instance.project = self.request.project
