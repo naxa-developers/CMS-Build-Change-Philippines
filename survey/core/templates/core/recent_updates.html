@@ -5,6 +5,36 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
+<style>
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  height:500px;
+  overflow:auto;
+  margin-top:20px;
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+  color:black;
+}
+#table-wrapper table thead th .text {
+  position:absolute;
+  top:-20px;
+  z-index:2;
+  height:20px;
+  width:35%;
+  border:1px solid red;
+}
+.site_icon_float {
+
+    padding: 30px;
+
+}
+</style>
 
      <div class="row no-gutters">
         <div class="col-md-12">
@@ -21,6 +51,8 @@
             </nav>
         </div>
     </div>
+
+
 
       <!--<div class="widget-body">-->
         <!--<ul class="submission-list">-->
@@ -48,36 +80,66 @@
             <!--{% endfor %}-->
         <!--</ul>-->
     <!--</div>-->
+
+
+
        <div class="formHolder">
             <div class="widget-info margin-top-large">
                 <div class="widget-head">
                     <div class="widget-body mt-2 horizontalForm">
-                        {% for report in recent_activities_report %}
-                        <li>
-                            <a href="#"><strong>{{ report.comment }}</strong></a>
-                            <br>
-                            {% if report.user %}
-                                <a href="#" title="View details of user">
-                                    <small><i class="la la-user"></i>Created by: {{ report.user }}</small>
-                                </a><br>{% endif %}{% if object.date %}
-                            <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                       aria-hidden="true"></i>{{ report.date }}
-                            </small><br>{% endif %}{% if object.checklist.step %}
-                            <small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small><br>{% endif %}
-                            {% if report.comment %}
-                                <small class="site_icon_float" style="">Comment: {{ report.comment }}</small><br>{% endif %}
-                            {% if report.date %}
-                                <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                               aria-hidden="true"></i>{{ report.date }}</small><br>
-                            {% endif %}
-                        </li>
-                        {% endfor %}
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Recent Updates</a></h4>
+                        </div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="display table table-bordered table-striped">
+                                    <tbody>
+                                        {% for report in recent_activities_report %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <a href="#" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                </div>
+                                                 {% if report.photo %}
+                                                <div id="photo">
+                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
+                                                </div>
+                                                {% endif %}
+                                                {% if report.comment %}
+                                                <div class="site_icon_float" style="">Comment: {{ report.comment }}</div>
+                                                {% endif %}
+                                                {% if report.user %}
+                                                    <a href="#" title="View details of user">
+                                                        <small><button><i class="la la-user" ></i>Sent by: {{ report.user }}</button></small>
+                                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                {% endif %}
+                                                    <!--{% if object.date %}-->
+                                                    <!--<small class="site_icon_float" style=""><i class="la la-clock-o"-->
+                                                                                               <!--aria-hidden="true"></i><button>{{ report.date }}</button>-->
+                                                    <!--</small><br>{% endif %}-->
+                                                    <!--{% if object.checklist.step %}-->
+                                                    <!--<small class="site_icon_float" style="">Step: {{ report.checklist.step }}</small>{% endif %}-->
+                                                    <!--{% if report.comment %}-->
+                                                        <!--<small class="site_icon_float" style="">Comment: {{ report.comment }}</small><br>{% endif %}-->
+                                                {% if report.date %}
+                                                    <small><button><i class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                               aria-hidden="true"></i>{{ report.date }}</button></small>
+                                                    <!--<label>Photo:</label>-->
+                                                {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
        </div>
 
-{% endblock content %}
+{% endblock %}
 {% block extra_script %}
-    {% render_bundle 'project' 'js' %}
+{% render_bundle 'project' 'js' %}
 {% endblock extra_script %}
