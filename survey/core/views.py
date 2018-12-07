@@ -26,9 +26,12 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog, EventLog
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
+    HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm, BadPhotoFormset, GoodPhotoFormset
+    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
+     BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -1232,20 +1235,57 @@ class ConstructionSiteStepsDelete(DeleteView):
 
 
 class ChecklistCreateView(CreateView):
-    model = SubStepCheckList
     template_name = 'core/checklist_form.html'
-    form_class = SubStepCheckListForm
+    model = NewCommonSubStepChecklist
+    form_class = NewCommonChecklistForm
 
-    def get_form(self, form_class=None):
-        form = super(ChecklistCreateView, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.kwargs['site_id'])
-        return form
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        # project_id = self.kwargs['project_id']
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        checklist_formset = NewChecklistFormset()
 
-    def form_valid(self, form):
-        form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  checklist_formset=checklist_formset
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        checklist_formset = NewChecklistFormset(self.request.POST)
+        
+
+        if (
+                form.is_valid() and checklist_formset.is_valid()):
+            return self.form_valid(form, checklist_formset)
+        else:
+            return self.form_invalid(form, checklist_formset)
+
+    # def get_form(self, form_class=None):
+    #     form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
+    #     form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
+    #     return form
+
+    def form_valid(self, form, checklist_formset):
+        self.object = form.save(commit=False)
+        form.instance.site = get_object_or_404(Site, id=self.kwargs['site_id'])
+        form.instance.substep = get_object_or_404(ConstructionSubSteps, id=self.kwargs['substep_id'])
+
         form.save()
-        return super().form_valid(form)
 
+        checklist_formset.instance = self.object
+        checklist_formset.save()
+
+        return super(ChecklistCreateView, self).form_valid(form)
+
+    def form_invalid(self, form, checklist_formset):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, checklist_formset=checklist_formset))
+ 
     def get_context_data(self, *, object_list=None, **kwargs):
 
         context = super().get_context_data(**kwargs)
@@ -1257,11 +1297,37 @@ class ChecklistCreateView(CreateView):
         success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
         return success_url
 
+# class ChecklistCreateView(CreateView):
+#     model = NewCommonSubStepChecklist
+#     template_name = 'core/checklist_form.html'
+#     form_class = NewCommonChecklistForm
+
+#     # def get_form(self, form_class=None):
+#     #     form = super(ChecklistCreateView, self).get_form(form_class=self.form_class)
+#     #     form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.kwargs['site_id'])
+#     #     return form
+
+#     def form_valid(self, form):
+#         form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+#         form.save()
+#         return super().form_valid(form)
+
+#     def get_context_data(self, *, object_list=None, **kwargs):
+
+#         context = super().get_context_data(**kwargs)
+#         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+#         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+#         return context
+
+#     def get_success_url(self):
+#         success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+#         return success_url
+
 
 class ChecklistUpdateView(UpdateView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = "core/checklist_form.html"
-    form_class = SubStepCheckListForm
+    form_class = NewCommonChecklistForm
 
     def get_form(self, form_class=None):
         form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
@@ -1299,6 +1365,7 @@ class ChecklistView(ListView):
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        context['substep_id'] = self.kwargs['substep_id']
         return context
 
 

@@ -369,6 +369,24 @@ class SubStepCheckList(models.Model):
     #     return self.status
 
 
+class NewCommonSubStepChecklist(models.Model):
+    title = models.CharField(max_length=300)
+    specification = models.TextField()
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="new_checklists", null=True, blank=True)
+    substep = models.ForeignKey(ConstructionSubSteps, related_name="new_checklists", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+
+
+class NewSubStepChecklist(models.Model):
+    common_checklist = models.ForeignKey(NewCommonSubStepChecklist, related_name="new_checklists", on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.title
+
+
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="reports", null=True, blank=True)

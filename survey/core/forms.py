@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, BadPhoto, GoodPhoto
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, BadPhoto, GoodPhoto, NewCommonSubStepChecklist, \
+    NewSubStepChecklist
 from django.forms.models import inlineformset_factory
 
 from mapwidgets.widgets import GooglePointFieldWidget
@@ -115,29 +116,37 @@ class SiteConstructionStepsForm(forms.ModelForm):
         fields = ['construction_steps', ]
 
 
-class SubStepCheckListForm(forms.ModelForm):
+# class SubStepCheckListForm(forms.ModelForm):
+
+#     class Meta:
+#         model = SubStepCheckList
+#         fields = ('text', 'description', 'step', 'substep')
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.fields['substep'].queryset = ConstructionSubSteps.objects.none()
+
+#         if 'step' in self.data:
+#             try:
+#                 step_id = int(self.data.get('step'))
+#                 self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(step__site_steps=step_id)
+#             except (ValueError, TypeError):
+#                 pass
+#         elif self.instance.pk:
+#             self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(checklists=self.instance.pk)
+
+
+class NewCommonChecklistForm(forms.ModelForm):
 
     class Meta:
-        model = SubStepCheckList
-        fields = ('text', 'description', 'step', 'substep')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['substep'].queryset = ConstructionSubSteps.objects.none()
-
-        if 'step' in self.data:
-            try:
-                step_id = int(self.data.get('step'))
-                self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(step__site_steps=step_id)
-            except (ValueError, TypeError):
-                pass
-        elif self.instance.pk:
-            self.fields['substep'].queryset = ConstructionSubSteps.objects.filter(checklists=self.instance.pk)
+        model = NewCommonSubStepChecklist
+        fields = ('title', 'specification', )
 
 
 PrimaryPhotoFormset = inlineformset_factory(ConstructionSubSteps, PrimaryPhoto, fields=['image', ], extra=1)
 GoodPhotoFormset = inlineformset_factory(ConstructionSubSteps, GoodPhoto, fields=['image', ], extra=1)
 BadPhotoFormset = inlineformset_factory(ConstructionSubSteps, BadPhoto, fields=['image', ], extra=1)
+NewChecklistFormset = inlineformset_factory(NewCommonSubStepChecklist, NewSubStepChecklist, fields=['title', ], extra=1)
 
 
 

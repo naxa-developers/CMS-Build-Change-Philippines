@@ -64,6 +64,9 @@
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
                         <h4><a href="#" title="">Checklist</a></h4>
+                        <a href="{% url 'core:checklist_create' site.pk substep_id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i>Create Checklist</a>
                     </div>
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->
