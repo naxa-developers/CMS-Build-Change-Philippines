@@ -1273,6 +1273,7 @@ class ChecklistCreateView(CreateView):
         self.object = form.save(commit=False)
         form.instance.site = get_object_or_404(Site, id=self.kwargs['site_id'])
         form.instance.substep = get_object_or_404(ConstructionSubSteps, id=self.kwargs['substep_id'])
+        form.instance.step = get_object_or_404(SiteSteps, id=self.kwargs['step_id'])
 
         form.save()
 
@@ -1366,6 +1367,7 @@ class ChecklistView(ListView):
         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
         context['substep_id'] = self.kwargs['substep_id']
+        context['step_id'] = self.kwargs['step_id']
         return context
 
 
