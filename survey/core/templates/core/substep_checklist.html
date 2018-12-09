@@ -91,7 +91,7 @@
                                             <td>{{checklist.title}}</td>
                                             <td>
                                                 {% for sub_checklist in checklist.sub_checklists.all %}
-                                                    {{ sub_checklist.title }}
+                                                    {{ sub_checklist.title }}<br>
                                                 {% endfor %}
                                             </td>
                                             <td>{% if checklist.status is True %}

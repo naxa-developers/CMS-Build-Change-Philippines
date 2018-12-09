@@ -1295,7 +1295,7 @@ class ChecklistCreateView(CreateView):
         return context
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+        success_url = reverse_lazy('core:checklist', args=(self.kwargs['site_id'],self.kwargs['step_id'], self.kwargs['substep_id']))
         return success_url
 
 # class ChecklistCreateView(CreateView):
@@ -1332,10 +1332,10 @@ class ChecklistUpdateView(UpdateView):
 
     def get_form(self, form_class=None):
         form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.object.site.id)
+        checklist_formset = NewChecklistFormset(instance=self.object)
         print(self.object.site.id)
         return form
-
+        
     def get_context_data(self, *, object_list=None, **kwargs):
 
         context = super().get_context_data(**kwargs)
@@ -1344,16 +1344,16 @@ class ChecklistUpdateView(UpdateView):
         return context
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        success_url = reverse_lazy('core:checklist', args=(self.object.site.id, self.object.step.id, self.object.substep.id))
         return success_url
 
 
 class ChecklistDeleteView(DeleteView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = "core/checklist_delete_form.html"
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        success_url = reverse_lazy('core:checklist', args=(self.object.site.id, self.object.step.id, self.object.substep.id))
         return success_url
 
 
