@@ -58,21 +58,24 @@ class BadPhotoSerializer(serializers.ModelSerializer):
         model = BadPhoto
         fields = ('image',)
 
+
 class NewSubStepChecklistSerializer(serializers.ModelSerializer):
-    # site_name = serializers.CharField(source="site.name", read_only=True)
+    site_name = serializers.CharField(source="common_checklist.site", read_only=True)
+    site = serializers.IntegerField(source="common_checklist.site.id")
+    step = serializers.IntegerField(source="common_checklist.step.id")
+    substep = serializers.IntegerField(source="common_checklist.substep.id")
 
     class Meta:
         model = NewSubStepChecklist
-        fields = ('id', 'title',)
+        fields = ('id', 'title', 'site', 'site_name', 'step', 'substep', 'status')
 
 
 class SubStepsCheckListSerializer(serializers.ModelSerializer):
-    site_name = serializers.CharField(source="site.name", read_only=True)
     sub_checklists = NewSubStepChecklistSerializer(many=True)
 
     class Meta:
         model = NewCommonSubStepChecklist
-        fields = ('id', 'title', 'specification', 'site', 'site_name', 'step','substep', 'status', 'sub_checklists')
+        fields = ('id', 'title', 'specification', 'sub_checklists')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
