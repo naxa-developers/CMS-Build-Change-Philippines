@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist
 from userrole.models import UserRole, AdminProfile
 
 
@@ -61,13 +61,14 @@ class BadPhotoSerializer(serializers.ModelSerializer):
 
 class NewSubStepChecklistSerializer(serializers.ModelSerializer):
     site_name = serializers.CharField(source="common_checklist.site", read_only=True)
-    site = serializers.IntegerField(source="common_checklist.site.id")
-    step = serializers.IntegerField(source="common_checklist.step.id")
-    substep = serializers.IntegerField(source="common_checklist.substep.id")
+    site = serializers.IntegerField(source="common_checklist.site.id", read_only=True)
+    step = serializers.IntegerField(source="common_checklist.step.id", read_only=True)
+    substep = serializers.IntegerField(source="common_checklist.substep.id", read_only= True)
 
     class Meta:
         model = NewSubStepChecklist
         fields = ('id', 'title', 'site', 'site_name', 'step', 'substep', 'status')
+        extra_kwargs = {'title': {'read_only': True}}
 
 
 class SubStepsCheckListSerializer(serializers.ModelSerializer):
