@@ -67,12 +67,12 @@ class NewSubStepChecklistSerializer(serializers.ModelSerializer):
 
 
 class SubStepsCheckListSerializer(serializers.ModelSerializer):
-    # site_name = serializers.CharField(source="site.name", read_only=True)
+    site_name = serializers.CharField(source="site.name", read_only=True)
     sub_checklists = NewSubStepChecklistSerializer(many=True)
 
     class Meta:
         model = NewCommonSubStepChecklist
-        fields = ('id', 'title', 'specification', 'sub_checklists')
+        fields = ('id', 'title', 'specification', 'site', 'site_name', 'step','substep', 'status', 'sub_checklists')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):

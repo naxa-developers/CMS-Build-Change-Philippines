@@ -375,6 +375,7 @@ class NewCommonSubStepChecklist(models.Model):
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="new_checklists", null=True, blank=True)
     substep = models.ForeignKey(ConstructionSubSteps, related_name="new_checklists", on_delete=models.CASCADE)
     step = models.ForeignKey(SiteSteps, related_name="new_checklists", on_delete=models.CASCADE, null=True, blank=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

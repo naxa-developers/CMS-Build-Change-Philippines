@@ -1358,7 +1358,7 @@ class ChecklistDeleteView(DeleteView):
 
 
 class ChecklistView(ListView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = 'core/substep_checklist.html'
     context_object_name = 'checklists'
 
@@ -1372,7 +1372,7 @@ class ChecklistView(ListView):
 
 
     def get_queryset(self):
-        return SubStepCheckList.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id'])
+        return NewCommonSubStepChecklist.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id']).prefetch_related('sub_checklists')
 
 
 

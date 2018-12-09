@@ -77,6 +77,7 @@
                                         <tr>
                                             <th>S.N</th>
                                             <th>Text</th>
+                                            <th>Sub Checklist</th>
                                             <th>Status</th>
 
                                             <th>Edit</th>
@@ -87,7 +88,12 @@
                                         {% for checklist in checklists %}
                                         <tr>
                                             <td>{{forloop.counter}}</td>
-                                            <td>{{checklist.text}}</td>
+                                            <td>{{checklist.title}}</td>
+                                            <td>
+                                                {% for sub_checklist in checklist.sub_checklists.all %}
+                                                    {{ sub_checklist.title }}
+                                                {% endfor %}
+                                            </td>
                                             <td>{% if checklist.status is True %}
                                                 <i class="fa fa-check-circle"></i>
                                                 {% else %}
