@@ -60,6 +60,14 @@ class ConstructionSubStepsForm(forms.ModelForm):
         fields = ('title', 'title_de', 'description', 'description_de', 'order', 'call_inspector')
 
 
+class ConstructionSubStepsChoiceForm(forms.ModelForm):
+    id = forms.ModelMultipleChoiceField(queryset=ConstructionSubSteps.objects.all(), widget=forms.CheckboxSelectMultiple)
+    
+    class Meta:
+        model = ConstructionSubSteps
+        fields = ['id','title']
+
+
 class SiteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -105,15 +113,19 @@ class UserCreateForm(forms.ModelForm):
 
 # Updated form
 class SiteConstructionStepsForm(forms.ModelForm):
+    pass
+    # construction_steps = forms.ModelMultipleChoiceField(
+    #     queryset=ConstructionSteps.objects.all(),
+    #     widget=forms.CheckboxSelectMultiple,
+    # )
 
-    construction_steps = forms.ModelMultipleChoiceField(
-        queryset=ConstructionSteps.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-    )
+    # class Meta:
+    #     model = ConstructionSteps
+    #     fields = ['construction_steps', ]
 
-    class Meta:
-        model = ConstructionSteps
-        fields = ['construction_steps', ]
+
+class SpecificSiteStepConstructionForm(forms.ModelForm):
+    pass
 
 
 # class SubStepCheckListForm(forms.ModelForm):

@@ -76,7 +76,7 @@
                                     <thead>
                                         <tr>
                                             <th>S.N</th>
-                                            <th>Text</th>
+                                            <th>Title</th>
                                             <th>Sub Checklist</th>
                                             <th>Status</th>
 
@@ -94,11 +94,16 @@
                                                     {{ sub_checklist.title }}<br>
                                                 {% endfor %}
                                             </td>
-                                            <td>{% if checklist.status is True %}
-                                                <i class="fa fa-check-circle"></i>
-                                                {% else %}
-                                                <i class="fa fa-times-circle"></i>
-                                                {% endif %}</td>
+                                            <td>
+                                                {% for sub_checklist in checklist.sub_checklists.all %}
+                                                    {% if sub_checklist.status is True %}
+                                                    <i class="fa fa-check-circle"></i>
+                                                    {% else %}
+                                                    <i class="fa fa-times-circle"></i>
+                                                    {% endif %}
+                                                    <br>
+                                                {% endfor %}
+                                            </td>
 
                                             <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
                                             <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>

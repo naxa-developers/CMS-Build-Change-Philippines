@@ -156,7 +156,7 @@
 
                                                 <li>
                                                     <h6>
-                                                        <a href="{% url 'core:checklist' object.pk step.pk sub_step.pk %}">{{ sub_step.title }}</a>
+                                                        <a href= "{% url 'core:checklist' object.pk step.pk sub_step.pk %}">{{ sub_step.title }}</a>
                                                     </h6>
                                                     <small>
                                                     </small>
@@ -165,12 +165,17 @@
                                                            data-toggle="tooltip" data-placement="top"
                                                            title="Edit"></a>
                                                     </div>
+
                                                     {% empty %}
                                                     <small>No Sub Steps Found.</small>
 
                                                     {% endfor %}
                                             </ul>
+                                            <a href="{% url 'core:site_sub_steps_create' object.pk step.step.pk %}" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> Add New Sub Step</a>
+
                                         </div>
+
                                     </li>
                                     </li>
                                     {% empty %}

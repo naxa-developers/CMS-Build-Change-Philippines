@@ -30,7 +30,35 @@
     <div class="widget-info margin-top-large">
 		<div class="dash-right">
 			<div class="widget-info margin-top-large">
-				<form action="" method="post">{% csrf_token %}
+                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <!--{{ form.as_p }}-->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name [de]</label>
+                                {{ form.name_de }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Order</label>
+                                {{ form.order }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Image</label>
+                                {{ form.image }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Icon</label>
+                                {{ form.icon }}
+                            </div>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                         </div>
+                    </form>
+				<!-- <form action="" method="post">{% csrf_token %}
 					<h5>Site Construction steps</h5>
 					<ul id="id_construction_steps">
 						{% for step in construction_steps %}
@@ -40,7 +68,7 @@
                         {% endfor %}
                     </ul>
                     <input type="submit">
-                </form>
+                </form> -->
             </div>
         </div>
     </div>
