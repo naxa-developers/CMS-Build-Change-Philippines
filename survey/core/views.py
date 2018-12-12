@@ -106,12 +106,12 @@ def project_material_photos(request, project_id):
                     zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
                 dup = file
 
-    # for img in step_image:
-    #     if img.image:
-    #
-    #         zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
-    #     if img.icon:
-    #         zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
+    for img in step_image:
+        if img.image:
+
+            zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
+        if img.icon:
+            zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
 
     for img in more_about_materials:
         if img.good_photo:
