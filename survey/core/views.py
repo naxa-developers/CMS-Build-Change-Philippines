@@ -99,19 +99,23 @@ def project_material_photos(request, project_id):
         if filename.bad_photos:
             for file in filename.bad_photos.all():
                 zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
-        if filename.primary_photos:
-            dup = None
-            for file in filename.primary_photos.all():
-                if dup != file:
-                    zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
-                dup = file
 
+        if filename.primary_photos:
+            for file in filename.primary_photos.all():
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
     for img in step_image:
         if img.image:
 
             zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
         if img.icon:
-            zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
+            if 'media/' + str(img.icon) in [i.filename for i in zip_file.infolist()]:
+                print('YESSSSSSSSSSSS', img.icon)
+            else:
+                zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
 
     for img in more_about_materials:
         if img.good_photo:
