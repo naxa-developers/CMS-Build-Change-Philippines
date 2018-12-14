@@ -95,10 +95,20 @@ def project_material_photos(request, project_id):
     for filename in material_photos:
         if filename.good_photos:
             for file in filename.good_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
+                # zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
         if filename.bad_photos:
             for file in filename.bad_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
+                # zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
 
         if filename.primary_photos:
             for file in filename.primary_photos.all():
