@@ -29,33 +29,43 @@
                         <div class="mb-3 pb-3 bg-white">
                             <div class="table-responsive">
                                 <table id="checklist" class="table table-hover table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>S.N</th>
-                                            <th>Title</th>
-                                            <!-- <th>Sub Checklist</th> -->
-                                            <th>Status</th>
-    
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for checklist in checklists_lists %}
-                                        <tr>
-                                            <td>{{ forloop.counter0|add:checklists_lists.start_index }}</td>
-                                            <td>{{checklist.title}}</td>
-                                            <td>{% if checklist.status is True %}
-                                                <i class="fa fa-check-circle"></i>
-                                                {% else %}
-                                                <i class="fa fa-times-circle"></i>
-                                                {% endif %}</td>
-
-                                            <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
-                                            <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
-                                        </tr>
-                                        {%endfor%}
-                                    </tbody>
+                                        <thead>
+                                                <tr>
+                                                    <th>S.N</th>
+                                                    <th>Title</th>
+                                                    <th>Sub Checklist</th>
+                                                    <th>Status</th>
+        
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for checklist in checklists_lists %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{checklist.title}}</td>
+                                                    <td>
+                                                        {% for sub_checklist in checklist.sub_checklists.all %}
+                                                            {{ sub_checklist.title }}<br>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td>
+                                                        {% for sub_checklist in checklist.sub_checklists.all %}
+                                                            {% if sub_checklist.status is True %}
+                                                            <i class="fa fa-check-circle"></i>
+                                                            {% else %}
+                                                            <i class="fa fa-times-circle"></i>
+                                                            {% endif %}
+                                                            <br>
+                                                        {% endfor %}
+                                                    </td>
+        
+                                                    <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
+                                                    <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
                                 </table>
                                 <div class="pagination">
                                     <span class="step-links">
