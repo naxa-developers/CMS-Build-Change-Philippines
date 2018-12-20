@@ -193,7 +193,7 @@
                     <div class="widget-info margin-top-large">
                         <div class="widget-head">
                             <h4><a href="#" title="">Reports</a></h4>
-                            <a href="{% url 'core:report_list' site.pk %}" title=""
+                            <a href="{% url 'core:substep_report_list' site.pk %}" title=""
                                class="btn btn-sm btn-xs btn-primary"><i
                                     class="la la-caret-right"></i> View All</a>
                         </div>
@@ -207,7 +207,7 @@
 
                                         {% endif %}
                                         <a title="View submission detail"
-                                           href="{% url 'core:report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
+                                           href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
                                         <br>
                                         <a href="#" title="View details of user">
                                             <small><i class="la la-user"></i>{{ report.user }}</small>

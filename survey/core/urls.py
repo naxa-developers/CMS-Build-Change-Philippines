@@ -37,8 +37,8 @@ urlpatterns = [
     path('document-create/<int:site_id>/', views.SiteDocumentFormView.as_view(), name="document_create"),
     path('document-list/<int:site_id>/', views.SiteDocumentListView.as_view(), name="document_list"),
     path('document-delete/<int:pk>/', views.SiteDocumentDeleteView.as_view(), name="document_delete"),
-    path('site-report-list/<int:site_pk>', views.ReportListView.as_view(), name="report_list"),
-    path('report-detail/<int:pk>', views.ReportDetailView.as_view(), name="report_detail"),
+    path('substep-report-list/<int:pk>', views.SubstepReportListView.as_view(), name="substep_report_list"),
+    path('substep-report-detail/<int:pk>', views.SubstepReportDetailView.as_view(), name="substep_report_detail"),
     path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
     path('user-profile-update/<int:pk>', views.	UserProfileUpdateView.as_view(), name="user_profile_update"),
     path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),
@@ -71,6 +71,7 @@ urlpatterns = [
     path('checklist/<int:site_id>/<int:step_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
     path('checklists-all/<int:site_id>', views.CheckListAllView.as_view(), name='checklist_all'),
     path('export/', views.export, name="export"),
+    path('export-report/', views.ExportReport, name="export_report"),
 
 ]
 

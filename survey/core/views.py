@@ -84,13 +84,19 @@ def project_material_photos(request, project_id):
     my_house_strong = BuildAHouseMakesHouseStrong.objects.all()
     key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all()
     standard_school_design_pdf = StandardSchoolDesignPDF.objects.all()
+    site_docs = SiteDocument.objects.all()
+
+    for site_doc in site_docs:
+        if site_doc.file:
+            zip_file.write(os.path.join(BASE_DIR) + site_doc.file.url, arcname=site_doc.file.url)
+
 
     for filename in category_materials:
         if filename.good_photo:
             zip_file.write(os.path.join(BASE_DIR) + filename.good_photo.url, arcname=filename.good_photo.url)
         if filename.bad_photo:
             zip_file.write(os.path.join(BASE_DIR) + filename.bad_photo.url, arcname=filename.bad_photo.url)
-    
+
 
     for filename in material_photos:
         if filename.good_photos:
@@ -351,7 +357,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
-        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        # context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
         context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
@@ -442,7 +448,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_reports'] = Report.objects.filter(checklist__step__site=self.kwargs['pk'])[:10]
+        context['site_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username', flat=True)
@@ -819,29 +825,44 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class ReportListView(ReportRoleMixin, ListView):
+class SubstepReportListView(ReportRoleMixin, ListView):
     """
     Report List
     """
-    model = Report
+    model = SubstepReport
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reports'] = Report.objects.filter(checklist__step__site=self.kwargs['site_pk'])
-        context['site'] = Site.objects.get(id=self.kwargs['site_pk'])
-        context['project'] = Project.objects.get(sites=self.kwargs['site_pk'])
+        context['reports'] = SubstepReport.objects.all()
+        context['site'] = Site.objects.get(id=self.kwargs['pk'])
+        context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
 
 
-class ReportDetailView(ReportRoleMixin, DetailView):
+def ExportReport(request):
+    output = []
+    response = HttpResponse(content_type='text/csv')
+    writer = csv.writer(response)
+    query_set = SubstepReport.objects.all()
+
+    writer.writerow(['User', 'Comment', 'Date', 'Photo'])
+    for query in query_set:
+        writer.writerow([query.user, query.comment, query.date, query.photo])
+    # CSV Data
+    return response
+
+
+class SubstepReportDetailView(ReportRoleMixin, DetailView):
     """
     Report detail
     """
-    model = Report
+    model = SubstepReport
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['site'] = Site.objects.get(steps__checklist_steps__checklist_report=self.kwargs['pk'])
+        context['reports'] = SubstepReport.objects.filter(id=self.kwargs['pk'])
+        context['site'] = Site.objects.get(id=self.object.site.id)
+        context['project'] = Project.objects.get(sites=self.object.site.id)
         return context
 
 
