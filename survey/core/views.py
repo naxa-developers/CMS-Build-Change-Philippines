@@ -28,7 +28,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
     HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm
@@ -36,6 +36,8 @@ from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, Proj
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
 from .admin import SubStepCheckListResource
+from django.forms.models import inlineformset_factory
+
 
 
 @api_view(['POST'])
@@ -454,7 +456,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
                                     .values_list('user__username', flat=True)
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
-        context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk'])
+        context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
         if total_site_checklist_count:
@@ -1494,11 +1496,48 @@ class ChecklistUpdateView(UpdateView):
     template_name = "core/checklist_form.html"
     form_class = NewCommonChecklistForm
 
-    def get_form(self, form_class=None):
-        form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         checklist_formset = NewChecklistFormset(instance=self.object)
-        print(self.object.site.id)
-        return form
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  checklist_formset=checklist_formset
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        Formset = inlineformset_factory(NewCommonSubStepChecklist, NewSubStepChecklist, fields=['title', ], extra=0)
+        checklist_formset = Formset(self.request.POST, instance=self.object)
+        
+
+        if (
+                form.is_valid() and checklist_formset.is_valid()):
+            return self.form_valid(form, checklist_formset)
+        else:
+            return self.form_invalid(form, checklist_formset)
+
+    def form_valid(self, form, checklist_formset):
+        self.object = form.save(commit=False)
+        form.instance.site = get_object_or_404(Site, id=self.object.site.id)
+        form.instance.substep = get_object_or_404(ConstructionSubSteps, id=self.object.substep.id)
+        form.instance.step = get_object_or_404(SiteSteps, id=self.object.step.id)
+
+        self.object.save()
+
+        checklist_formset.instance = self.object
+        checklist_formset.save()
+
+        return super(ChecklistUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form, checklist_formset):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, checklist_formset=checklist_formset))
 
     def get_context_data(self, *, object_list=None, **kwargs):
 
@@ -1550,14 +1589,14 @@ class CheckListAllView(TemplateView):
         context = super().get_context_data(**kwargs)
         # context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
 
-        checklist_all = NewCommonSubStepChecklist.objects.all()
+        checklist_all = NewCommonSubStepChecklist.objects.filter(site_id=self.kwargs['site_id']).prefetch_related('sub_checklists')
         paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
 
         page = self.request.GET.get('page')
         checklists = paginator.get_page(page)
         context['checklists_lists'] = checklists
         return context
-
+    
 
 def export(request):
     output = []
