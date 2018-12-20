@@ -10,9 +10,11 @@ from rest_framework.response import Response
 from userrole.models import UserRole
 
 from core.api.serializers import StepSerializer, ChecklistSerializer
-from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog
+from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, \
+HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
+StandardSchoolDesignPDF, CallLog, NewSubStepChecklist
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer, NewSubStepChecklistSerializer
 
 # Serializers define the API representation.
 
@@ -89,14 +91,14 @@ class StepViewset(viewsets.ModelViewSet):
 
 
 class ChecklistViewset(viewsets.ModelViewSet):
-    serializer_class = SubStepsCheckListSerializer
-    queryset = SubStepCheckList.objects.all()
+    serializer_class = NewSubStepChecklistSerializer
+    queryset = NewSubStepChecklist.objects.all()
     
-    def get_queryset(self):
-        step = self.kwargs.get('step', False)
-        if step:
-            self.queryset = self.queryset.filter(step__id=step)
-        return self.queryset
+    # def get_queryset(self):
+    #     step = self.kwargs.get('step', False)
+    #     if step:
+    #         self.queryset = self.queryset.filter(step__id=step)
+    #     return self.queryset
 
     # def perform_create(self, serializer, **kwargs):
     #     localtext = serializer.initial_data.get('localtext', '')

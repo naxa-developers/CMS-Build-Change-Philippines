@@ -64,6 +64,9 @@
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
                         <h4><a href="#" title="">Checklist</a></h4>
+                        <a href="{% url 'core:checklist_create' site.pk step_id substep_id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i>Create Checklist</a>
                     </div>
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->
@@ -73,7 +76,8 @@
                                     <thead>
                                         <tr>
                                             <th>S.N</th>
-                                            <th>Text</th>
+                                            <th>Title</th>
+                                            <th>Sub Checklist</th>
                                             <th>Status</th>
 
                                             <th>Edit</th>
@@ -84,12 +88,22 @@
                                         {% for checklist in checklists %}
                                         <tr>
                                             <td>{{forloop.counter}}</td>
-                                            <td>{{checklist.text}}</td>
-                                            <td>{% if checklist.status is True %}
-                                                <i class="fa fa-check-circle"></i>
-                                                {% else %}
-                                                <i class="fa fa-times-circle"></i>
-                                                {% endif %}</td>
+                                            <td>{{checklist.title}}</td>
+                                            <td>
+                                                {% for sub_checklist in checklist.sub_checklists.all %}
+                                                    {{ sub_checklist.title }}<br>
+                                                {% endfor %}
+                                            </td>
+                                            <td>
+                                                {% for sub_checklist in checklist.sub_checklists.all %}
+                                                    {% if sub_checklist.status is True %}
+                                                    <i class="fa fa-check-circle"></i>
+                                                    {% else %}
+                                                    <i class="fa fa-times-circle"></i>
+                                                    {% endif %}
+                                                    <br>
+                                                {% endfor %}
+                                            </td>
 
                                             <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
                                             <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>

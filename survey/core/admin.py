@@ -2,7 +2,7 @@ from django.contrib import admin
 from import_export import resources
 
 # Register your models here.
-from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF, EventLog, CallLog, SubstepReport
+from core.models import Project, Report, SiteDocument, ConstructionSubSteps, ConstructionSteps, SiteSteps, PrimaryPhoto, SubStepCheckList, GoodPhoto, BadPhoto, HousesAndGeneralConstructionMaterials, BuildAHouseKeyPartsOfHouse, BuildAHouseMakesHouseStrong, StandardSchoolDesignPDF, EventLog, CallLog, SubstepReport, NewSubStepChecklist, NewCommonSubStepChecklist
 from userrole.models import FieldEngineerProfile, AdminProfile
 
 
@@ -44,6 +44,8 @@ admin.site.register(AdminProfile)
 admin.site.register(EventLog)
 admin.site.register(CallLog)
 admin.site.register(SubstepReport)
+admin.site.register(NewCommonSubStepChecklist)
+admin.site.register(NewSubStepChecklist)
 
 
 class SubStepCheckListResource(resources.ModelResource):

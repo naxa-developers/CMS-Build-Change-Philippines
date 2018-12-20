@@ -14,6 +14,8 @@ from django.dispatch import receiver
 from django.contrib.gis.db.models import PointField
 
 from rest_framework.authtoken.models import Token
+from django.core.files.storage import FileSystemStorage
+
 
 LOG_ACTIONS = (
         ('phoned_to', 'phoned to'),
@@ -27,6 +29,32 @@ PROJECT_TYPES = (
     (1, 'House'),
     (2, 'Others'),
 )
+
+
+class OverwriteStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        """Returns a filename that's free on the target storage system, and
+        available for new content to be written to.
+
+        Found at http://djangosnippets.org/snippets/976/
+
+        This file storage solves overwrite on upload problem. Another
+        proposed solution was to override the save method on the model
+        like so (from https://code.djangoproject.com/ticket/11663):
+
+        def save(self, *args, **kwargs):
+            try:
+                this = MyModelName.objects.get(id=self.id)
+                if this.MyImageFieldName != self.MyImageFieldName:
+                    this.MyImageFieldName.delete()
+            except: pass
+            super(MyModelName, self).save(*args, **kwargs)
+        """
+        # If the filename already exists, remove it as if it was a true file system
+        if self.exists(name):
+            os.remove(os.path.join(settings.MEDIA_ROOT, name))
+        return name
 
 
 class Project(models.Model):
@@ -274,10 +302,10 @@ CONSTRUCTION_SUB_STEPS_LIST = [
 
 class ConstructionSteps(models.Model):
     name = models.CharField(max_length=250)
-    image = models.ImageField(upload_to='construction_step/', null=True, blank=True)
+    image = models.ImageField(upload_to='construction_step/', null=True, blank=True, storage=OverwriteStorage())
     project = models.ForeignKey(Project, related_name="construction_steps", on_delete=models.CASCADE, null=True,
                                 blank=True)
-    icon = models.ImageField(upload_to='construction_step/icons/', null=True, blank=True)
+    icon = models.ImageField(upload_to='construction_step/icons/', null=True, blank=True, storage=OverwriteStorage())
 
     order = models.IntegerField(default=0)
 
@@ -314,17 +342,17 @@ class ConstructionSubSteps(models.Model):
 
 class PrimaryPhoto(models.Model):
     construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="primary_photos", on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(upload_to="materials/updated_primary_photo", blank=True, null=True)
+    image = models.ImageField(upload_to="materials/updated_primary_photo", blank=True, null=True, storage=OverwriteStorage())
 
 
 class GoodPhoto(models.Model):
     construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="good_photos", on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(upload_to="materials/updated_good_photo", blank=True, null=True)
+    image = models.ImageField(upload_to="materials/updated_good_photo", blank=True, null=True, storage=OverwriteStorage())
 
 
 class BadPhoto(models.Model):
     construction_sub_step = models.ForeignKey(ConstructionSubSteps, related_name="bad_photos", on_delete=models.CASCADE, null=True, blank=True)
-    image = models.ImageField(upload_to="materials/updated_bad_photo", blank=True, null=True)
+    image = models.ImageField(upload_to="materials/updated_bad_photo", blank=True, null=True, storage=OverwriteStorage())
 
 
 class SiteSteps(models.Model):
@@ -367,6 +395,26 @@ class SubStepCheckList(models.Model):
     #
     # def get_status(self):
     #     return self.status
+
+
+class NewCommonSubStepChecklist(models.Model):
+    title = models.CharField(max_length=300)
+    specification = models.TextField()
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="new_checklists", null=True, blank=True)
+    substep = models.ForeignKey(ConstructionSubSteps, related_name="new_checklists", on_delete=models.CASCADE)
+    step = models.ForeignKey(SiteSteps, related_name="new_checklists", on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class NewSubStepChecklist(models.Model):
+    common_checklist = models.ForeignKey(NewCommonSubStepChecklist, related_name="sub_checklists", on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.title
 
 
 class SubstepReport(models.Model):

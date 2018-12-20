@@ -105,6 +105,7 @@
                             {% endfor %}
                             <div>
                                 <button type="submit" id="refresh" class="btn btn-success">Update</button>
+                                <a href="{% url 'core:site_steps_create' site_id %}" class="btn btn-success">Add New Step</a>
                             </div>
                         </ul>
                     </form>

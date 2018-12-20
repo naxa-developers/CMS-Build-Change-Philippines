@@ -26,13 +26,18 @@ from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
-    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, StandardSchoolDesignPDF, CallLog, EventLog
+    ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
+    HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
-    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, SubStepCheckListForm, BadPhotoFormset, GoodPhotoFormset
+    UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
+     BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
 from .admin import SubStepCheckListResource
+from django.forms.models import inlineformset_factory
+
 
 
 @api_view(['POST'])
@@ -98,20 +103,37 @@ def project_material_photos(request, project_id):
     for filename in material_photos:
         if filename.good_photos:
             for file in filename.good_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
+                # zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
         if filename.bad_photos:
             for file in filename.bad_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
+                # zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
+
         if filename.primary_photos:
             for file in filename.primary_photos.all():
-                zip_file.write(os.path.join(BASE_DIR) + '/media/'+str(file.image), arcname='/media/'+str(file.image))
-
+                if 'media/' + str(file.image) in [i.filename for i in zip_file.infolist()]:
+                    print('YESSSSSSSSSSSS', file.image)
+                else:
+                    zip_file.write(os.path.join(BASE_DIR) + '/media/' + str(file.image),
+                                   arcname='/media/' + str(file.image))
     for img in step_image:
         if img.image:
 
             zip_file.write(os.path.join(BASE_DIR) + img.image.url, arcname=img.image.url)
         if img.icon:
-            zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
+            if 'media/' + str(img.icon) in [i.filename for i in zip_file.infolist()]:
+                print('YESSSSSSSSSSSS', img.icon)
+            else:
+                zip_file.write(os.path.join(BASE_DIR) + img.icon.url, arcname=img.icon.url)
 
     for img in more_about_materials:
         if img.good_photo:
@@ -434,7 +456,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
                                     .values_list('user__username', flat=True)
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
-        context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk'])
+        context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
         if total_site_checklist_count:
@@ -970,36 +992,6 @@ class UserProfileDetailView(DetailView):
 
 # updated views
 
-class SiteStepsCreate(FormView):
-    template_name = "core/construction_sitesteps_form.html"
-    form_class = SiteConstructionStepsForm
-
-    def get(self, request, *args, **kwargs):
-        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
-        form = self.form_class()
-        construction_steps = ConstructionSteps.objects.filter(project_id=project_id)
-        return self.render_to_response(
-            self.get_context_data(form=form, construction_steps=construction_steps
-
-                                  ))
-
-    def post(self, request, *args, **kwargs):
-
-        site_id = get_object_or_404(Site, id=self.kwargs['site_id']).id
-        for construction_step_id in request.POST.getlist('construction_steps'):
-            SiteSteps.objects.get_or_create(site_id=site_id, step_id=construction_step_id)
-
-        url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
-        return HttpResponseRedirect(url)
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-
-        context = super().get_context_data(**kwargs)
-        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
-        context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
-        return context
-
-
 class ConfigureProjectSteps(CreateView):
     model = ConstructionSteps
     fields = ('name', 'name_de', 'order', 'image', 'icon')
@@ -1017,6 +1009,110 @@ class ConfigureProjectSteps(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+
+
+class ConfigureSiteSteps(CreateView):
+    model = ConstructionSteps
+    fields = ('name', 'name_de', 'order', 'image', 'icon')
+    template_name = 'core/construction_sitesteps_form.html'
+
+    def form_valid(self, form):
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
+
+        form.instance.project = get_object_or_404(Project, id=project_id)
+        form.save()
+        
+        obj = SiteSteps()
+        obj.site = Site.objects.get(id=self.kwargs['site_id'])
+        obj.step = ConstructionSteps.objects.get(id=form.instance.id)
+        obj.save()
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
+        context['project'] = Project.objects.get(id=project_id)
+        context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+
+
+class SiteSubStepCreate(CreateView):
+    template_name = 'core/construction_substep_form.html'
+    model = ConstructionSubSteps
+    form_class = ConstructionSubStepsForm
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset()
+        good_photo_form = GoodPhotoFormset()
+        bad_photo_form = BadPhotoFormset()
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  primary_photo_form=primary_photo_form,
+                                  good_photo_form=good_photo_form,
+                                  bad_photo_form=bad_photo_form,
+
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        primary_photo_form = PrimaryPhotoFormset(self.request.POST, self.request.FILES)
+        good_photo_form = GoodPhotoFormset(self.request.POST, self.request.FILES)
+        bad_photo_form = BadPhotoFormset(self.request.POST, self.request.FILES)
+
+        if (
+                form.is_valid() and primary_photo_form.is_valid() and good_photo_form.is_valid() and bad_photo_form.is_valid()):
+            return self.form_valid(form, primary_photo_form, good_photo_form, bad_photo_form)
+        else:
+            return self.form_invalid(form, primary_photo_form, good_photo_form, bad_photo_form)
+
+    # def get_form(self, form_class=None):
+    #     form = super(SiteSubstepCreate, self).get_form(form_class=self.form_class)
+    #     form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
+    #     return form
+
+    def form_valid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
+        self.object = form.save(commit=False)
+        form.instance.step = get_object_or_404(ConstructionSteps, id=self.kwargs['step_id'])
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
+        form.instance.project = get_object_or_404(Project, id=project_id)
+
+        form.save()
+
+        primary_photo_form.instance = self.object
+        primary_photo_form.save()
+
+        good_photo_form.instance = self.object
+        good_photo_form.save()
+
+        bad_photo_form.instance = self.object
+        bad_photo_form.save()
+
+        return super(SiteSubStepCreate, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_id = Project.objects.filter(sites__id=self.kwargs['site_id'])[0].id
+        context['project'] = Project.objects.get(id=project_id)
+        return context
+
+    def form_invalid(self, form, primary_photo_form, good_photo_form, bad_photo_form):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, primary_photo_form=primary_photo_form, good_photo_form=good_photo_form, bad_photo_form=bad_photo_form))
+
+    def get_success_url(self):
+        return reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
 
 
 class ConstructionStepUpdate(UpdateView):
@@ -1137,6 +1233,58 @@ class ConstructionSubstepCreate(CreateView):
         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
 
 
+# class ConstructionSubstepChoose(CreateView):
+#     model = ConstructionSubSteps
+#     template_name = "core/construction_sub_steps_choice.html"
+#     form_class = ConstructionSubStepsChoiceForm
+
+#     def get(self, request, *args, **kwargs):
+#         self.object = None
+#         form_class = self.get_form_class()
+#         form = self.get_form(form_class)
+
+#         return self.render_to_response(
+#             self.get_context_data(form=form))
+
+#     def post(self, request, *args, **kwargs):
+#         form_class = self.get_form_class()
+#         form = self.get_form(form_class)
+
+#         if form.is_valid():
+#             return self.form_valid(form)
+#         else:
+#             return self.form_invalid(form)
+
+#     def form_valid(self, form):
+#         self.object = form.save(commit=False)
+#         form.instance.title = self.object.title
+#         form.instance.description = self.object.description
+#         form.instance.order = self.object.order
+#         form.instance.created_by = self.object.created_by
+#         form.instance.good_photo = self.object.good_photo
+#         form.instance.bad_photo = self.object.bad_photo
+#         form.instance.primary_photos.set(self.object.primary_photos)
+#         form.instance.step = get_object_or_404(ConstructionSteps, id=self.kwargs['step_id'])
+#         form.instance.project = get_object_or_404(Project, id=self.kwargs['project_id'])
+
+#         form.save()
+
+#         return super(ConstructionSubstepChoose, self).form_valid(form)
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+#         return context
+
+#     def form_invalid(self, form):
+
+#         return self.render_to_response(
+#             self.get_context_data(form=form))
+
+#     def get_success_url(self):
+#         return reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+
+
 class ConstructionSubstepsDetail(DetailView):
     template_name = "core/construction_substeps_detail.html"
     form_class = ConstructionSubStepsForm
@@ -1253,20 +1401,58 @@ class ConstructionSiteStepsDelete(DeleteView):
 
 
 class ChecklistCreateView(CreateView):
-    model = SubStepCheckList
     template_name = 'core/checklist_form.html'
-    form_class = SubStepCheckListForm
+    model = NewCommonSubStepChecklist
+    form_class = NewCommonChecklistForm
 
-    def get_form(self, form_class=None):
-        form = super(ChecklistCreateView, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.kwargs['site_id'])
-        return form
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        # project_id = self.kwargs['project_id']
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        checklist_formset = NewChecklistFormset()
 
-    def form_valid(self, form):
-        form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  checklist_formset=checklist_formset
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        checklist_formset = NewChecklistFormset(self.request.POST)
+        
+
+        if (
+                form.is_valid() and checklist_formset.is_valid()):
+            return self.form_valid(form, checklist_formset)
+        else:
+            return self.form_invalid(form, checklist_formset)
+
+    # def get_form(self, form_class=None):
+    #     form = super(ConstructionSubstepCreate, self).get_form(form_class=self.form_class)
+    #     form.fields['step'].queryset = form.fields['step'].queryset.filter(project_id=self.kwargs['project_id'])
+    #     return form
+
+    def form_valid(self, form, checklist_formset):
+        self.object = form.save(commit=False)
+        form.instance.site = get_object_or_404(Site, id=self.kwargs['site_id'])
+        form.instance.substep = get_object_or_404(ConstructionSubSteps, id=self.kwargs['substep_id'])
+        form.instance.step = get_object_or_404(SiteSteps, id=self.kwargs['step_id'])
+
         form.save()
-        return super().form_valid(form)
 
+        checklist_formset.instance = self.object
+        checklist_formset.save()
+
+        return super(ChecklistCreateView, self).form_valid(form)
+
+    def form_invalid(self, form, checklist_formset):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, checklist_formset=checklist_formset))
+ 
     def get_context_data(self, *, object_list=None, **kwargs):
 
         context = super().get_context_data(**kwargs)
@@ -1275,20 +1461,83 @@ class ChecklistCreateView(CreateView):
         return context
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+        success_url = reverse_lazy('core:checklist', args=(self.kwargs['site_id'],self.kwargs['step_id'], self.kwargs['substep_id']))
         return success_url
+
+# class ChecklistCreateView(CreateView):
+#     model = NewCommonSubStepChecklist
+#     template_name = 'core/checklist_form.html'
+#     form_class = NewCommonChecklistForm
+
+#     # def get_form(self, form_class=None):
+#     #     form = super(ChecklistCreateView, self).get_form(form_class=self.form_class)
+#     #     form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.kwargs['site_id'])
+#     #     return form
+
+#     def form_valid(self, form):
+#         form.instance.site = get_object_or_404(Site, pk=self.kwargs['site_id'])
+#         form.save()
+#         return super().form_valid(form)
+
+#     def get_context_data(self, *, object_list=None, **kwargs):
+
+#         context = super().get_context_data(**kwargs)
+#         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
+#         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+#         return context
+
+#     def get_success_url(self):
+#         success_url = reverse_lazy('core:site_detail', args=(self.kwargs['site_id'],))
+#         return success_url
 
 
 class ChecklistUpdateView(UpdateView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = "core/checklist_form.html"
-    form_class = SubStepCheckListForm
+    form_class = NewCommonChecklistForm
 
-    def get_form(self, form_class=None):
-        form = super(ChecklistUpdateView, self).get_form(form_class=self.form_class)
-        form.fields['step'].queryset = form.fields['step'].queryset.filter(site_id=self.object.site.id)
-        print(self.object.site.id)
-        return form
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        checklist_formset = NewChecklistFormset(instance=self.object)
+
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  checklist_formset=checklist_formset
+                                  ))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        Formset = inlineformset_factory(NewCommonSubStepChecklist, NewSubStepChecklist, fields=['title', ], extra=0)
+        checklist_formset = Formset(self.request.POST, instance=self.object)
+        
+
+        if (
+                form.is_valid() and checklist_formset.is_valid()):
+            return self.form_valid(form, checklist_formset)
+        else:
+            return self.form_invalid(form, checklist_formset)
+
+    def form_valid(self, form, checklist_formset):
+        self.object = form.save(commit=False)
+        form.instance.site = get_object_or_404(Site, id=self.object.site.id)
+        form.instance.substep = get_object_or_404(ConstructionSubSteps, id=self.object.substep.id)
+        form.instance.step = get_object_or_404(SiteSteps, id=self.object.step.id)
+
+        self.object.save()
+
+        checklist_formset.instance = self.object
+        checklist_formset.save()
+
+        return super(ChecklistUpdateView, self).form_valid(form)
+
+    def form_invalid(self, form, checklist_formset):
+
+        return self.render_to_response(
+            self.get_context_data(form=form, checklist_formset=checklist_formset))
 
     def get_context_data(self, *, object_list=None, **kwargs):
 
@@ -1298,21 +1547,21 @@ class ChecklistUpdateView(UpdateView):
         return context
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        success_url = reverse_lazy('core:checklist', args=(self.object.site.id, self.object.step.id, self.object.substep.id))
         return success_url
 
 
 class ChecklistDeleteView(DeleteView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = "core/checklist_delete_form.html"
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail', args=(self.object.site.id,))
+        success_url = reverse_lazy('core:checklist', args=(self.object.site.id, self.object.step.id, self.object.substep.id))
         return success_url
 
 
 class ChecklistView(ListView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = 'core/substep_checklist.html'
     context_object_name = 'checklists'
 
@@ -1320,16 +1569,18 @@ class ChecklistView(ListView):
         context = super().get_context_data(**kwargs)
         context['site'] = Site.objects.get(id=self.kwargs['site_id'])
         context['project'] = Project.objects.get(sites=self.kwargs['site_id'])
+        context['substep_id'] = self.kwargs['substep_id']
+        context['step_id'] = self.kwargs['step_id']
         return context
 
 
     def get_queryset(self):
-        return SubStepCheckList.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id'])
+        return NewCommonSubStepChecklist.objects.filter(substep_id=self.kwargs['substep_id'], site_id=self.kwargs['site_id']).prefetch_related('sub_checklists')
 
 
 
 class CheckListAllView(TemplateView):
-    model = SubStepCheckList
+    model = NewCommonSubStepChecklist
     template_name = 'core/checklist_all.html'
     paginate_by = 10
 
@@ -1338,14 +1589,14 @@ class CheckListAllView(TemplateView):
         context = super().get_context_data(**kwargs)
         # context['checklists'] = SubStepCheckList.objects.filter(site_id=site_id)
 
-        checklist_all = SubStepCheckList.objects.all()
+        checklist_all = NewCommonSubStepChecklist.objects.filter(site_id=self.kwargs['site_id']).prefetch_related('sub_checklists')
         paginator = Paginator(checklist_all, 10)  # Show 10 checklist per page
 
         page = self.request.GET.get('page')
         checklists = paginator.get_page(page)
         context['checklists_lists'] = checklists
         return context
-
+    
 
 def export(request):
     output = []

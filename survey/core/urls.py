@@ -50,10 +50,12 @@ urlpatterns = [
 
     # Updated urls
     path('construction-substep-create/<int:project_id>/<int:step_id>', views.ConstructionSubstepCreate.as_view(), name="construction_substep_create"),
+#     path('construction-substep-choose/<int:project_id>/<int:step_id>', views.ConstructionSubstepChoose.as_view(), name="construction_substep_choose"),
     path('construction-step-update/<int:pk>/', views.ConstructionStepUpdate.as_view(), name="construction_step_update"),
     path('construction-step-list/<int:project_id>/', views.ConstructionStepList.as_view(), name="construction_step_list"),
     path('construction-step-delete/<int:pk>/', views.ConstructionStepDelete.as_view(), name="construction_step_delete"),
-    path('site-steps-create/<int:site_id>/', views.SiteStepsCreate.as_view(), name="site_steps_create"),
+    path('site-steps-create/<int:site_id>/', views.ConfigureSiteSteps.as_view(), name="site_steps_create"),
+    path('site-sub-step-create/<int:site_id>/<int:step_id>', views.SiteSubStepCreate.as_view(), name="site_sub_steps_create"),
     path('configure-project-steps/<int:project_id>', views.ConfigureProjectSteps.as_view(), name="configure_project_steps"),
     path('construction-substeps-detail/<int:pk>/', views.ConstructionSubstepsDetail.as_view(), name="construction_substeps_detail"),
     path('construction-substeps-update/<int:pk>/', views.ConstructionSubstepsUpdate.as_view(), name="construction_substeps_update"),
@@ -62,11 +64,11 @@ urlpatterns = [
          name="construction_substeps_delete"),
     path('construction-site-steps-delete/<int:pk>/', views.ConstructionSiteStepsDelete.as_view(),
          name="construction_site_steps_delete"),
-    path('checklist-create/<int:site_id>/', views.ChecklistCreateView.as_view(), name="checklist_create"),
+    path('checklist-create/<int:site_id>/<int:step_id>/<int:substep_id>', views.ChecklistCreateView.as_view(), name="checklist_create"),
     path('checklist-update/<int:pk>/', views.ChecklistUpdateView.as_view(), name="checklist_update"),
     path('checklist-delete/<int:pk>/', views.ChecklistDeleteView.as_view(), name="checklist_delete"),
 
-    path('checklist/<int:site_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
+    path('checklist/<int:site_id>/<int:step_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
     path('checklists-all/<int:site_id>', views.CheckListAllView.as_view(), name='checklist_all'),
     path('export/', views.export, name="export"),
     path('export-report/', views.ExportReport, name="export_report"),

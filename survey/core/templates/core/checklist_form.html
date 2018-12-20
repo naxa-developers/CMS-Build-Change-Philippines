@@ -1,5 +1,5 @@
 {% extends '_base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="col-md-12">
     <nav aria-label="breadcrumb">
@@ -47,14 +47,29 @@
                     <div class="widget-head">
                         <h4><a href="#" title="">CheckList Form</a></h4>
                     </div>
-                    <form method="post">{% csrf_token %}
-                        <!--{{form.as_p}}-->
+                    <form method="post">
+                        {% csrf_token %}
                         <div class="form-row">
+                            {% for item in form %}
                             <div class="form-group col-md-12">
-                                <label for="inputSchoolName">Text</label>
-                                {{ form.text }}
+                                <label for="{{ item.label_id }}">{{ item.label_tag }}</label>
+                                {{ item }}
                             </div>
+                            {% endfor %}
                             <div class="form-group col-md-12">
+                                    <label for="inputSchoolName">CheckList</label>
+                                    {{ checklist_formset.management_form }}
+                                    {{ checklist_formset.non_form_errors }}
+                                    {% for form in checklist_formset %}
+                                    {{ form.id }}
+                                    <div class="inline {{ checklist_formset.prefix }}">
+                                        {{ form.title.errors }}
+                                        {{ form.title.label_tag }}
+                                        {{ form.title }}
+                                    </div>
+                                    {% endfor %}
+                            </div>
+                            <!-- <div class="form-group col-md-12">
                                 <label for="inputSchoolName">Description</label>
                                 {{ form.description }}
                             </div>
@@ -65,7 +80,7 @@
                             <div class="form-group col-md-6">
                                 <label for="inputSchoolName">Sub Step</label>
                                 {{ form.substep }}
-                            </div>
+                            </div> -->
                         </div>
                         <div class="">
                             <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
@@ -80,11 +95,20 @@
 
 {% block extra_script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
 
+<script type="text/javascript" src="{% static 'assets/formset/jquery.formset.js' %}"></script>
  <script>
 
      //var baseUrl = 'http://localhost:8000/';
      var baseUrl = 'http://bccms.naxa.com.np/';
+
+        $(function() {
+            $(".inline.{{ checklist_formset.prefix }}").formset({
+                prefix: "{{ checklist_formset.prefix }}",
+            })
+
+        })
 
 
     $("#id_step").change(function () {

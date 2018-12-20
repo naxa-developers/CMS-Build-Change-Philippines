@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, SubstepReport, GoodPhoto, BadPhoto, CallLog
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist
 from userrole.models import UserRole, AdminProfile
 
 
@@ -59,12 +59,24 @@ class BadPhotoSerializer(serializers.ModelSerializer):
         fields = ('image',)
 
 
-class SubStepsCheckListSerializer(serializers.ModelSerializer):
-    site_name = serializers.CharField(source="site.name", read_only=True)
+class NewSubStepChecklistSerializer(serializers.ModelSerializer):
+    site_name = serializers.CharField(source="common_checklist.site", read_only=True)
+    site = serializers.IntegerField(source="common_checklist.site.id", read_only=True)
+    step = serializers.IntegerField(source="common_checklist.step.id", read_only=True)
+    substep = serializers.IntegerField(source="common_checklist.substep.id", read_only= True)
 
     class Meta:
-        model = SubStepCheckList
-        fields = ('id', 'text', 'description', 'step', 'substep', 'status', 'site', 'site_name')
+        model = NewSubStepChecklist
+        fields = ('id', 'title', 'site', 'site_name', 'step', 'substep', 'status')
+        extra_kwargs = {'title': {'read_only': True}}
+
+
+class SubStepsCheckListSerializer(serializers.ModelSerializer):
+    sub_checklists = NewSubStepChecklistSerializer(many=True)
+
+    class Meta:
+        model = NewCommonSubStepChecklist
+        fields = ('id', 'title', 'specification', 'sub_checklists')
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
@@ -95,12 +107,12 @@ class SiteStepsSerializer(serializers.ModelSerializer):
     icon = serializers.CharField(source="step.icon")
     order = serializers.IntegerField(source="step.order")
     sub_steps = serializers.SerializerMethodField()
-    checklists = SubStepsCheckListSerializer(many=True)
+    new_checklists = SubStepsCheckListSerializer(many=True)
     reports = SubstepReportSerializer(many=True)
 
     class Meta:
         model = SiteSteps
-        fields = ('id', 'step', 'local_step', 'order', 'image', 'icon', 'sub_steps', 'checklists', 'reports')
+        fields = ('id', 'step', 'local_step', 'order', 'image', 'icon', 'sub_steps', 'new_checklists', 'reports')
 
     def get_sub_steps(self, obj):
         sub_steps = ConstructionSubSteps.objects.select_related('project', 'step', 'created_by').prefetch_related('primary_photos', 'good_photos', 'bad_photos').filter(
