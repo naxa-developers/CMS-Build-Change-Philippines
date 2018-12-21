@@ -133,14 +133,23 @@ class SiteEngineerSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'phone_number')
 
 
+class SiteDocumentSerializer(serializers.ModelSerializer):
+    site = serializers.CharField(source='site.name')
+
+    class Meta:
+        model = SiteDocument
+        fields = ('id', 'site', 'file', 'document_name')
+
+
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
     site_steps = SiteStepsSerializer(many=True)
     site_engineers = serializers.SerializerMethodField()
+    site_document = SiteDocumentSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'address', 'location', 'site_steps', 'site_engineers')
+        fields = ('id', 'name', 'address', 'location', 'site_document', 'site_steps', 'site_engineers')
 
     # def get_site_engineers(self, obj):
     #     if obj.site_roles:
@@ -322,14 +331,6 @@ class SiteMaterialSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteMaterials
         fields = ('id', 'site', 'materials')
-
-
-class SiteDocumentSerializer(serializers.ModelSerializer):
-    site = serializers.CharField(source='site.name')
-
-    class Meta:
-        model = SiteDocument
-        fields = ('id', 'site', 'file', 'document_name')
 
 
 class SiteReportSerializer(serializers.ModelSerializer):
