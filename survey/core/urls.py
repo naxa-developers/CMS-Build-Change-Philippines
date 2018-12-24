@@ -73,5 +73,23 @@ urlpatterns = [
     path('export/', views.export, name="export"),
     path('export-report/', views.ExportReport, name="export_report"),
 
+    path('house-general-construction-materials-list', views.HousesAndGeneralConstructionMaterialsListView.as_view(), name="house_general_construction_materials_list"),
+    path('house-general-construction-materials-detail/<int:pk>/', views.HousesAndGeneralConstructionMaterialsDetailView.as_view(), name="house_general_construction_materials_detail"),
+    path('house-general-construction-materials-add/', views.HousesAndGeneralConstructionMaterialsCreateView.as_view(), name="house_general_construction_materials_add"),
+    path('house-general-construction-materials-edit/<int:pk>/', views.HousesAndGeneralConstructionMaterialsUpdateView.as_view(), name="house_general_construction_materials_edit"),
+    path('house-general-construction-materials-delete/<int:pk>/', views.HousesAndGeneralConstructionMaterialsDeleteView.as_view(), name="house_general_construction_materials_delete"),
+
+    path('build-house/', views.BuildHouse.as_view(), name="build_house"),
+    path('make-house-strong-list', views.MakeHouseStrongListView.as_view(), name="make_house_strong_list"),
+    path('make-house-strong/<int:pk>/', views.MakesHouseStrongDetailView.as_view(), name="make_house_strong_detail"),
+    path('make-house-strong-add/', views.MakesHouseStrongCreateView.as_view(), name="make_house_strong_add"),
+    path('make-house-strong-edit/<int:pk>/', views.MakesHouseStrongUpdateView.as_view(), name="make_house_strong_edit"),
+    path('make-house-strong-delete/<int:pk>/', views.MakesHouseStrongDeleteView.as_view(), name="make_house_strong_delete"),
+
+    path('key-parts-house-list', views.KeyPartsOfHouseListView.as_view(), name="key_parts_house_list"),
+    path('key-parts-house-detail/<int:pk>/', views.KeyPartsOfHouseDetailView.as_view(), name="key_parts_house_detail"),
+    path('key-parts-house-add/', views.KeyPartsOfHouseCreateView.as_view(), name="key_parts_house_add"),
+    path('key-parts-house-edit/<int:pk>/', views.KeyPartsOfHouseUpdateView.as_view(), name="key_parts_house_edit"),
+    path('key-parts-house-delete/<int:pk>/', views.KeyPartsOfHouseDeleteView.as_view(), name="key_parts_house_delete"),
 ]
 
