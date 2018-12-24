@@ -32,7 +32,8 @@ from .models import Project, Site, Category, Material, Step, Report, SiteMateria
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
-    HousesAndGeneralConstructionMaterialsForm, BuildAHouseMakesHouseStrongForm, BuildAHouseKeyPartsOfHouseForm
+    HousesAndGeneralConstructionMaterialsForm, BuildAHouseMakesHouseStrongForm, BuildAHouseKeyPartsOfHouseForm, \
+    SubstepReportForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -833,6 +834,7 @@ class SubstepReportListView(ReportRoleMixin, ListView):
     Report List
     """
     model = SubstepReport
+    template_name = "core/substep_report_list.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -867,6 +869,28 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
         context['site'] = Site.objects.get(id=self.object.site.id)
         context['project'] = Project.objects.get(sites=self.object.site.id)
         return context
+
+
+class SubstepReportCreateView(CreateView):
+    model = SubstepReport
+    form_class = SubstepReportForm
+    template_name = "core/substepreport_form.html"
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:substep_report_list', args=[site_id],) 
+        return success_url
+
+
+class SubstepReportUpdateView(UpdateView):
+    model = SubstepReport
+    fields = ('user', 'comment', 'photo')
+    template_name = "core/substepreport_form.html"
+
+    def get_success_url(self):
+        site_id = Site.objects.get(reports=self.kwargs['pk']).id
+        print(site_id)
+        success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
+        return success_url
 
 
 class UserProfileView(CreateView):
@@ -1644,14 +1668,7 @@ class HousesAndGeneralConstructionMaterialsDeleteView(DeleteView):
 
 
 class BuildHouse(TemplateView):
-    # model = BuildHouse
     template_name = 'core/build_house.html'
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['make_house_strong'] = BuildAHouseMakesHouseStrong.objects.all()
-    #     context['key_parts_house'] = BuildAHouseKeyPartsOfHouse.objects.all()
-    #     return context
 
 
 class MakeHouseStrongListView(ListView):
@@ -1691,7 +1708,7 @@ class KeyPartsOfHouseListView(ListView):
 
 class KeyPartsOfHouseDetailView(DetailView):
     model = BuildAHouseKeyPartsOfHouse
-    temlate_name = "core/key_parts_house_detail.html"
+    template_name = "core/key_parts_house_detail.html"
 
 
 class KeyPartsOfHouseCreateView(CreateView):
