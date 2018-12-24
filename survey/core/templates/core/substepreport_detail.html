@@ -39,6 +39,9 @@
                     {% if object.photo %}
                     <img src="{{ object.photo.url }}" alt="">
                     {% endif %}
+                    <div>
+                        <a href="{% url 'core:substep_report_edit' object.id %}"><button>Edit</button></a>
+                    </div>
                 </div>
             </div>
         </div>

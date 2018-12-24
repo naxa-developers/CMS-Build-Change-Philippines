@@ -2,7 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, \
     ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, BadPhoto, GoodPhoto, NewCommonSubStepChecklist, \
-    NewSubStepChecklist, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse
+    NewSubStepChecklist, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
+    SubstepReport
 from django.forms.models import inlineformset_factory
 
 from mapwidgets.widgets import GooglePointFieldWidget
@@ -182,11 +183,11 @@ class BuildAHouseKeyPartsOfHouseForm(forms.ModelForm):
         fields = ('name', 'good_photo', 'good_photo_desc', 'bad_photo', 'bad_photo_desc',)
 
 
-# class BuildHouseForm(forms.ModelForm):
-#
-#     class Meta:
-#         model = BuildHouse
-#         fields = ('makeshousestrong', 'keypartsofhouse',)
+class SubstepReportForm(forms.ModelForm):
+
+    class Meta:
+        model = SubstepReport
+        fields = ('user', 'comment', 'photo',)
 
 
 

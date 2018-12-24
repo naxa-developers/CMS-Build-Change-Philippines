@@ -477,11 +477,6 @@ class BuildAHouseKeyPartsOfHouse(models.Model):
         return self.name
 
 
-# class BuildHouse(models.Model):
-#     makeshousestrong = models.ForeignKey(BuildAHouseMakesHouseStrong, related_name="build_change", on_delete=models.CASCADE)
-#     keypartsofhouse = models.ForeignKey(BuildAHouseKeyPartsOfHouse, related_name="build_change", on_delete=models.CASCADE)
-
-
 class StandardSchoolDesignPDF(models.Model):
     pdf = models.FileField(upload_to='HousesAndGeneralConstruction/', null=True, blank=True)
     

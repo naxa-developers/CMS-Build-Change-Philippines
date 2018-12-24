@@ -5,6 +5,15 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
     <div class="formHolder">
         <div class="widget-info margin-top-large">
             <div class="widget-head">
@@ -23,6 +32,7 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}
 {% block  extra_script %}
     {% render_bundle 'project' 'js' %}
