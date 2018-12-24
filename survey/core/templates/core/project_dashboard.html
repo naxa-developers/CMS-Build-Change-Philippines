@@ -282,6 +282,28 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">House and General Construction Materials</a></h4>
+                                <!--{% if request.user.is_superuser %}-->
+                                    <!--<a href="{% url 'userrole:send_invitation' project.pk %}"><i-->
+                                            <!--class="la la-user-plus"></i>Invite New User</a>-->
+                                    <!--<a href="{% url 'userrole:userrole_create' project.pk %}"><i-->
+                                            <!--class="la la-user"></i>Add Manager</a>-->
+                                <!--{% endif %}-->
+                            </div>
+                            <div class="widget-body">
+                                <ul class="user-list-sm">
+                                    <li>
+                                        <a href="{% url 'core:house_general_construction_materials_list'%}">More About Materials</a></li>
+                                    <li>
+                                        <a href="{% url 'core:build_house' %}">Build A House</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

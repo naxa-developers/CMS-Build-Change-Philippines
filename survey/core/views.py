@@ -31,7 +31,8 @@ from .models import Project, Site, Category, Material, Step, Report, SiteMateria
     StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
-     BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm
+     BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
+    HousesAndGeneralConstructionMaterialsForm, BuildAHouseMakesHouseStrongForm, BuildAHouseKeyPartsOfHouseForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -1611,4 +1612,104 @@ def export(request):
     # CSV Data
     return response
 
+
+class HousesAndGeneralConstructionMaterialsListView(ListView):
+    model = HousesAndGeneralConstructionMaterials
+    template_name = "core/house_general_construction_materials_list.html"
+
+
+class HousesAndGeneralConstructionMaterialsDetailView(DetailView):
+    model = HousesAndGeneralConstructionMaterials
+    temlate_name = "core/house_general_construction_materials_detail.html"
+
+
+class HousesAndGeneralConstructionMaterialsCreateView(CreateView):
+    model = HousesAndGeneralConstructionMaterials
+    form_class = HousesAndGeneralConstructionMaterialsForm
+    template_name = "core/house_general_construction_materials_form.html"
+    success_url = reverse_lazy('core:house_general_construction_materials_list')
+
+
+class HousesAndGeneralConstructionMaterialsUpdateView(UpdateView):
+    model = HousesAndGeneralConstructionMaterials
+    fields = ('name', 'good_photo', 'good_photo_desc', 'bad_photo', 'bad_photo_desc',)
+    template_name = "core/house_general_construction_materials_form.html"
+    success_url = reverse_lazy('core:house_general_construction_materials_list')
+
+
+class HousesAndGeneralConstructionMaterialsDeleteView(DeleteView):
+    model = HousesAndGeneralConstructionMaterials
+    template_name = "core/house_general_construction_materials_delete.html"
+    success_url = reverse_lazy('core:house_general_construction_materials_list')
+
+
+class BuildHouse(TemplateView):
+    # model = BuildHouse
+    template_name = 'core/build_house.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['make_house_strong'] = BuildAHouseMakesHouseStrong.objects.all()
+    #     context['key_parts_house'] = BuildAHouseKeyPartsOfHouse.objects.all()
+    #     return context
+
+
+class MakeHouseStrongListView(ListView):
+    model = BuildAHouseMakesHouseStrong
+    template_name = "core/make_house_strong_list.html"
+
+
+class MakesHouseStrongDetailView(DetailView):
+    model = BuildAHouseMakesHouseStrong
+    temlate_name = "core/make_house_strong_detail.html"
+
+
+class MakesHouseStrongCreateView(CreateView):
+    model = BuildAHouseMakesHouseStrong
+    form_class = BuildAHouseMakesHouseStrongForm
+    template_name = "core/make_house_strong_form.html"
+    success_url = reverse_lazy('core:make_house_strong_list')
+
+
+class MakesHouseStrongUpdateView(UpdateView):
+    model = BuildAHouseMakesHouseStrong
+    fields = ('name', 'pdf',)
+    template_name = "core/make_house_strong_form.html"
+    success_url = reverse_lazy('core:make_house_strong_list')
+
+
+class MakesHouseStrongDeleteView(DeleteView):
+    model = BuildAHouseMakesHouseStrong
+    template_name = "core/make_house_strong_delete.html"
+    success_url = reverse_lazy('core:make_house_strong_list')
+
+
+class KeyPartsOfHouseListView(ListView):
+    model = BuildAHouseKeyPartsOfHouse
+    template_name = "core/key_parts_house_list.html"
+
+
+class KeyPartsOfHouseDetailView(DetailView):
+    model = BuildAHouseKeyPartsOfHouse
+    temlate_name = "core/key_parts_house_detail.html"
+
+
+class KeyPartsOfHouseCreateView(CreateView):
+    model = BuildAHouseKeyPartsOfHouse
+    form_class = BuildAHouseKeyPartsOfHouseForm
+    template_name = "core/key_parts_house_form.html"
+    success_url = reverse_lazy('core:key_parts_house_list')
+
+
+class KeyPartsOfHouseUpdateView(UpdateView):
+    model = BuildAHouseKeyPartsOfHouse
+    fields = ('name', 'good_photo', 'good_photo_desc', 'bad_photo', 'bad_photo_desc',)
+    template_name = "core/key_parts_house_form.html"
+    success_url = reverse_lazy('core:key_parts_house_list')
+
+
+class KeyPartsOfHouseDeleteView(DeleteView):
+    model = BuildAHouseKeyPartsOfHouse
+    template_name = "core/key_parts_house_delete.html"
+    success_url = reverse_lazy('core:key_parts_house_list')
 
