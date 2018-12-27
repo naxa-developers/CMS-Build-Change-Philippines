@@ -12,6 +12,7 @@ from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.db.models import Q
+from django.contrib import messages
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -78,8 +79,10 @@ def token(request):
 
 def project_material_photos(request, project_id):
 
-    response = HttpResponse(content_type='application/zip')
-    zip_file = zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED)
+    # response = HttpResponse(content_type='application/zip')
+    # zip_file = zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED)
+    zip_file = zipfile.ZipFile(os.path.join(BASE_DIR) + '/media/ProjectMaterialPhotos.zip', 'w', zipfile.ZIP_DEFLATED)
+
     material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
     project = get_object_or_404(Project, id=project_id)
     category_materials = Material.objects.filter(project_id=project_id)
@@ -160,8 +163,10 @@ def project_material_photos(request, project_id):
             zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
 
 
-    response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
-    return response
+    # response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
+    messages.success(request, 'successfully created zip')
+    return HttpResponseRedirect(reverse('core:project_dashboard', args=[project_id]))
+
 
 
 def site_documents_zip(request, site_id):
@@ -177,6 +182,20 @@ def site_documents_zip(request, site_id):
 
     response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
     return response
+
+# def site_documents_zip(request, site_id):
+#
+#     # response = HttpResponse(content_type='application/zip')
+#     zip_file = zipfile.ZipFile(os.path.join(BASE_DIR)+'/abc.zip', 'w', zipfile.ZIP_DEFLATED)
+#     site_documents = SiteDocument.objects.filter(site=site_id)
+#     site = get_object_or_404(Site, id=site_id)
+#
+#     for filename in site_documents:
+#         if filename.file:
+#             zip_file.write(os.path.join(BASE_DIR) + filename.file.url, arcname=filename.file.url)
+#
+#     # response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
+#     return HttpResponse('successs')
 
 
 class ProjectPersonnelList(TemplateView):
