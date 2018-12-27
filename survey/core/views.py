@@ -81,7 +81,7 @@ def token(request):
 def project_material_photos(request, project_id):
 
     response = HttpResponse(content_type='application/zip')
-    zip_file = zipfile.ZipFile(response, 'w')
+    zip_file = zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED)
     material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
     project = get_object_or_404(Project, id=project_id)
     category_materials = Material.objects.filter(project_id=project_id)
@@ -169,7 +169,7 @@ def project_material_photos(request, project_id):
 def site_documents_zip(request, site_id):
 
     response = HttpResponse(content_type='application/zip')
-    zip_file = zipfile.ZipFile(response, 'w')
+    zip_file = zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED)
     site_documents = SiteDocument.objects.filter(site=site_id)
     site = get_object_or_404(Site, id=site_id)
 
