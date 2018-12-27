@@ -13,7 +13,7 @@
                         <h4><a href="#" title="">Sub Step Report Delete</a></h4>
                     </div>
                     <div class="widget-body">
-                        <form method="POST" action="{% url 'core:substep_gireport_delete' object.id%}">{% csrf_token %}
+                        <form method="POST" action="{% url 'core:substep_report_delete' object.id%}">{% csrf_token %}
                         Click Yes To Delete {{object.name}}
                         <button type="submit">YES</button>
                         </form>
