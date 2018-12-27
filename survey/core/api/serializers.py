@@ -177,17 +177,17 @@ class AdminProfileSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer, EagerLoadingMixin):
     sites = SitesSerializer(many=True)
-    admin = serializers.SerializerMethodField()
+    project_managers = serializers.SerializerMethodField()
 
     _PREFETCH_RELATED_FIELDS = ['sites__site_steps__reports', 'sites__site_steps__checklists']
     
     class Meta:
         model = Project
-        fields = ('id', 'name', 'sites', 'admin')
+        fields = ('id', 'name', 'sites', 'project_managers')
     
-    def get_admin(self, obj):
-        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Super Admin").values('user', 'phone_number')
-        return  qs
+    def get_project_managers(self, obj):
+        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Project Manager").values('user', 'phone_number')
+        return qs
    
 
 class MaterialSerializer(serializers.ModelSerializer):

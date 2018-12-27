@@ -39,6 +39,8 @@ from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, Proj
 from django.core import serializers
 from .admin import SubStepCheckListResource
 from django.forms.models import inlineformset_factory
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse, HttpResponseNotFound
 
 
 
@@ -856,6 +858,19 @@ def ExportReport(request):
     # CSV Data
     return response
 
+# import img2pdf
+def ExportPdf(request):
+    filename = 'mypdf.pdf'
+    query_set = SubstepReport.objects.all()
+
+    with open(filename, 'w') as file:
+        for query in query_set:
+            # f.write(img2pdf.convert([i for i in os.listdir('path/to/imageDir')
+            file.write(query.user.username+'\n'+query.comment+'\n'+str(query.date)+'\n'+User(query.photo))
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
 
 class SubstepReportDetailView(ReportRoleMixin, DetailView):
     """
@@ -889,6 +904,15 @@ class SubstepReportUpdateView(UpdateView):
     def get_success_url(self):
         site_id = Site.objects.get(reports=self.kwargs['pk']).id
         print(site_id)
+        success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
+        return success_url
+
+
+class SubstepReportDeleteView(DeleteView):
+    model = SubstepReport
+    template_name = "core/substepreport_delete.html"
+
+    def get_success_url(self):
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
         return success_url
 

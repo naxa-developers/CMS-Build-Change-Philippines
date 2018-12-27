@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, RedirectView, ListView, FormView, TemplateView
+from django.views.generic import CreateView, DeleteView, RedirectView, ListView, FormView, TemplateView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
@@ -119,6 +119,11 @@ class FieldEngineerCreate(CreateView):
             return redirect(reverse('core:project_dashboard', kwargs={'project_id': self.kwargs['project_id']}))
 
         return render(request, self.template_name, {'form': form})
+
+
+# class FieldEngineerDelete(DeleteView):
+#     template_name = 'userrole/field_engineer_delete.html'
+#     success_url = reverse_lazy('core:site_detail')
 
 
 class ProjectUserFormView(CreateView):

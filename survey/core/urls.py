@@ -41,6 +41,7 @@ urlpatterns = [
     path('substep-report-detail/<int:pk>', views.SubstepReportDetailView.as_view(), name="substep_report_detail"),
     path('substep-report-add', views.SubstepReportCreateView.as_view(), name="substep_report_add"),
     path('substep-report-edit/<int:pk>/', views.SubstepReportUpdateView.as_view(), name="substep_report_edit"),
+    path('substep_report_delete/<int:pk>/', views.SubstepReportDeleteView.as_view(), name="substep_report_delete"),
     path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
     path('user-profile-update/<int:pk>', views.	UserProfileUpdateView.as_view(), name="user_profile_update"),
     path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),
@@ -74,6 +75,7 @@ urlpatterns = [
     path('checklists-all/<int:site_id>', views.CheckListAllView.as_view(), name='checklist_all'),
     path('export/', views.export, name="export"),
     path('export-report/', views.ExportReport, name="export_report"),
+    path('export-report-pdf/', views.ExportPdf, name="export_report_pdf"),
 
     path('house-general-construction-materials-list', views.HousesAndGeneralConstructionMaterialsListView.as_view(), name="house_general_construction_materials_list"),
     path('house-general-construction-materials-detail/<int:pk>/', views.HousesAndGeneralConstructionMaterialsDetailView.as_view(), name="house_general_construction_materials_detail"),
