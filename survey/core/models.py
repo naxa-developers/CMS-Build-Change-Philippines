@@ -442,10 +442,15 @@ class SubstepReport(models.Model):
         ordering = ('-date',)
 
 
+REPORT_STATUS = (
+    ('0', 'Pending'),
+    ('1', 'Responded'),
+)
+
 class ReportFeedback(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comment', on_delete=models.CASCADE)
     report = models.OneToOneField(SubstepReport, on_delete=models.CASCADE, related_name='report_feedback')
-    status = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.TextField()
 
     def __str__(self):

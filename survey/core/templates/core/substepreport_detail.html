@@ -22,8 +22,11 @@
             <div class="widget-head">
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
-                        <h4><a href="#" title=""><strong>Report Details</strong></a></h4>
-                        <a href="{% url 'core:report_feedback' %}" class="tools pull-right"><button>Feedback</button></a>
+                        <h4><a href="#" title=""><strong>Report Details</strong></a></h4></div>
+                    <div class="tools pull-right">
+                        <small><button style="background-color:red;"><a href="{% url 'core:substep_report_delete' object.id %}">Delete</a></button></small>
+                        {% if %}
+                        <!--<a href="{% url 'core:report_feedback' object.pk %}">{% if not object.report_feedback %}<button>Feedback</button>{% endif %}</a></div>-->
                 <!--<li>-->
                        <!--<strong>{{ object.comment }}</strong>-->
                         <!--<br>-->
@@ -59,24 +62,27 @@
                                 </div>
                                 {% endif %}<br>
                                 {% if object.comment %}
-                                    <div class="site_icon_float" style="">Comment: {{ object.comment }}</div><br>
+                                    <div class="site_icon_float" style="">Message: {{ object.comment }}</div><br>
                                 {% endif %}
                                 {% if object.user %}
                                     <a href="#" title="View details of user">
-                                        <small><button><i class="la la-user" style="color:grey;">Sent by: {{ object.user }}</i></button></small>
+                                        <small><i class="la la-user" style="color:grey;">Sent by: {{ object.user }}</i></small>
                                     </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 {% endif %}
                                 {% if object.date %}
-                                    <small><button><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
-                                                                                                     aria-hidden="true"></i>{{ object.date }}</i></button></small>
+                                    <small><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
+                                                                                                     aria-hidden="true"></i>{{ object.date }}</i></small>
                                     <!--<label>Photo:</label>-->
                                 {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div>
-                    <small><button style="background-color:red;"><a href="{% url 'core:substep_report_delete' object.id %}">Delete</a></button></small>
+                    {% if object.report_feedback %}
+                        {{object.report_feedback}}
+                        {% endif %}
                 </div>
             </div>
         </div>

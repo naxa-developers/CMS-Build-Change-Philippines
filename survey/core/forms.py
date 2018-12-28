@@ -194,7 +194,7 @@ class ReportFeedbackForm(forms.ModelForm):
 
     class Meta:
         model = ReportFeedback
-        fields = ('feedback',)
+        fields = ('feedback', 'status',)
 
 
 

@@ -923,7 +923,6 @@ class SubstepReportUpdateView(UpdateView):
 
     def get_success_url(self):
         site_id = Site.objects.get(reports=self.kwargs['pk']).id
-        print(site_id)
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
         return success_url
 
@@ -937,10 +936,27 @@ class SubstepReportDeleteView(DeleteView):
         return success_url
 
 
-class ReportFeedback(TemplateView):
+class ReportFeedback(CreateView):
     model = ReportFeedback
     form_class = ReportFeedbackForm
-    template_name = "core/substepreport_detail.html"
+    template_name = "core/report_feedback.html"
+
+    def form_valid(self, form):
+        form.instance.report = get_object_or_404(SubstepReport, id=self.kwargs['pk'])
+        form.instance.user = self.request.user
+
+        return super().form_valid(form)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = SubstepReport.objects.filter(id=self.kwargs['pk'])
+        context['user'] = self.request.user
+        return context
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:substep_report_detail', args=[self.kwargs['pk']])
+        return success_url
 
 
 class UserProfileView(CreateView):
