@@ -442,6 +442,16 @@ class SubstepReport(models.Model):
         ordering = ('-date',)
 
 
+class ReportFeedback(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comment', on_delete=models.CASCADE)
+    report = models.OneToOneField(SubstepReport, on_delete=models.CASCADE, related_name='report_feedback')
+    status = models.BooleanField(default=False)
+    feedback = models.TextField()
+
+    def __str__(self):
+        return self.feedback
+
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

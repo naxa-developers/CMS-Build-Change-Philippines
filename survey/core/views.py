@@ -25,7 +25,7 @@ from django.conf import settings
 from survey.settings import BASE_DIR
 from userrole.forms import UserProfileForm
 from userrole.models import UserRole
-from .models import Project, Site, Category, Material, Step, Report, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
+from .models import Project, Site, Category, Material, Step, Report, ReportFeedback, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
     HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
     StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
@@ -33,7 +33,7 @@ from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMateri
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
     HousesAndGeneralConstructionMaterialsForm, BuildAHouseMakesHouseStrongForm, BuildAHouseKeyPartsOfHouseForm, \
-    SubstepReportForm
+    SubstepReportForm, ReportFeedbackForm
 from .rolemixins import ProjectRoleMixin, SiteRoleMixin, CategoryRoleMixin, ProjectGuidelineRoleMixin, \
     SiteGuidelineRoleMixin, DocumentRoleMixin, ReportRoleMixin
 from django.core import serializers
@@ -858,16 +858,17 @@ def ExportReport(request):
     # CSV Data
     return response
 
-# import img2pdf
+import img2pdf
 def ExportPdf(request):
     filename = 'mypdf.pdf'
     query_set = SubstepReport.objects.all()
 
-    with open(filename, 'w') as file:
+    with open(filename, 'wb') as file:
         for query in query_set:
-            # f.write(img2pdf.convert([i for i in os.listdir('path/to/imageDir')
-            file.write(query.user.username+'\n'+query.comment+'\n'+str(query.date)+'\n'+User(query.photo))
-        response = HttpResponse(pdf, content_type='application/pdf')
+
+            file.write(query.user.username+'\n'+query.comment+'\n'+str(query.date)+'\n')
+            file.write(img2pdf.convert(query.photo))
+        response = HttpResponse(file, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
         return response
 
@@ -915,6 +916,12 @@ class SubstepReportDeleteView(DeleteView):
     def get_success_url(self):
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
         return success_url
+
+
+class ReportFeedback(TemplateView):
+    model = ReportFeedback
+    form_class = ReportFeedbackForm
+    template_name = "core/substepreport_detail.html"
 
 
 class UserProfileView(CreateView):
