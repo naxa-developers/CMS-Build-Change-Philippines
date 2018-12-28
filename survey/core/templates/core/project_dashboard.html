@@ -60,6 +60,12 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Overview</a></h4>
+
+                                <h4 style="float:right"><i class="fa fa-file-archive-o" aria-hidden="true"><a href="{% url 'core:project_material_photos' project.pk %}" title=""> Create zip for offline</a></i></h4>
+
+
+
+
                             </div>
                             <div class="widget-body no-padding-top">
                                 <div class="row">
@@ -317,6 +323,10 @@
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
     <script>
+        setTimeout(function(){
+            $('.alert-success').fadeOut('slow');
+        },1000);
+
         function myMap() {
             {#var if_locations = {{ locations|escapejs }};#}
 
