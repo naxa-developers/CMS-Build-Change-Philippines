@@ -62,19 +62,20 @@
 						<span class="badge badge-warning">5</span>
 					</a>
 					<div class="dropdown-menu large-dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-						<div class="dropdown-header">Notofications (5) </div>
+						<div class="dropdown-header">Notifications </div>
 						{% for report in reports %}
 						<div class="dropdown-item">
 							<div class="notification-item">
 								<div class="notification-avatar pull-left" href="">
 									<i class="avatar-icon la la-bolt"></i>
 								</div>
+                                <a href="{% url 'core:substep_report_detail' report.id %}">
 								<div class="notification-highlight">
 									<p class="notification-highlight-excerpt">
 										<a href="#">{{report.user}}</a> submitted a report for <a href="#"> {{report.substep}}</a> in site <a href="#">{{report.site}}</a>
 									</p>
 									<p class="notification-highlight-time">{{report.date}}</p>
-								</div>
+								</div></a>
 							</div>
 						</div>
                         {% endfor %}
