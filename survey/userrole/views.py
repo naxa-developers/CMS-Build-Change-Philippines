@@ -177,6 +177,7 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
         if not user_exists:
             status = form.send_email()
             print(status)
+            print(status)
             if status == 1:
                 messages.success(self.request, "Invitation Sent To {}!".format(form.cleaned_data['email']))
             else:
@@ -205,3 +206,12 @@ class SendInvitationView(ManagerSuperAdminMixin, SuccessMessageMixin, FormView):
 
 class Thankyou(TemplateView):
     template_name = "userrole/thankyou.html"
+
+
+class RoleDelete(DeleteView):
+    model = UserRole
+    template_name = "userrole/role_delete.html"
+
+    def get_success_url(self):
+        success_url = reverse_lazy('core:site_detail',  args=(self.object.site.id,))
+        return success_url

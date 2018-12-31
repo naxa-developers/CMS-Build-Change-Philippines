@@ -13,3 +13,4 @@ sqlparse==0.2.4
 django-rest-swagger==2.1.2
 django-map-widgets==0.1.9
 django-import-export==1.1.0
+img2pdf

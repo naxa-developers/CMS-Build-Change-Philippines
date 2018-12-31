@@ -101,11 +101,15 @@
                             <li>
                                 <a href="#" title="">
                                     <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
-                                    {{ engineer }}
+                                    {{ engineer.0 }}
                                 </a>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}" style="color:white;border-radius: 4px;"><i class="la la-close"></i> Remove</a>
+
+
                                 {% empty %}
                                 <p>No Engineer Found.</p>
                             </li>
+
                             {% endfor %}
                         </ul>
                     </div>

@@ -476,7 +476,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
-                                    .values_list('user__username', flat=True)
+                                    .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
         context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
