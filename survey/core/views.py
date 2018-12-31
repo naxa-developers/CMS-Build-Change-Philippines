@@ -885,10 +885,14 @@ def ExportPdf(request):
     with open(filename, 'wb') as file:
         for query in query_set:
 
-            file.write(query.user.username+'\n'+query.comment+'\n'+str(query.date)+'\n')
+            file.write(
+                query.user.username+\
+                '\n'+query.comment+\
+                '\n'+query.date+'\n')
             file.write(img2pdf.convert(query.photo))
         response = HttpResponse(file, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        file.close()
         return response
 
 
