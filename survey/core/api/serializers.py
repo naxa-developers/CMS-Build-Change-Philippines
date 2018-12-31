@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
-    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist
+    ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist,\
+    SiteReport
 from userrole.models import UserRole, AdminProfile
 
 
@@ -141,15 +142,24 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
         fields = ('id', 'site', 'file', 'document_name')
 
 
+class SiteReportsSerializer(serializers.ModelSerializer):
+    site = serializers.CharField(source='site.name')
+
+    class Meta:
+        model = SiteReport
+        fields = ('id', 'site', 'user', 'comment', 'photo', 'date', 'status')
+
+
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
     site_steps = SiteStepsSerializer(many=True)
     site_engineers = serializers.SerializerMethodField()
     site_document = SiteDocumentSerializer(many=True)
+    site_reports = SiteReportsSerializer(many=True)
 
     class Meta:
         model = Site
-        fields = ('id', 'name', 'address', 'location', 'site_document', 'site_steps', 'site_engineers')
+        fields = ('id', 'name', 'address', 'location', 'site_document', 'site_steps', 'site_reports', 'site_engineers')
 
     # def get_site_engineers(self, obj):
     #     if obj.site_roles:

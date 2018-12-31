@@ -120,6 +120,36 @@ class Site(models.Model):
         return self.location.x
 
 
+REPORT_STATUS = (
+    ('0', 'Pending'),
+    ('1', 'Responded'),
+    ('2', 'Rejected'),
+)
+
+class SiteReport(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='site_reports', on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site_reports", null=True, blank=True)
+    comment = models.TextField()
+    photo = models.ImageField(upload_to='reports/', null=True, blank=True)
+    date = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
+
+    def __str__(self):
+        return self.comment
+
+    # def save(self, *args, **kwargs):
+    #     if not self.id:
+    #         EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
+    #     else:
+    #         EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
+
+    #     super(SubstepReport, self).save(args, kwargs)
+
+
+    class Meta:
+        ordering = ('-date',)
+
+
 class Step(models.Model):
     name = models.CharField(max_length=250)
     site = models.ForeignKey(Site, related_name="steps", on_delete=models.CASCADE, blank=True, null=True)
