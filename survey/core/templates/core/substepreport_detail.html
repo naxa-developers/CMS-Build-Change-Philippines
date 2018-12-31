@@ -28,7 +28,11 @@
                         <form name="filter" method="POST">{% csrf_token %}
                             <select id="status" name="status" onChange="form.submit();">
                             {% for choice in choices %}
+                            {% if object.status == choice.1 %}
+                            <option selected>{{ choice.1 }}</option>
+                            {% else %}
                             <option>{{ choice.1 }}</option>
+                            {% endif %}
                             {% endfor %}
                         </select></form>
                         </div>
@@ -84,11 +88,15 @@
                         </tr>
                     </tbody>
                 </table>
-                    <a href="{% url 'core:report_feedback' object.pk %}">{% if not object.report_feedback %}<button>Feedback</button>{% endif %}</a>
                 <div>
                     {% if object.report_feedback %}
-                        {{object.report_feedback}}
-                        {% endif %}
+                        {{ object.report_feedback }}
+                    {% else %}
+                        <form name="feedback" method="POST">{% csrf_token %}
+                            <input name='feedback_text' id='feedback'>
+                            <button name="feedback_submit" id="feedback" value="feedback" type="submit">Submit</button>
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

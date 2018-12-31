@@ -905,6 +905,23 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
         context['project'] = Project.objects.get(sites=self.object.site.id)
         context['choices'] = SubstepReport._meta.get_field('status').choices
         return context
+    
+    def post(self, request, *args, **kwargs):
+        # import ipdb
+        # ipdb.set_trace()
+        if request.POST.get('status'):
+            sub_step = SubstepReport.objects.get(id=self.kwargs['pk'])
+            sub_step.status=request.POST.get('status')
+            sub_step.save()
+            return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
+
+        if request.POST.get('feedback_submit'):
+            report_feedback = ReportFeedback()
+            report_feedback.user = self.request.user
+            report_feedback.report = SubstepReport.objects.get(id=self.kwargs['pk'])
+            report_feedback.feedback = request.POST.get('feedback_text')
+            report_feedback.save()
+            return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
 
 
 class SubstepReportCreateView(CreateView):
@@ -937,7 +954,7 @@ class SubstepReportDeleteView(DeleteView):
         return success_url
 
 
-class ReportFeedback(CreateView):
+class ReportFeedbackView(CreateView):
     model = ReportFeedback
     form_class = ReportFeedbackForm
     template_name = "core/report_feedback.html"
