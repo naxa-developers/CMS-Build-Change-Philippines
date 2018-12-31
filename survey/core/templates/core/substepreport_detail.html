@@ -95,8 +95,8 @@
                         {{ object.report_feedback }}
                     {% else %}
                         <form name="feedback" method="POST">{% csrf_token %}
-                            <input name='feedback_text' id='feedback'>
-                            <button name="feedback_submit" id="feedback" value="feedback" type="submit">Submit</button>
+                            <input name='feedback_text' id='feedback' placeholder="Enter Your Feedback">
+                            <button name="feedback_submit" id="feedback" value="feedback" type="submit" class="btn btn-xs btn-primary">Send</button>
                         </form>
                     {% endif %}
                 </div>
