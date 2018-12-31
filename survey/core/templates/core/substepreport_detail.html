@@ -24,7 +24,7 @@
                     <div class="widget-head">
                         <h4><a href="#" title=""><strong>Report Details</strong></a></h4></div>
                     <div class="tools pull-right">
-                        <small><button style="background-color:red;"><a href="{% url 'core:substep_report_delete' object.id %}">Delete</a></button></small>
+
                         <form name="filter" method="POST">{% csrf_token %}
                             <select id="status" name="status" onChange="form.submit();">
                             {% for choice in choices %}
@@ -34,8 +34,10 @@
                             <option>{{ choice.1 }}</option>
                             {% endif %}
                             {% endfor %}
-                        </select></form>
-                        </div>
+                        </select>
+                            <button style="background-color:red;"><a href="{% url 'core:substep_report_delete' object.id %}">Delete</a></button>
+                        </form>
+                    </div>
                 <!--<li>-->
                        <!--<strong>{{ object.comment }}</strong>-->
                         <!--<br>-->

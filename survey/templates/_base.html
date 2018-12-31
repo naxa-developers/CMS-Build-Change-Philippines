@@ -69,10 +69,10 @@
 								<div class="notification-avatar pull-left" href="">
 									<i class="avatar-icon la la-bolt"></i>
 								</div>
-                                <a href="{% url 'core:substep_report_detail' report.id %}">
+                                <a href="">
 								<div class="notification-highlight">
 									<p class="notification-highlight-excerpt">
-										<a href="#">{{report.user}}</a> submitted a report for <a href="#"> {{report.substep}}</a> in site <a href="#">{{report.site}}</a>
+										<a href="{% url 'core:substep_report_detail' report.id %}">{{report.user}}</a> submitted a report for <a href="{% url 'core:substep_report_detail' report.id %}"> {{report.substep}}</a> in site <a href="{% url 'core:substep_report_detail' report.id %}">{{report.site}}</a>
 									</p>
 									<p class="notification-highlight-time">{{report.date}}</p>
 								</div></a>
