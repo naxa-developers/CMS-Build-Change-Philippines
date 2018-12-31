@@ -903,6 +903,7 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
         context['reports'] = SubstepReport.objects.filter(id=self.kwargs['pk'])
         context['site'] = Site.objects.get(id=self.object.site.id)
         context['project'] = Project.objects.get(sites=self.object.site.id)
+        context['choices'] = SubstepReport._meta.get_field('status').choices
         return context
 
 

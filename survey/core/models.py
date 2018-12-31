@@ -417,6 +417,12 @@ class NewSubStepChecklist(models.Model):
         return self.title
 
 
+REPORT_STATUS = (
+    ('0', 'Pending'),
+    ('1', 'Responded'),
+    ('2', 'Rejected'),
+)
+
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="reports", null=True, blank=True)
@@ -425,6 +431,7 @@ class SubstepReport(models.Model):
     comment = models.TextField()
     photo = models.ImageField(upload_to='reports/', null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
+    status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
 
     def __str__(self):
         return self.comment
@@ -442,15 +449,9 @@ class SubstepReport(models.Model):
         ordering = ('-date',)
 
 
-REPORT_STATUS = (
-    ('0', 'Pending'),
-    ('1', 'Responded'),
-)
-
 class ReportFeedback(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='comment', on_delete=models.CASCADE)
     report = models.OneToOneField(SubstepReport, on_delete=models.CASCADE, related_name='report_feedback')
-    status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.TextField()
 
     def __str__(self):
