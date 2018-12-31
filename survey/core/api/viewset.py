@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
 
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets, serializers, response, status
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import permission_classes
 from rest_framework.decorators import api_view
@@ -12,9 +12,14 @@ from userrole.models import UserRole
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, \
 HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-StandardSchoolDesignPDF, CallLog, NewSubStepChecklist
+StandardSchoolDesignPDF, CallLog, NewSubStepChecklist, SiteReport
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer, NewSubStepChecklistSerializer
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, \
+    SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer, NewSubStepChecklistSerializer, SiteReportsSerializer
+
+# from fcm.utils import get_device_model
+# from fcm.serializers import DeviceSerializer
+# from rest_framework.authentication import BasicAuthentication
 
 # Serializers define the API representation.
 
@@ -124,6 +129,11 @@ class MaterialViewset(viewsets.ModelViewSet):
 class ReportViewset(viewsets.ModelViewSet):
     serializer_class = SubstepReportSerializer
     queryset = SubstepReport.objects.all()
+
+
+class SiteReportsViewSet(viewsets.ModelViewSet):
+    serializer_class = SiteReportsSerializer
+    queryset = SiteReport.objects.all()
 
 
 class CallLogViewset(viewsets.ModelViewSet):
@@ -243,3 +253,57 @@ def standard_school_design(request):
        
 
     return Response(data)
+
+
+# Device = get_device_model()
+
+# class FcmDeviceViewSet(viewsets.ModelViewSet):
+#     queryset = Device.objects.all()
+#     serializer_class = DeviceSerializer
+#     permission_classes = ()
+#     authentication_classes = (BasicAuthentication)
+
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=False)
+#         self.perform_create(serializer)
+#         headers = self.get_success_headers(serializer.data)
+#         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+#     def perform_create(self, serializer):
+#         try:
+#             device = Device.objects.get(dev_id=serializer.data["dev_id"])
+#         except Device.DoesNotExist:
+#             device = Device(dev_id=serializer.data["dev_id"])
+#         device.is_active = True
+#         device.reg_id = serializer.data["reg_id"]
+#         user = User.objects.filter(email__iexact=serializer.data["name"])
+#         if user:
+#             device.name = user[0].email
+#         else:
+#             user = User.objects.filter(username__iexact=serializer.data["name"])
+#             if user:
+#                 device.name = user[0].email
+#             else:
+#                 return response.Response(status=status.HTTP_404_NOT_FOUND)    
+#         device.save()
+
+#     def destroy(self, request, *args, **kwargs):
+#         try:
+#             instance = Device.objects.get(dev_id=kwargs["pk"])
+#             self.perform_destroy(instance)
+#             return response.Response(status=status.HTTP_200_OK)
+#         except Device.DoesNotExist:
+#             return response.Response(status=status.HTTP_404_NOT_FOUND)
+
+#     def inactivate(self, request, *args, **kwargs):
+#         try:
+#             instance = Device.objects.get(dev_id = request.data.get("dev_id"))
+#             self.perform_destroy(instance)
+#             return response.Response(status=status.HTTP_200_OK)
+#         except Device.DoesNotExist:
+#             return response.Response(status=status.HTTP_404_NOT_FOUND)
+
+#     def perform_destroy(self, instance):
+#         instance.is_active = False
+#         instance.save()

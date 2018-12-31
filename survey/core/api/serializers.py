@@ -143,7 +143,7 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
 
 
 class SiteReportsSerializer(serializers.ModelSerializer):
-    site = serializers.CharField(source='site.name')
+    # site = serializers.CharField(source='site.name')
 
     class Meta:
         model = SiteReport
