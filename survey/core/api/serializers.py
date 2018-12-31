@@ -186,7 +186,7 @@ class ProjectSerializer(serializers.ModelSerializer, EagerLoadingMixin):
         fields = ('id', 'name', 'sites', 'project_managers')
     
     def get_project_managers(self, obj):
-        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Project Manager").values('user', 'phone_number')
+        qs = AdminProfile.objects.filter(project_id=obj.id, group__name="Project Manager").values('user__username', 'phone_number')
         return qs
    
 
