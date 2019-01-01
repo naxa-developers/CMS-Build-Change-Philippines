@@ -893,9 +893,9 @@ def ExportPdf(request):
     count = 0
     for qs in query_set:
         y = 900 - count * 100
-        p.drawString(0, y, qs.user.username)
-        p.drawString(0, y+10, qs.comment)
-        p.drawString(0, y+20, str(qs.date))
+        p.drawString(0, y-20, "User: " + qs.user.username)
+        p.drawString(0, y, "Message: " + qs.comment)
+        p.drawString(0, y+20, "Date: " + str(qs.date))
         count = count + 1
 
     p.showPage()
