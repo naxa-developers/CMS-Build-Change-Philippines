@@ -387,9 +387,9 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
-        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
         # context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
-        context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from')
+        context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from').order_by('-pk')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
         if self.request.group.name == "Super Admin":
