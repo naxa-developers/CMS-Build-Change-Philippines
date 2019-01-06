@@ -1,9 +1,12 @@
 from django.urls import path, include
+from django.conf.urls import url
 
 from rest_framework import routers
 
 from . import viewset
 from .. import views
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet, FCMDeviceViewSet
+
 
 router = routers.DefaultRouter()
 
@@ -38,5 +41,6 @@ urlpatterns = [
     path('load-substeps/', viewset.load_substeps, name='ajax_load_substeps'),
     path('houses-and-general-construction/', viewset.houses_and_general_construction, name='houses_and_general_construction'),
     path('standard-school-design/', viewset.standard_school_design, name='standard_school_design'),
+    url(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
 
 ]

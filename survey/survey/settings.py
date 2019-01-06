@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'mapwidgets',
     'import_export',
+    'fcm_django',
 
     # local apps
     'core',
@@ -188,6 +189,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'puskarjoshi22@gmail.com'
 EMAIL_HOST_PASSWORD = '********'
 EMAIL_PORT = 587
+
+FCM_DJANGO_SETTINGS = {
+        "FCM_SERVER_KEY": "[AIzaSyDCx3U1ZtzgZI-gSvcccFC-jHmQmlSYZgQ]"
+}
 
 try:
     from .local_settings import *

@@ -1,8 +1,5 @@
 from django.urls import path
-from django.conf.urls import url
 from . import views
-# from fcm.views import DeviceViewSet
-# from core.api import FcmDeviceViewSet
 
 app_name = 'core'
 
@@ -99,7 +96,4 @@ urlpatterns = [
     path('key-parts-house-edit/<int:pk>/', views.KeyPartsOfHouseUpdateView.as_view(), name="key_parts_house_edit"),
     path('key-parts-house-delete/<int:pk>/', views.KeyPartsOfHouseDeleteView.as_view(), name="key_parts_house_delete"),
 
-    # url(r'fcm/v1/devices/$', DeviceViewSet.as_view({'get': 'list'})),
-    # url(r'fcm/add/', FcmDeviceViewSet.as_view({'post': 'create'})),
-    # url(r'fcm/logout/', FcmDeviceViewSet.as_view({'post': 'inactivate'})),
 ]

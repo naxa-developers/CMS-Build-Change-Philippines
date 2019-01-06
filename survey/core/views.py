@@ -42,7 +42,7 @@ from .admin import SubStepCheckListResource
 from django.forms.models import inlineformset_factory
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseNotFound
-
+from fcm_django.models import FCMDevice
 
 
 @api_view(['POST'])
@@ -925,6 +925,11 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             report_feedback.report = SubstepReport.objects.get(id=self.kwargs['pk'])
             report_feedback.feedback = request.POST.get('feedback_text')
             report_feedback.save()
+
+            if FCMDevice.objects.get(user=SubstepReport.objects.values('user').get(id=self.kwargs['pk'])).exists():
+                FCMDevice.objects.get(
+                    user=SubstepReport.objects.values('user').get(id=self.kwargs['pk'])
+                    ).send_message(title="Feedback", body="Report Feedback Obtained", data={'text':'text'})
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
 
 
