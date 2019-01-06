@@ -1,6 +1,8 @@
 import os
 import zipfile
 import csv
+import io
+import reportlab
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -14,6 +16,9 @@ from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib import messages
 
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -21,6 +26,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.files.storage import FileSystemStorage
 
 from django.conf import settings
 from survey.settings import BASE_DIR
@@ -381,9 +387,9 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['site_address'] = json_site_address
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
-        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
         # context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
-        context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from')
+        context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from').order_by('-pk')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
         if self.request.group.name == "Super Admin":
@@ -867,33 +873,50 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
 def ExportReport(request):
     output = []
-    response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response)
+    response = HttpResponse(content_type='application/xls')
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8'))
     query_set = SubstepReport.objects.all()
 
-    writer.writerow(['User', 'Comment', 'Date', 'Photo'])
+    writer.writerow(['User', 'Comment', 'Date'])
     for query in query_set:
-        writer.writerow([query.user, query.comment, query.date, query.photo])
+        writer.writerow([query.user, query.comment, query.date])
     # CSV Data
     return response
 
-import img2pdf
 def ExportPdf(request):
-    filename = 'mypdf.pdf'
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="download.pdf"'
+
+    p = canvas.Canvas(response)
     query_set = SubstepReport.objects.all()
+    count = 0
+    for qs in query_set:
+        y = 900 - count * 100
+        p.drawString(0, y-20, "User: " + qs.user.username)
+        p.drawString(0, y, "Message: " + qs.comment)
+        p.drawString(0, y+20, "Date: " + str(qs.date))
+        count = count + 1
 
-    with open(filename, 'wb') as file:
-        for query in query_set:
+    p.showPage()
+    p.save()
+    return response
 
-            file.write(
-                query.user.username+\
-                '\n'+query.comment+\
-                '\n'+query.date+'\n')
-            file.write(img2pdf.convert(query.photo))
-        response = HttpResponse(file, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
-        file.close()
-        return response
+    # fs = FileSystemStorage()
+    # filename = 'download.pdf'
+    # query_set = SubstepReport.objects.all()
+    #
+    # with fs.open(filename, 'w') as pdf:
+    #     for qs in query_set:
+    #         pdf.write(qs.user.username + '\n' + qs.comment + '\n' + str(qs.date))
+    #     pdf.close()
+    #
+    # with fs.open(filename, 'r') as pdf:
+    #     response = HttpResponse(pdf, content_type='text/pdf')
+    #     response['Content-Disposition'] = 'filename=download.pdf'
+    #     pdf.close()
+    #     return response
+
 
 
 class SubstepReportDetailView(ReportRoleMixin, DetailView):

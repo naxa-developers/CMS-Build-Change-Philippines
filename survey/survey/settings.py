@@ -99,6 +99,9 @@ DATABASES = {
     }
 }
 
+FCM_DJANGO_SETTINGS = {
+        "FCM_SERVER_KEY": "[AAAAErlWVmc:APA91bEu52IIQ3gpwWuihnwgLoKMqb-A9uHGgnUkzvjKysL5etBn9EW8l6k817jjqhbhUzRPzuHSua_sMA4bg8-D3h4gLCtQwmdRoIDFSijl8LbL3hKSk_w92_iTNqFobEf0ElClcgUx]"
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

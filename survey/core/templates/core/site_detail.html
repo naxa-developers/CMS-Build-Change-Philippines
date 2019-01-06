@@ -52,12 +52,12 @@
                                 <a class="dropdown-item"
                                    href="{% url 'core:document_list' site.pk %}"><i
                                         class="la la-user"></i> Documents</a>
+                                <a class="dropdown-item" href="{% url 'core:checklist_all' object.pk %}"><i
+                                        class="la la-tasks"></i> Checklist</a>
                                 <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i
                                         class="la la-tasks"></i> Edit</a>
                                 <a class="dropdown-item" href="{% url 'core:site_delete' object.pk %}"><i
                                         class="la la-cog"></i> Delete</a>
-                                <a class="dropdown-item" href="{% url 'core:checklist_all' object.pk %}"><i
-                                        class="la la-tasks"></i> Checklist</a>
                             </div>
                         </div>
                     </div>
@@ -102,7 +102,7 @@
                                     <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
                                     {{ engineer.0 }}
                                 </a>
-                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}" style="color:white;border-radius: 4px;"><i class="la la-close"></i> Remove</a>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
 
 
                                 {% empty %}
