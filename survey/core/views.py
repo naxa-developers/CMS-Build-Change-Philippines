@@ -949,23 +949,8 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             report_feedback.feedback = request.POST.get('feedback_text')
             report_feedback.save()
 
-            if FCMDevice.objects.get(
-                user=User.objects.get(
-                    user=SubstepReport.objects.values(
-                        'user'
-                        ).get(
-                            id=self.kwargs['pk']
-                            ))).exists():
-                FCMDevice.objects.get(
-                    user=User.objects.get(
-                        user=SubstepReport.objects.values(
-                            'user'
-                            ).get(
-                                id=self.kwargs['pk']
-                                ))).send_message(
-                                    title="Feedback", body="Report Feedback Obtained", data={
-                                        'text':'text'
-                                        })
+            if FCMDevice.objects.get(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)):
+                FCMDevice.objects.get(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title="Feedback", body="Report Feedback Obtained", data={'text':'text'})
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
 
 
