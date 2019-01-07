@@ -42,6 +42,7 @@ urlpatterns = [
     path('substep-report-edit/<int:pk>/', views.SubstepReportUpdateView.as_view(), name="substep_report_edit"),
     path('substep_report_delete/<int:pk>/', views.SubstepReportDeleteView.as_view(), name="substep_report_delete"),
     path('report-feedback/<int:pk>/', views.ReportFeedbackView.as_view(), name="report_feedback"),
+    path('notification-list/', views.NotificationView.as_view(), name="notification_list"),
     path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
     path('user-profile-update/<int:pk>', views.	UserProfileUpdateView.as_view(), name="user_profile_update"),
     path('user-profile-detail/<int:pk>', views.UserProfileDetailView.as_view(), name="user_profile_detail"),

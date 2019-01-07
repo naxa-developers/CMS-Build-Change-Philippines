@@ -69,13 +69,12 @@
 								<div class="notification-avatar pull-left" href="">
 									<i class="avatar-icon la la-bolt"></i>
 								</div>
-                                <a href="">
-								<div class="notification-highlight">
-									<p class="notification-highlight-excerpt">
-										<a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.user}}</a> submitted a report for <a href="{% url 'core:substep_report_detail' notification.pk %}"> {{notification.notif.report.substep}}</a> in site <a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.site}}</a>
-									</p>
-									<p class="notification-highlight-time">{{notification.notif.report.date}}</p>
-								</div></a>
+                                <div class="notification-highlight">
+                                    <p class="notification-highlight-excerpt">
+                                        <a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.user}} submitted a report for {{notification.notif.report.substep}} in site {{notification.notif.report.site}}</a>
+                                    </p>
+                                    <p class="notification-highlight-time">{{notification.notif.report.date}}</p>
+                                </div>&nbsp;&nbsp
 							</div>
 						</div>
                         {% endfor %}
