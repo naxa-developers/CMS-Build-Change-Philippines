@@ -63,7 +63,7 @@
 					</a>
 					<div class="dropdown-menu large-dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 						<div class="dropdown-header">Notifications </div>
-						{% for report in reports %}
+                        {% for notification in notifications %}
 						<div class="dropdown-item">
 							<div class="notification-item">
 								<div class="notification-avatar pull-left" href="">
@@ -72,9 +72,9 @@
                                 <a href="">
 								<div class="notification-highlight">
 									<p class="notification-highlight-excerpt">
-										<a href="{% url 'core:substep_report_detail' report.id %}">{{report.user}}</a> submitted a report for <a href="{% url 'core:substep_report_detail' report.id %}"> {{report.substep}}</a> in site <a href="{% url 'core:substep_report_detail' report.id %}">{{report.site}}</a>
+										<a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.user}}</a> submitted a report for <a href="{% url 'core:substep_report_detail' notification.pk %}"> {{notification.notif.report.substep}}</a> in site <a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.site}}</a>
 									</p>
-									<p class="notification-highlight-time">{{report.date}}</p>
+									<p class="notification-highlight-time">{{notification.notif.report.date}}</p>
 								</div></a>
 							</div>
 						</div>

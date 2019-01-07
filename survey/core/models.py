@@ -460,23 +460,16 @@ class SubstepReport(models.Model):
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
     photo = models.ImageField(upload_to='reports/', null=True, blank=True)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(default=datetime.now)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
 
     def __str__(self):
         return self.comment
 
-    def add_notification(self, user, report, site):
-        notification = Notification(user=self.user, report=self.report, site=self.site)
+    def save(self, *args, **kwargs):
+        super(SubstepReport, self).save(args, kwargs)
+        notification = Notification(report=self)
         notification.save()
-
-    # def save(self, *args, **kwargs):
-    #     if not self.id:
-    #         EventLog.objects.create(user=self.user, action='submitted_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
-    #     else:
-    #         EventLog.objects.create(user=self.user, action='updated_a_response', project_id=1, extra={'site':self.site.name, 'comment': self.comment})
-
-    #     super(SubstepReport, self).save(args, kwargs)
 
 
     class Meta:
@@ -484,10 +477,7 @@ class SubstepReport(models.Model):
 
 
 class Notification(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notification', on_delete=models.CASCADE)
-    site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name='notification', null=True, blank=True)
     report = models.OneToOneField(SubstepReport, on_delete=models.CASCADE, related_name='notification')
-    date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.report
