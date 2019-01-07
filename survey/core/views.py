@@ -949,10 +949,12 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             report_feedback.feedback = request.POST.get('feedback_text')
             report_feedback.save()
 
-            message_title = "User " + self.request.user + " Sent Feedback."
+            message_title = "User " + self.request.user.username + " Sent Feedback."
             message_body = report_feedback.report.site.name + ""
 
             try:
+                import ipdb
+                ipdb.set_trace()
                 FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'text':'text'})
             except Exception as e:
                 print(e)
