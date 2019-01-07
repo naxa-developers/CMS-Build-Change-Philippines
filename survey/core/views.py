@@ -953,8 +953,6 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             message_body = report_feedback.report.site.name + ""
 
             try:
-                import ipdb
-                ipdb.set_trace()
                 FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'text':'text'})
             except Exception as e:
                 print(e)
