@@ -34,7 +34,7 @@ from userrole.forms import UserProfileForm
 from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, ReportFeedback, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
-    HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
+    Notification, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
     StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
@@ -987,6 +987,22 @@ class SubstepReportDeleteView(DeleteView):
     def get_success_url(self):
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
         return success_url
+
+
+class NotificationView(TemplateView):
+    template_name = "core/notification_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        notification = Notification.objects.all().order_by('-pk')
+        rep_dict = {}
+        rep_list = []
+        for item in notification:
+            rep_dict['notif'] = item
+            rep_dict['pk'] = item.report_id
+            rep_list.append(dict(rep_dict))
+        context['notifications'] = rep_list
+        return context
 
 
 class ReportFeedbackView(CreateView):
