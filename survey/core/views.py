@@ -959,6 +959,10 @@ class SubstepReportCreateView(CreateView):
     form_class = SubstepReportForm
     template_name = "core/substepreport_form.html"
 
+    def form_valid(self, form):
+        self.object.add_notification()
+        self.object = form.save()
+
     def get_success_url(self):
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],) 
         return success_url
