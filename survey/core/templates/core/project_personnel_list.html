@@ -11,13 +11,15 @@
                     <a href="{% url 'userrole:field_engineer_create' project.id %}" title="" class="btn btn-sm btn-xs btn-primary" style="float: right;"><i
                                         class="la la-caret-right"></i> Create Field Engineer</a>
                    <p><br><br>
+                    <ul class="submission-list">
                     {% for project_personnel in project_personnel_list %}
-                    {{forloop.counter}}. <a href="{% url 'core:user_profile_detail' project_personnel.user.id %}">{{project_personnel.user}}</a> <br>
+                    <li>{{forloop.counter}}. <a href="{% url 'core:user_profile_detail' project_personnel.user.id %}">{{project_personnel.user}}</a> <br></li>
                     {% empty %}
                     <p>
                         Project Personnel not found.
                     </p>
                     {% endfor %}
+                    </ul>
                     </p>
                 </div>
             </div>
