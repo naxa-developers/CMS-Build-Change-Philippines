@@ -49,6 +49,7 @@ urlpatterns = [
 
     path('project-material-photos/<int:project_id>', views.project_material_photos, name="project_material_photos"),
     path('project-personnel/<int:project_id>', views.ProjectPersonnelList.as_view(), name="project_personnel"),
+    path('community-users/<int:project_id>', views.CommunityUsersList.as_view(), name="community_users"),
 
     path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
 

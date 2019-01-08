@@ -224,6 +224,17 @@ class ProjectPersonnelList(TemplateView):
         return context
 
 
+class CommunityUsersList(TemplateView):
+    template_name = 'core/community_users_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_id = self.kwargs['project_id']
+        context['project'] = get_object_or_404(Project, id=project_id)
+        context['community_users_list'] = UserRole.objects.filter(Q(group__name='Community Member'), project_id=project_id)
+        return context
+
+
 class SuperAdminMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
