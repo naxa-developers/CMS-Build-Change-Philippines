@@ -1,0 +1,25 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center" style="margin-top: 20px">
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <h3>Community Users</h3>
+                   <p><br><br>
+                    {% for community_users in community_users_list %}
+                    {{forloop.counter}}. <a href="{% url 'core:user_profile_detail' community_users.user.id %}">{{community_users.user}}</a> <br>
+                    {% empty %}
+                    <p>
+                        Community Users not found.
+                    </p>
+                    {% endfor %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
