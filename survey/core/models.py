@@ -467,7 +467,7 @@ class SubstepReport(models.Model):
         return self.comment
 
     def save(self, *args, **kwargs):
-        super(SubstepReport, self).save(args, kwargs)
+        super(SubstepReport, self).save(*args, **kwargs)
         notification = Notification(report=self)
         notification.save()
 
