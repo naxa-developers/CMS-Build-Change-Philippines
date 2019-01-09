@@ -96,9 +96,13 @@
                                 <div class="widget-body mt-2 horizontalForm">
                                     <form method="post" enctype="multipart/form-data">{% csrf_token %}
                                         <div class="form-row">
-                                            <div class="form-group col-md-12">
+                                            <div class="form-group col-md-6">
                                                 <label for="inputSchoolName">Title</label>
                                                 {{ form.title }}
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="inputSchoolName">Title [de]</label>
+                                                {{ form.title_de }}
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label for="inputSchoolName">Category</label>
@@ -108,6 +112,10 @@
                                             <div class="form-group col-md-12">
                                                 <label for="inputSchoolName">Description</label>
                                                 {{ form.description }}
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label for="inputSchoolName">Description [de]</label>
+                                                {{ form.description_de }}
                                             </div>
                                             <div class="form-group col-md-12">
                                                 <label for="inputSchoolName">Good Photo</label>
