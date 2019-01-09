@@ -972,9 +972,10 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                     'user': subreport.user.username,
                     'status': subreport.status,
                     'site': subreport.site.name,
-                    'step':subreport.step.name,
-                    'substep':subreport.substep.name,
-                    'comment':subreport.comment
+                    'step':subreport.step.step.name,
+                    'substep':subreport.substep.title,
+                    'comment':subreport.comment, 
+                    'feedback':request.POST.get('feedback_text')
                     }
                 FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data':report_data})
             except Exception as e:
