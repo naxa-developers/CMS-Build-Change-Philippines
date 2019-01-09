@@ -392,9 +392,17 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         project_id=self.kwargs['project_id']
 
         # Count Total images for zip file comparison
-        good_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(good_photo__exact='').count()
-        bad_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(bad_photo__exact='').count()
-        primary_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(primary_photo__exact='').count()
+        good_material_photos=0
+        bad_material_photos=0
+        primary_material_photos=0
+        material_photos=ConstructionSubSteps.objects.filter(project_id=project_id)
+        for filename in material_photos:
+            if filename.good_photos.all():
+                good_material_photos=good_material_photos+1
+            if filename.bad_photos.all():
+                bad_material_photos=bad_material_photos+1
+            if filename.primary_photos.all():
+                primary_material_photos=primary_material_photos+1
 
         good_category_materials = Material.objects.filter(project_id=project_id).exclude(good_photo__exact='').count()
         bad_category_materials = Material.objects.filter(project_id=project_id).exclude(bad_photo__exact='').count()
@@ -416,6 +424,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         total_images = good_material_photos+bad_material_photos+primary_material_photos+good_category_materials+bad_category_materials\
         +step_image+icon_image+good_more_about_materials+bad_more_about_materials+my_house_strong+good_key_parts_of_house\
         +bad_key_parts_of_house+standard_school_design_pdf+site_docs
+        # print('Totalllll', total_images)
 
         try:
             DIR=os.path.join(BASE_DIR) + '/media/ProjectMaterialPhotos.zip'
@@ -424,7 +433,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
             for finfo in zfile.infolist():
                 if isinstance(finfo, zipfile.ZipInfo):
                     total_zip_images=total_zip_images+1
-
+            print('zip ko imagessss',total_zip_images)
             if total_images > total_zip_images:
                 context['create_zip'] = True
         except:
