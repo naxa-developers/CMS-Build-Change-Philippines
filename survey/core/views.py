@@ -388,6 +388,48 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+
+        project_id=self.kwargs['project_id']
+
+        # Count Total images for zip file comparison
+        good_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(good_photo__exact='').count()
+        bad_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(bad_photo__exact='').count()
+        primary_material_photos=ConstructionSubSteps.objects.filter(project_id=project_id).exclude(primary_photo__exact='').count()
+
+        good_category_materials = Material.objects.filter(project_id=project_id).exclude(good_photo__exact='').count()
+        bad_category_materials = Material.objects.filter(project_id=project_id).exclude(bad_photo__exact='').count()
+
+        step_image = ConstructionSteps.objects.filter(project_id=project_id).exclude(image__exact='').count()
+        icon_image = ConstructionSteps.objects.filter(project_id=project_id).exclude(icon__exact='').count()
+
+        good_more_about_materials = HousesAndGeneralConstructionMaterials.objects.all().exclude(good_photo__exact='').count()
+        bad_more_about_materials = HousesAndGeneralConstructionMaterials.objects.all().exclude(bad_photo__exact='').count()
+
+        my_house_strong = BuildAHouseMakesHouseStrong.objects.all().exclude(pdf__exact='').count()
+
+        good_key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all().exclude(good_photo__exact='').count()
+        bad_key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all().exclude(bad_photo__exact='').count()
+
+        standard_school_design_pdf = StandardSchoolDesignPDF.objects.all().exclude(pdf__exact='').count()
+        site_docs = SiteDocument.objects.all().exclude(file__exact='').count()
+
+        total_images = good_material_photos+bad_material_photos+primary_material_photos+good_category_materials+bad_category_materials\
+        +step_image+icon_image+good_more_about_materials+bad_more_about_materials+my_house_strong+good_key_parts_of_house\
+        +bad_key_parts_of_house+standard_school_design_pdf+site_docs
+
+        try:
+            DIR=os.path.join(BASE_DIR) + '/media/ProjectMaterialPhotos.zip'
+            zfile = zipfile.ZipFile(DIR, 'r')
+            total_zip_images=0
+            for finfo in zfile.infolist():
+                if isinstance(finfo, zipfile.ZipInfo):
+                    total_zip_images=total_zip_images+1
+
+            if total_images > total_zip_images:
+                context['create_zip'] = True
+        except:
+            pass
+
         site_geojson = Site.objects.filter(\
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
