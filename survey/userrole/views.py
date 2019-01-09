@@ -38,11 +38,12 @@ class AssignProjectManagerView(SuperAdminMixin, CreateView):
 
         form = self.form_class(data=request.POST)
         if form.is_valid():
-            unassigned_group = Group.objects.get(name='Unassigned')
+            # unassigned_group = Group.objects.get(name='Unassigned')
             user = form.cleaned_data['user']
+
             project = Project.objects.get(id=kwargs['project_id'])
             project_manager_group = Group.objects.get(name='Project Manager')
-            UserRole.objects.filter(user=user, group=unassigned_group, project=project).update(group=project_manager_group)
+            UserRole.objects.filter(user=user, project=project).update(group=project_manager_group)
             return redirect('core:project_dashboard', project_id=self.kwargs['project_id'])
 
         return render(request, self.template_name, {'form': form})
