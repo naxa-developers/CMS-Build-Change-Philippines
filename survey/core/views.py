@@ -391,7 +391,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_geojson = Site.objects.filter(\
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
-            context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location'))
+            context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location', 'name', 'address', 'pk'))
         else:
             context['locations'] = [[]]
         site_address = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)
