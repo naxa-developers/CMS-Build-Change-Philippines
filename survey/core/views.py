@@ -622,10 +622,10 @@ class CategoryFormView(CategoryRoleMixin, FormView):
 
     def get_success_url(self):
         if self.request.group.name == "Super Admin":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
             return success_url
         elif self.request.group.name == "Project Manager":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
             return success_url
 
 

@@ -199,8 +199,8 @@ class Material(models.Model):
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
     description = models.TextField(max_length=300, blank=True, null=True)
-    good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
-    bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
+    good_photo = models.ImageField(verbose_name="Good Photo", upload_to="materials/good_photo", blank=True, null=True)
+    bad_photo = models.ImageField(verbose_name="Bad Photo", upload_to="materials/bad_photo", blank=True, null=True)
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
