@@ -199,8 +199,8 @@ class Material(models.Model):
     project = models.ForeignKey(Project, related_name="material", on_delete=models.CASCADE)
     category = models.ForeignKey(Category, related_name="material", on_delete=models.CASCADE)
     description = models.TextField(max_length=300, blank=True, null=True)
-    good_photo = models.ImageField(upload_to="materials/good_photo", blank=True, null=True)
-    bad_photo = models.ImageField(upload_to="materials/bad_photo", blank=True, null=True)
+    good_photo = models.ImageField(verbose_name="Good Photo", upload_to="materials/good_photo", blank=True, null=True)
+    bad_photo = models.ImageField(verbose_name="Bad Photo", upload_to="materials/bad_photo", blank=True, null=True)
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -468,9 +468,12 @@ class SubstepReport(models.Model):
 
     def save(self, *args, **kwargs):
         super(SubstepReport, self).save(*args, **kwargs)
-        with transaction.atomic():
-            for user in User.objects.all():
-                Notifications.objects.create(report=self, user=user, read=False)
+        for user in User.objects.all():
+            notification = Notification()
+            notification.report_id = self.id
+            notification.user = user
+            notification.read = False
+            notification.save()
 
 
     class Meta:
@@ -478,7 +481,7 @@ class SubstepReport(models.Model):
 
 
 class Notification(models.Model):
-    report = models.OneToOneField(SubstepReport, on_delete=models.CASCADE, related_name='notification')
+    report = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, related_name='notification')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='notification', on_delete=models.CASCADE, blank=True, null=True)
     read = models.BooleanField(default=False)
 

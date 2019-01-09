@@ -161,13 +161,9 @@
                                                     <h6>
                                                         <a href= "{% url 'core:checklist' object.pk step.pk sub_step.pk %}">{{ sub_step.title }}</a>
                                                     </h6>
-                                                    <small>
-                                                    </small>
-                                                    <div class="guideline-action">
-                                                        <a href=""
+                                                        <a href="{% url 'core:construction_substeps_update' sub_step.pk %}"
                                                            data-toggle="tooltip" data-placement="top"
-                                                           title="Edit"></a>
-                                                    </div>
+                                                           title="Edit">Edit</a>
 
                                                     {% empty %}
                                                     <small>No Sub Steps Found.</small>
@@ -210,7 +206,7 @@
 
                                         {% endif %}
                                         <a title="View submission detail"
-                                           href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
+                                           href="{% url 'core:site_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
                                         <br>
                                         <a href="#" title="View details of user">
                                             <small><i class="la la-user"></i>{{ report.user }}</small>
@@ -219,8 +215,6 @@
                                                                                    aria-hidden="true"></i>{{ report.date}}
                                         </small>
                                     </li>
-                                    {% empty %}
-                                    No Reports Found.
                                     {% endfor %}
                                     {% for report in site_substep_reports %}
                                     <li>
