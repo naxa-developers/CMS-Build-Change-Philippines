@@ -433,8 +433,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
             for finfo in zfile.infolist():
                 if isinstance(finfo, zipfile.ZipInfo):
                     total_zip_images=total_zip_images+1
-            print('zip ko imagessss',total_zip_images)
-            if total_images > total_zip_images:
+            # print('zip ko imagessss',total_zip_images)
+            if total_images > total_zip_images or total_images < total_zip_images:
                 context['create_zip'] = True
         except:
             pass
