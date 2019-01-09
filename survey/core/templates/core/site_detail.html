@@ -161,13 +161,9 @@
                                                     <h6>
                                                         <a href= "{% url 'core:checklist' object.pk step.pk sub_step.pk %}">{{ sub_step.title }}</a>
                                                     </h6>
-                                                    <small>
-                                                    </small>
-                                                    <div class="guideline-action">
-                                                        <a href=""
+                                                        <a href="{% url 'core:construction_substeps_update' sub_step.pk %}"
                                                            data-toggle="tooltip" data-placement="top"
-                                                           title="Edit"></a>
-                                                    </div>
+                                                           title="Edit">Edit</a>
 
                                                     {% empty %}
                                                     <small>No Sub Steps Found.</small>
