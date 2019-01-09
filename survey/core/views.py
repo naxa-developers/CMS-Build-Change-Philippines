@@ -15,6 +15,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib import messages
+from django.http import JsonResponse
 
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -35,7 +36,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, ReportFeedback, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
     Notification, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist, SiteReport
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
@@ -381,7 +382,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
 
         context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
         context['users'] = User.objects.filter(user_roles__project__id=self.kwargs['project_id'],\
-                                               user_roles__group__name__exact="Project Manager")[:5]
+                                               user_roles__group__name__exact="Project Manager")
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         # context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
@@ -399,7 +400,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
-        # context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['recent_activities_site_report'] = SiteReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
         context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from').order_by('-pk')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
@@ -490,7 +491,8 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
@@ -867,21 +869,6 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-class SubstepReportListView(ReportRoleMixin, ListView):
-    """
-    Report List
-    """
-    model = SubstepReport
-    template_name = "core/substep_report_list.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['reports'] = SubstepReport.objects.all()
-        context['site'] = Site.objects.get(id=self.kwargs['pk'])
-        context['project'] = Project.objects.get(sites=self.kwargs['pk'])
-        return context
-
-
 def ExportReport(request):
     output = []
     response = HttpResponse(content_type='application/xls')
@@ -929,12 +916,27 @@ def ExportPdf(request):
     #     return response
 
 
+class SubstepReportListView(ReportRoleMixin, ListView):
+    """
+    Report List
+    """
+    model = SubstepReport
+    template_name = "core/substepreport_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = SubstepReport.objects.all()
+        context['site'] = Site.objects.get(id=self.kwargs['pk'])
+        context['project'] = Project.objects.get(sites=self.kwargs['pk'])
+        return context
+
 
 class SubstepReportDetailView(ReportRoleMixin, DetailView):
     """
     Report detail
     """
     model = SubstepReport
+    template_name = 'core/substepreport_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -964,10 +966,96 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             message_body = report_feedback.report.site.name + ""
 
             try:
-                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'text':'text'})
+                subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
+                report_data = {
+                    'report_id':subreport.id,
+                    'user': subreport.user_id,
+                    'status': subreport.status,
+                    'site': subreport.site_id,
+                    'step':subreport.step_id,
+                    'substep':subreport.substep_id,
+                    'comment':subreport.comment
+                    }
+                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data':report_data})
             except Exception as e:
                 print(e)
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
+
+
+class SiteReportDetailView(ReportRoleMixin, DetailView):
+    """
+    Site Report Detail
+    """
+    model = SiteReport
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = SiteReport.objects.filter(id=self.kwargs['pk'])
+        context['site'] = Site.objects.get(id=self.object.site.id)
+        context['project'] = Project.objects.get(sites=self.object.site.id)
+        context['choices'] = SiteReport._meta.get_field('status').choices
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        # import ipdb
+        # ipdb.set_trace()
+        if request.POST.get('status'):
+            sub_step = SiteReport.objects.get(id=self.kwargs['pk'])
+            sub_step.status=request.POST.get('status')
+            sub_step.save()
+            return HttpResponseRedirect('/core/site-report-detail/%s' %self.kwargs['pk'])
+
+        # if request.POST.get('feedback_submit'):
+        #     report_feedback = ReportFeedback()
+        #     report_feedback.user = self.request.user
+        #     report_feedback.report = SiteReport.objects.get(id=self.kwargs['pk'])
+        #     report_feedback.feedback = request.POST.get('feedback_text')
+        #     report_feedback.save()
+
+        #     message_title = "User " + self.request.user.username + " Sent Feedback."
+        #     message_body = report_feedback.report.site.name + ""
+
+        #     try:
+        #         FCMDevice.objects.filter(user=User.objects.get(id=SiteReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'text':'text'})
+        #     except Exception as e:
+        #         print(e)
+        return HttpResponseRedirect('/core/site-report-detail/%s' %self.kwargs['pk'])
+
+
+class SiteReportDeleteView(DeleteView):
+    model = SiteReport
+    template_name = "core/sitereport_delete.html"
+
+    def get_success_url(self):
+        site_id = Site.objects.get(site_reports=self.kwargs['pk']).id
+        success_url = reverse_lazy('core:site_report_list', args=[site_id],)
+        return success_url
+
+
+class SiteReportListView(ReportRoleMixin, ListView):
+    """
+    Report List
+    """
+    model = SiteReport
+    template_name = "core/sitereport_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['reports'] = SiteReport.objects.all()
+        context['site'] = Site.objects.get(id=self.kwargs['pk'])
+        context['project'] = Project.objects.get(sites=self.kwargs['pk'])
+        return context
+
+
+def read_notification(request):
+    if request.is_ajax():
+        notification = Notification.objects.filter(user=request.user)
+        for item in notification:
+            notification.update(read=True)
+        return JsonResponse({'count':0})
+    else:
+        notification = Notification.objects.filter(user=request.user, read=False)
+        return JsonResponse({'count':notification.count})        
 
 
 class SubstepReportCreateView(CreateView):
@@ -976,6 +1064,7 @@ class SubstepReportCreateView(CreateView):
     template_name = "core/substepreport_form.html"
 
     def get_success_url(self):
+        site_id = Site.objects.get(reports=self.kwargs['pk']).id
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],) 
         return success_url
 
@@ -996,6 +1085,7 @@ class SubstepReportDeleteView(DeleteView):
     template_name = "core/substepreport_delete.html"
 
     def get_success_url(self):
+        site_id = Site.objects.get(reports=self.kwargs['pk']).id
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],)
         return success_url
 

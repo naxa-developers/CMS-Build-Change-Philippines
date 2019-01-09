@@ -57,9 +57,9 @@
             </ul>
             <ul class="navbar-nav ml-auto">
                 	<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="readNotification();return false;">
 						<i class="la la-bell"></i>
-						<span class="badge badge-warning">{{count}}</span>
+						<span class="badge badge-warning" id="idCount">{{count}}</span>
 					</a>
 					<div class="dropdown-menu large-dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
 						<div class="dropdown-header">Notifications </div>
@@ -275,7 +275,7 @@
 {% block extra_script %}
     {% render_bundle 'main' 'js' %}
 {% endblock extra_script %}
-<script>
+<script type="text/javascript">
     {% for message in messages %}
     $(document).ready(function () {
         new PNotify({
@@ -285,7 +285,21 @@
             type: '{{ message.tags }}'
         });
     });
+
     {% endfor %}
+    function readNotification() {
+        $.ajax(
+            {
+                type:"POST",
+                url: "/core/notification-update/",
+                data:{},
+                success: function( data ) 
+                {
+                    console.log(data)
+                    $('.idCount').textContent=data.count;
+                }
+            })
+    }
 </script>
 </body>
 </html>

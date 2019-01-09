@@ -4,6 +4,7 @@ from . import views
 app_name = 'core'
 
 urlpatterns = [
+    path('notification-update/', views.read_notification, name="notification_update"),
     path('project-create/', views.ProjectCreateView.as_view(), name="project_create"),
     # path('project-detail/<int:pk>/', views.ProjectDetailView.as_view(), name="project_detail"),
     path('project-update/<int:pk>/', views.ProjectUpdateView.as_view(), name="project_update"),
@@ -33,6 +34,7 @@ urlpatterns = [
     path('site-guideline-list/<int:site_id>/', views.SiteMaterialListView.as_view(), name="site_material_list"),
     path('site-guideline-detail/<int:pk>/', views.SiteMaterialDetailView.as_view(), name="site_material_detail"),
     path('site-guideline-delete/<int:pk>/', views.SiteMaterialDeleteView.as_view(), name="site_material_delete"),
+    path('site-report-detail/<int:pk>/', views.SiteReportDetailView.as_view(), name="site_report_detail"),
     path('document-create/<int:site_id>/', views.SiteDocumentFormView.as_view(), name="document_create"),
     path('document-list/<int:site_id>/', views.SiteDocumentListView.as_view(), name="document_list"),
     path('document-delete/<int:pk>/', views.SiteDocumentDeleteView.as_view(), name="document_delete"),
@@ -41,6 +43,8 @@ urlpatterns = [
     path('substep-report-add', views.SubstepReportCreateView.as_view(), name="substep_report_add"),
     path('substep-report-edit/<int:pk>/', views.SubstepReportUpdateView.as_view(), name="substep_report_edit"),
     path('substep_report_delete/<int:pk>/', views.SubstepReportDeleteView.as_view(), name="substep_report_delete"),
+    path('site-report-list/<int:pk>', views.SiteReportListView.as_view(), name="site_report_list"),
+    path('site_report_delete/<int:pk>/', views.SiteReportDeleteView.as_view(), name="site_report_delete"),
     path('report-feedback/<int:pk>/', views.ReportFeedbackView.as_view(), name="report_feedback"),
     path('notification-list/', views.NotificationView.as_view(), name="notification_list"),
     path('user-profile-create/<int:pk>', views.UserProfileView.as_view(), name="user_profile"),
