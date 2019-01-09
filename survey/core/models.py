@@ -470,7 +470,7 @@ class SubstepReport(models.Model):
         super(SubstepReport, self).save(*args, **kwargs)
         with transaction.atomic():
             for user in User.objects.all():
-                Notifications.objects.create(report=self, user=user, read=False)
+                Notification.objects.create(report=self, user=user, read=False)
 
 
     class Meta:
