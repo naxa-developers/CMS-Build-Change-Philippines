@@ -15,6 +15,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.db.models import Q
 from django.contrib import messages
+from django.http import JsonResponse
 
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -35,7 +36,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, ReportFeedback, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
     Notification, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist, SiteReport
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
@@ -399,7 +400,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_latlong_object = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('location', flat=True)
         context['site_latlong'] = json.dumps([[l.x, l.y] for l in site_latlong_object])
         context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
-        # context['recent_activities_report'] = SubstepReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('-date')[:5]
+        context['recent_activities_site_report'] = SiteReport.objects.filter(site__project_id=self.kwargs['project_id']).order_by('date')[:5]
         context['call_logs'] = CallLog.objects.all().select_related('call_to', 'call_from').order_by('-pk')
         # context['event_logs'] = EventLog.objects.all().order_by('-date')
 
@@ -490,7 +491,8 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
@@ -968,6 +970,17 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             except Exception as e:
                 print(e)
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
+
+
+def read_notification(request):
+    if request.is_ajax():
+        notification = Notification.objects.filter(user=request.user)
+        for item in notification:
+            notification.update(read=True)
+        return JsonResponse({'count':0})
+    else:
+        notification = Notification.objects.filter(user=request.user, read=False)
+        return JsonResponse({'count':notification.count})        
 
 
 class SubstepReportCreateView(CreateView):
