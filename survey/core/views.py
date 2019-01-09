@@ -382,7 +382,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
 
         context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
         context['users'] = User.objects.filter(user_roles__project__id=self.kwargs['project_id'],\
-                                               user_roles__group__name__exact="Project Manager")[:5]
+                                               user_roles__group__name__exact="Project Manager")
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         # context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
@@ -391,7 +391,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         site_geojson = Site.objects.filter(\
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
-            context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location'))
+            context['locations'] = serializers.serialize('geojson', site_geojson, fields=('location', 'name', 'address', 'pk'))
         else:
             context['locations'] = [[]]
         site_address = Site.objects.exclude(location__isnull=True).filter(project__id=self.kwargs['project_id']).values_list('address', flat=True)

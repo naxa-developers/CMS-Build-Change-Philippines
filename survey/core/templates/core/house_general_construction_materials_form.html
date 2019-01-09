@@ -17,6 +17,7 @@
                         <form action="" method="POST" enctype="multipart/form-data" novalidate> {% csrf_token %}
                             {{ form.as_p }}
                             <button type="submit" class="btn btn-xs btn-primary">Submit</button>
+                            <a href="{% url 'core:category_create' project.pk %}">Add Category</a>
                         </form>
                     </div>
                 </div>

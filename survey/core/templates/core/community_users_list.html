@@ -1,6 +1,18 @@
 {% extends '_base.html' %}
 
 {% block content %}
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">Community Users List</li>
+            </ol>
+        </nav>
+    </div>
+</div>
 
 <div class="d-flex justify-content-center" style="margin-top: 20px">
     <div class="formHolder">

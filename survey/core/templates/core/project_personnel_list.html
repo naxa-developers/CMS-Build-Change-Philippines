@@ -1,29 +1,41 @@
 {% extends '_base.html' %}
 
 {% block content %}
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">Project Personnel List</li>
+            </ol>
+        </nav>
+    </div>
+</div>
 
-<div class="d-flex justify-content-center" style="margin-top: 20px">
-    <div class="formHolder">
-        <div class="widget-info margin-top-large">
-            <div class="widget-head">
-                <div class="widget-body mt-2 horizontalForm">
-                    <h3>Project Personnel</h3>
-                    <a href="{% url 'userrole:field_engineer_create' project.id %}" title="" class="btn btn-sm btn-xs btn-primary" style="float: right;"><i
-                                        class="la la-caret-right"></i> Create Field Engineer</a>
-                   <p><br><br>
-                    <ul class="submission-list">
-                    {% for project_personnel in project_personnel_list %}
-                    <li>{{forloop.counter}}. <a href="{% url 'core:user_profile_detail' project_personnel.user.id %}">{{project_personnel.user}}</a> <br></li>
-                    {% empty %}
-                    <p>
-                        Project Personnel not found.
-                    </p>
-                    {% endfor %}
-                    </ul>
-                    </p>
+    <div class="d-flex justify-content-center" style="margin-top: 20px">
+        <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <h3>Project Personnel</h3>
+                        <a href="{% url 'userrole:field_engineer_create' project.id %}" title="" class="btn btn-sm btn-xs btn-primary" style="float: right;"><i
+                                            class="la la-caret-right"></i> Create Field Engineer</a>
+                       <p><br><br>
+                        <ul class="submission-list">
+                        {% for project_personnel in project_personnel_list %}
+                        <li>{{forloop.counter}}. <a href="{% url 'core:user_profile_detail' project_personnel.user.id %}">{{project_personnel.user}}</a> <br></li>
+                        {% empty %}
+                        <p>
+                            Project Personnel not found.
+                        </p>
+                        {% endfor %}
+                        </ul>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock content %}
