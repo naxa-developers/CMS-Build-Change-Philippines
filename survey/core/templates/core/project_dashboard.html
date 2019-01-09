@@ -253,6 +253,21 @@
                                                                           aria-hidden="true"></i>{{ report.date }}</span>
                                                 </li>
                                             {% endfor %} 
+                                            {% for report in recent_activities_site_report %}
+                                                <li>
+                                                    <img src="#" alt="">
+                                                    <a href="#" title=""><strong>{{ report.user }}</strong></a>
+                                                    submitted a
+                                                    response for general form <a
+                                                        href="#"
+                                                        title=""><strong>{{ report.comment }}
+                                                    </strong></a> in site <a href="#" title=""><strong>
+                                                    {{ report.site }}
+                                                </strong></a>.
+                                                    <span class="time"><i class="la la-clock-o"
+                                                                          aria-hidden="true"></i>{{ report.date }}</span>
+                                                </li>
+                                            {% endfor %} 
 
 
 

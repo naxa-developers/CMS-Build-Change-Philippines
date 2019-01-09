@@ -4,6 +4,7 @@ from . import views
 app_name = 'core'
 
 urlpatterns = [
+    path('notification-update/', views.read_notification, name="notification_update"),
     path('project-create/', views.ProjectCreateView.as_view(), name="project_create"),
     # path('project-detail/<int:pk>/', views.ProjectDetailView.as_view(), name="project_detail"),
     path('project-update/<int:pk>/', views.ProjectUpdateView.as_view(), name="project_update"),
