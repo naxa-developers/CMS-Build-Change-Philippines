@@ -382,7 +382,7 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
 
         context['materials_list'] = Material.objects.filter(project=self.kwargs['project_id'])
         context['users'] = User.objects.filter(user_roles__project__id=self.kwargs['project_id'],\
-                                               user_roles__group__name__exact="Project Manager")[:5]
+                                               user_roles__group__name__exact="Project Manager")
         context['project'] = get_object_or_404(Project, pk=self.kwargs['project_id'])
         # context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
