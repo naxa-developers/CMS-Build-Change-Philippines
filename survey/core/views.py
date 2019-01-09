@@ -969,11 +969,11 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                 subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
                 report_data = {
                     'report_id':subreport.id,
-                    'user': subreport.user_id,
+                    'user': subreport.user.username,
                     'status': subreport.status,
-                    'site': subreport.site_id,
-                    'step':subreport.step_id,
-                    'substep':subreport.substep_id,
+                    'site': subreport.site.name,
+                    'step':subreport.step.name,
+                    'substep':subreport.substep.name,
                     'comment':subreport.comment
                     }
                 FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data':report_data})
