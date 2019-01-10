@@ -136,10 +136,11 @@ class ProjectUserFormView(CreateView):
         form = ProjectUserForm(data=request.POST)
         if form.is_valid():
             user = form.save(commit=False)
+            phone_number = form.cleaned_data['phone_number']
             user.save()
 
             UserRole.objects.create(user=user, group=Group.objects.get(name='Unassigned'),
-                                    project_id=self.kwargs['project_id'])
+                                    project_id=self.kwargs['project_id'], extra={'phone_number': phone_number})
             return redirect(reverse('userrole:thankyou'))
 
         return render(request, self.template_name, {'form': form})

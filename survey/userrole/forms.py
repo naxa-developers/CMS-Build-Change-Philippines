@@ -81,6 +81,8 @@ class ProjectUserForm(UserCreationForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     email = forms.CharField(required=True)
+    phone_number = forms.CharField(required=True)
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
