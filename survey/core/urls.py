@@ -80,6 +80,7 @@ urlpatterns = [
     path('checklist/<int:site_id>/<int:step_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
     path('checklists-all/<int:site_id>', views.CheckListAllView.as_view(), name='checklist_all'),
     path('export/', views.export, name="export"),
+    # path('export-checklist-pdf/', views.ExportChecklistPdf, name="export_checklist_pdf"),
     path('export-report/', views.ExportReport, name="export_report"),
     path('export-report-pdf/', views.ExportPdf, name="export_report_pdf"),
 

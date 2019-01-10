@@ -1909,20 +1909,37 @@ class CheckListAllView(TemplateView):
         checklists = paginator.get_page(page)
         context['checklists_lists'] = checklists
         return context
-    
 
 def export(request):
     output = []
-    response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response)
-    query_set = SubStepCheckList.objects.all()
-    print(query_set)
+    response = HttpResponse(content_type='application/xls')
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8'))
+    query_set = NewSubStepChecklist.objects.all()
     # Header
-    writer.writerow(['S.N', 'Checklist', 'Status'])
+    writer.writerow(['Title', 'Sub Checklist', 'Status'])
     for query in query_set:
-        writer.writerow([query.id, query.text, query.status])
+        writer.writerow([query.title, query.common_checklist, query.status])
     # CSV Data
     return response
+
+# def ExportChecklistPdf(request):
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="download.pdf"'
+#
+#     p = canvas.Canvas(response)
+#     query_set = NewSubStepChecklist.objects.all()
+#     count = 0
+#     for qs in query_set:
+#         y = 900 - count * 100
+#         p.drawString(0, y-20, "Title: " + qs.title)
+#         p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
+#         p.drawString(0, y+20, "Status: " + qs.status)
+#         count = count + 1
+#
+#     p.showPage()
+#     p.save()
+#     return response
 
 
 class HousesAndGeneralConstructionMaterialsListView(ListView):
