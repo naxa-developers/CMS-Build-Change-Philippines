@@ -299,10 +299,10 @@
                             </div>
                             <div class="widget-body">
                                 <ul class="user-list-sm">
-                                    {% for user in users %}
+                                    {% for user in project_managers %}
                                         <li>
                                             <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
-                                            {{ user }}
+                                            <a href="{% url 'userrole:assign_phone_number' user.pk %}">{{ user.user__username }} </a>
                                             {% empty %}
                                             <p>No Project Manager Found.</p>
                                         </li>{% endfor %}

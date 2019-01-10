@@ -388,6 +388,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+        context['project_managers'] = UserRole.objects.filter(project_id=self.kwargs['project_id'], group__name="Project Manager").values('user__username', 'pk')
+
 
         project_id=self.kwargs['project_id']
 

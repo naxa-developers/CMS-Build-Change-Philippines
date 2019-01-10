@@ -1,14 +1,14 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DeleteView, RedirectView, ListView, FormView, TemplateView
+from django.views.generic import CreateView, DeleteView, RedirectView, ListView, FormView, TemplateView, UpdateView
 from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 from core.models import Project, Site
 from core.views import SuperAdminMixin, ManagerSuperAdminMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib import messages
-
 from .models import UserRole, FieldEngineerProfile
 from .forms import AssignProjectManagerForm, AssignFieldEnginnerForm, ProjectUserForm, SendInvitationForm, FieldEngineerForm
 
@@ -217,3 +217,30 @@ class RoleDelete(DeleteView):
     def get_success_url(self):
         success_url = reverse_lazy('core:site_detail',  args=(self.object.site.id,))
         return success_url
+
+
+class AssignProjectManagerPhoneNumber(TemplateView):
+    template_name = "userrole/assign_phone_number.html"
+
+    def get(self, request, **kwargs):
+        print(self.kwargs['pk'])
+        obj = get_object_or_404(UserRole, id=self.kwargs['pk'])
+        context = {}
+        context['project_manager'] = obj.user.username
+        if obj.extra:
+            context['phone_number'] = obj.extra['phone_number']
+
+        return super(AssignProjectManagerPhoneNumber, self).render_to_response(context)
+
+    def post(self, request, **kwargs):
+        obj = get_object_or_404(UserRole, id=self.kwargs['pk'])
+        if obj:
+            data = request.POST
+            phone_number = data['phone_number']
+            obj.extra = {'phone_number':phone_number}
+            obj.save()
+            messages.success(request, 'successfully added phone number')
+            return HttpResponseRedirect(reverse('userrole:assign_phone_number', args=[self.kwargs['pk']]))
+
+        context = {}
+        return super(AssignProjectManagerPhoneNumber, self).render_to_response(context)
