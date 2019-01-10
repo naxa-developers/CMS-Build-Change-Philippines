@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.contrib.postgres.fields import JSONField
+
 from core.models import Project, Site
 
 
@@ -8,6 +10,7 @@ class UserRole(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="group_roles")
     project = models.ForeignKey(Project, null=True, blank=True, related_name="project_roles", on_delete=models.SET_NULL)
     site = models.ForeignKey(Site, null=True, blank=True, related_name="site_roles", on_delete=models.SET_NULL)
+    extra = JSONField(null=True, blank=True)
 
     # def clean(self):
     #     if self.group.name in ['Field Engineer', 'Community Member'] and not self.site_id:
