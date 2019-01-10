@@ -22,7 +22,8 @@
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
                         <h4><a href="#" title="">CheckList</a></h4>
-                            <span class="tools pull-right"><a href="{% url 'core:export' %}"><button>Export</button></a></span>
+                            <span class="tools pull-right"><a href="{% url 'core:export' %}"><button>Export Excel</button></a></span>
+                            <scan class="tools pull-right"><a href="{% url 'core:export_checklist_pdf' %}"><button>Export Pdf</button></a></scan>
                     </div>
                     <form method="post">{% csrf_token %}
                         <!--{{form.as_p}}-->

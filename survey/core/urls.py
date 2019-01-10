@@ -56,6 +56,7 @@ urlpatterns = [
     path('community-users/<int:project_id>', views.CommunityUsersList.as_view(), name="community_users"),
 
     path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
+    path('picture-list/', views.PictureList.as_view(), name="picture_list"),
 
     # Updated urls
     path('construction-substep-create/<int:project_id>/<int:step_id>', views.ConstructionSubstepCreate.as_view(), name="construction_substep_create"),
@@ -80,6 +81,7 @@ urlpatterns = [
     path('checklist/<int:site_id>/<int:step_id>/<int:substep_id>/', views.ChecklistView.as_view(), name="checklist"),
     path('checklists-all/<int:site_id>', views.CheckListAllView.as_view(), name='checklist_all'),
     path('export/', views.export, name="export"),
+    path('export-checklist-pdf/', views.ExportChecklistPdf, name="export_checklist_pdf"),
     path('export-report/', views.ExportReport, name="export_report"),
     path('export-report-pdf/', views.ExportPdf, name="export_report_pdf"),
 

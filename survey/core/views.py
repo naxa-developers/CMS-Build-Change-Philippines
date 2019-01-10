@@ -388,6 +388,57 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+
+        project_id=self.kwargs['project_id']
+
+        # Count Total images for zip file comparison
+        good_material_photos=0
+        bad_material_photos=0
+        primary_material_photos=0
+        material_photos=ConstructionSubSteps.objects.filter(project_id=project_id)
+        for filename in material_photos:
+            if filename.good_photos.all():
+                good_material_photos=good_material_photos+1
+            if filename.bad_photos.all():
+                bad_material_photos=bad_material_photos+1
+            if filename.primary_photos.all():
+                primary_material_photos=primary_material_photos+1
+
+        good_category_materials = Material.objects.filter(project_id=project_id).exclude(good_photo__exact='').count()
+        bad_category_materials = Material.objects.filter(project_id=project_id).exclude(bad_photo__exact='').count()
+
+        step_image = ConstructionSteps.objects.filter(project_id=project_id).exclude(image__exact='').count()
+        icon_image = ConstructionSteps.objects.filter(project_id=project_id).exclude(icon__exact='').count()
+
+        good_more_about_materials = HousesAndGeneralConstructionMaterials.objects.all().exclude(good_photo__exact='').count()
+        bad_more_about_materials = HousesAndGeneralConstructionMaterials.objects.all().exclude(bad_photo__exact='').count()
+
+        my_house_strong = BuildAHouseMakesHouseStrong.objects.all().exclude(pdf__exact='').count()
+
+        good_key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all().exclude(good_photo__exact='').count()
+        bad_key_parts_of_house = BuildAHouseKeyPartsOfHouse.objects.all().exclude(bad_photo__exact='').count()
+
+        standard_school_design_pdf = StandardSchoolDesignPDF.objects.all().exclude(pdf__exact='').count()
+        site_docs = SiteDocument.objects.all().exclude(file__exact='').count()
+
+        total_images = good_material_photos+bad_material_photos+primary_material_photos+good_category_materials+bad_category_materials\
+        +step_image+icon_image+good_more_about_materials+bad_more_about_materials+my_house_strong+good_key_parts_of_house\
+        +bad_key_parts_of_house+standard_school_design_pdf+site_docs
+        # print('Totalllll', total_images)
+
+        try:
+            DIR=os.path.join(BASE_DIR) + '/media/ProjectMaterialPhotos.zip'
+            zfile = zipfile.ZipFile(DIR, 'r')
+            total_zip_images=0
+            for finfo in zfile.infolist():
+                if isinstance(finfo, zipfile.ZipInfo):
+                    total_zip_images=total_zip_images+1
+            # print('zip ko imagessss',total_zip_images)
+            if total_images > total_zip_images or total_images < total_zip_images:
+                context['create_zip'] = True
+        except:
+            pass
+
         site_geojson = Site.objects.filter(\
             project__id=self.kwargs['project_id']).exclude(location__isnull=True)
         if site_geojson.exists():
@@ -497,7 +548,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
+        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')[:10]
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
@@ -506,6 +557,16 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         else:
             context['progress'] = 0
         return context
+
+
+class PictureList(TemplateView):
+    template_name = 'core/picture_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_pictures'] = SubstepReport.objects.all()
+        return context
+
 
 
 class SiteDetailTemplateView(TemplateView):
@@ -1858,19 +1919,36 @@ class CheckListAllView(TemplateView):
         checklists = paginator.get_page(page)
         context['checklists_lists'] = checklists
         return context
-    
 
 def export(request):
     output = []
-    response = HttpResponse(content_type='text/csv')
-    writer = csv.writer(response)
-    query_set = SubStepCheckList.objects.all()
-    print(query_set)
+    response = HttpResponse(content_type='application/xls')
+    writer = csv.writer(response, csv.excel)
+    response.write(u'\ufeff'.encode('utf8'))
+    query_set = NewSubStepChecklist.objects.all()
     # Header
-    writer.writerow(['S.N', 'Checklist', 'Status'])
+    writer.writerow(['Title', 'Sub Checklist', 'Status'])
     for query in query_set:
-        writer.writerow([query.id, query.text, query.status])
+        writer.writerow([query.title, query.common_checklist, query.status])
     # CSV Data
+    return response
+
+def ExportChecklistPdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="download.pdf"'
+
+    p = canvas.Canvas(response)
+    query_set = NewSubStepChecklist.objects.all()
+    count = 0
+    for qs in query_set:
+        y = 900 - count * 100
+        p.drawString(0, y-20, "Title: " + qs.title)
+        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
+        p.drawString(0, y+20, "Status: " + qs.status)
+        count = count + 1
+
+    p.showPage()
+    p.save()
     return response
 
 

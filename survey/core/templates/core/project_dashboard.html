@@ -64,9 +64,13 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Overview</a></h4>
+                                {% if create_zip %}
+                                <a href="{% url 'core:project_material_photos' project.pk %}"><button type="button" class="btn btn-sm btn-xs btn btn-danger" style="float:right; margin-bottom:10px">Create zip for offline</button></a>
 
-                                <h4 style="float:right"><i class="fa fa-file-archive-o" aria-hidden="true"><a href="{% url 'core:project_material_photos' project.pk %}" title=""> Create zip for offline</a></i></h4>
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-xs btn btn-success" style="float:right; margin-bottom:10px">Zip for offline uptodate</button>
 
+                                {% endif %}
 
 
 
@@ -111,7 +115,7 @@
                                 <h4><a href="#" title="">School Map</a></h4>
                             </div>
                             <div class="widget-body">
-                                <div id="school-map"></div>
+                                <div id="school-map" style="height:229px;"></div>
                             </div>
                         </div>
                     </div>
@@ -356,7 +360,7 @@
             var latlong = JSON.parse("{{ site_latlong|escapejs }}");
             console.log(locations);
 
-           var map = L.map("school-map").setView([12,124.7],9);
+           var map = L.map("school-map").setView([11.7,124.7],9);
 
                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
