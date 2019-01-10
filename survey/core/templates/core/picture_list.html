@@ -25,7 +25,16 @@
                     <div class="d-flex justify-content-center">
                         <div class="dash-right">
                             <div class="widget-info margin-top-large">
-                                {{picture_list}}
+                                <!--<div class="col-md-4">-->
+                                    <!--<div class="photo-holder photo-item margin-top">-->
+                                        <!--{% for item in site_pictures %}-->
+                                        <!--<img src="{{ MEDIA_URL }}{{ item.0 }}" img-title="Hello" alt="">-->
+                                        <!--{% endfor %}-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                {% for item in site_pictures %}
+                                <img src="{{MEDIA_URL}}{{item.0}}">
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
