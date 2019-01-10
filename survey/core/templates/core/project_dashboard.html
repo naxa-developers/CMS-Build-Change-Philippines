@@ -64,9 +64,13 @@
                         <div class="widget-info margin-top-large">
                             <div class="widget-head">
                                 <h4><a href="#" title="">Overview</a></h4>
+                                {% if create_zip %}
+                                <a href="{% url 'core:project_material_photos' project.pk %}"><button type="button" class="btn btn-sm btn-xs btn btn-danger" style="float:right; margin-bottom:10px">Create zip for offline</button></a>
 
-                                <h4 style="float:right"><i class="fa fa-file-archive-o" aria-hidden="true"><a href="{% url 'core:project_material_photos' project.pk %}" title=""> Create zip for offline</a></i></h4>
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-xs btn btn-success" style="float:right; margin-bottom:10px">Zip for offline uptodate</button>
 
+                                {% endif %}
 
 
 
