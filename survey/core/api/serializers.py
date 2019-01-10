@@ -85,7 +85,7 @@ class SubstepReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'photo', 'date')
+        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status' 'photo', 'date')
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
