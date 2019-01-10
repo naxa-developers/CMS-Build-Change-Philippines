@@ -1093,6 +1093,14 @@ class SiteReportDeleteView(DeleteView):
         success_url = reverse_lazy('core:site_report_list', args=[site_id],)
         return success_url
 
+# class PhotoDelete(TemplateView):
+#     template_name = "core/substepreport_list.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['substepreport'] = SubstepReport.objects.
+
+
 
 class SiteReportListView(ReportRoleMixin, ListView):
     """
@@ -1943,8 +1951,8 @@ def ExportChecklistPdf(request):
     for qs in query_set:
         y = 900 - count * 100
         p.drawString(0, y-20, "Title: " + qs.title)
-        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
-        p.drawString(0, y+20, "Status: " + qs.status)
+        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist.title)
+        p.drawString(0, y+20, "Status: " + str(qs.status))
         count = count + 1
 
     p.showPage()
