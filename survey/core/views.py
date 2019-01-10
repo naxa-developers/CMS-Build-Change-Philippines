@@ -548,7 +548,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')
+        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')[:10]
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
@@ -557,6 +557,16 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         else:
             context['progress'] = 0
         return context
+
+
+class PictureList(TemplateView):
+    template_name = 'core/picture_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['site_pictures'] = SubstepReport.objects.all()
+        return context
+
 
 
 class SiteDetailTemplateView(TemplateView):
@@ -1923,23 +1933,23 @@ def export(request):
     # CSV Data
     return response
 
-# def ExportChecklistPdf(request):
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename="download.pdf"'
-#
-#     p = canvas.Canvas(response)
-#     query_set = NewSubStepChecklist.objects.all()
-#     count = 0
-#     for qs in query_set:
-#         y = 900 - count * 100
-#         p.drawString(0, y-20, "Title: " + qs.title)
-#         p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
-#         p.drawString(0, y+20, "Status: " + qs.status)
-#         count = count + 1
-#
-#     p.showPage()
-#     p.save()
-#     return response
+def ExportChecklistPdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="download.pdf"'
+
+    p = canvas.Canvas(response)
+    query_set = NewSubStepChecklist.objects.all()
+    count = 0
+    for qs in query_set:
+        y = 900 - count * 100
+        p.drawString(0, y-20, "Title: " + qs.title)
+        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
+        p.drawString(0, y+20, "Status: " + qs.status)
+        count = count + 1
+
+    p.showPage()
+    p.save()
+    return response
 
 
 class HousesAndGeneralConstructionMaterialsListView(ListView):
