@@ -566,7 +566,7 @@ class PictureList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['site_pictures'] = SubstepReport.objects.all()
+        context['site_pictures'] = SubstepReport.objects.all().values_list('photo')
         return context
 
 
