@@ -1040,7 +1040,7 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                     'comment':subreport.comment, 
                     'feedback':request.POST.get('feedback_text')
                     }
-                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data':report_data})
+                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': 'this is a message'})
             except Exception as e:
                 print(e)
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
