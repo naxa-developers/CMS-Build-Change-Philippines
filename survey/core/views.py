@@ -778,11 +778,7 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.group.name == "Super Admin":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
-            return success_url
-        elif self.request.group.name == "Project Manager":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:material_list', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -2055,4 +2051,18 @@ class KeyPartsOfHouseDeleteView(DeleteView):
     model = BuildAHouseKeyPartsOfHouse
     template_name = "core/key_parts_house_delete.html"
     success_url = reverse_lazy('core:key_parts_house_list')
+
+
+
+def report_photo_delete(request, pk):
+    report_obj=get_object_or_404(SubstepReport, id=pk)
+    report_obj.photo.delete()
+    report_obj.save()
+    messages.success(request, "Successfully deleted")
+
+    return HttpResponseRedirect(reverse('core:substep_report_detail', args=[pk]))
+
+
+
+
 

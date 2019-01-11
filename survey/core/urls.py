@@ -105,5 +105,6 @@ urlpatterns = [
     path('key-parts-house-add/', views.KeyPartsOfHouseCreateView.as_view(), name="key_parts_house_add"),
     path('key-parts-house-edit/<int:pk>/', views.KeyPartsOfHouseUpdateView.as_view(), name="key_parts_house_edit"),
     path('key-parts-house-delete/<int:pk>/', views.KeyPartsOfHouseDeleteView.as_view(), name="key_parts_house_delete"),
+    path('report-photo-delete/<int:pk>/', views.report_photo_delete, name="report_photo_delete"),
 
 ]
