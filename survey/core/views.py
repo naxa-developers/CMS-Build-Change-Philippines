@@ -1026,7 +1026,7 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             report_feedback.save()
 
             message_title = "User " + self.request.user.username + " Sent Feedback " + report_feedback.feedback
-            message_body = report_feedback.report.site.name + " - " + report_feedback.report.step.name + "-" + report_feedback.report.substep.title
+            message_body = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
 
             try:
                 subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
@@ -1040,7 +1040,7 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                     'comment':subreport.comment, 
                     'feedback':request.POST.get('feedback_text')
                     }
-                message = report_feedback.report.site.name + " - " + report_feedback.report.step.name + "-" + report_feedback.report.substep.title
+                message = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
                 FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
             except Exception as e:
                 print(e)
