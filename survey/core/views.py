@@ -684,11 +684,7 @@ class CategoryFormView(CategoryRoleMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.group.name == "Super Admin":
-            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
-            return success_url
-        elif self.request.group.name == "Project Manager":
-            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:category_list', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -705,6 +701,10 @@ class CategoryListView(CategoryRoleMixin, ListView):
         context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
 
         return context
+
+class CategoryDetailView(DetailView):
+    model = Category
+    temlate_name = "core/category_detail.html"
 
 
 class CategoryUpdateView(CategoryRoleMixin, UpdateView):
@@ -726,11 +726,7 @@ class CategoryUpdateView(CategoryRoleMixin, UpdateView):
             return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
-            return success_url
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:category_list', args=(self.object.project.pk,))
             return success_url
 
 
@@ -742,12 +738,7 @@ class CategoryDeleteView(CategoryRoleMixin, DeleteView):
     template_name = "core/category_confirm_delete.html"
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
-            return success_url
-
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:category_list', args=(self.object.project.pk,))
             return success_url
 
 

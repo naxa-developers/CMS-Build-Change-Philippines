@@ -23,6 +23,7 @@ urlpatterns = [
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
     path('category-list/<int:project_id>', views.CategoryListView.as_view(), name="category_list"),
+    path('category-detail/<int:pk>', views.CategoryDetailView.as_view(), name="category_detail"),
     path('category-update/<int:pk>', views.CategoryUpdateView.as_view(), name="category_update"),
     path('category-delete/<int:pk>', views.CategoryDeleteView.as_view(), name="category_delete"),
     path('guideline-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
