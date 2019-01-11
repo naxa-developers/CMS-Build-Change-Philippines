@@ -743,13 +743,14 @@ class CategoryDeleteView(CategoryRoleMixin, DeleteView):
 
 
 class CategoryMaterialView(TemplateView):
-	template_name = 'core/category_material.html'
+    template_name = 'core/category_material.html'
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context['category'] = Category.objects.get(id=self.kwargs['category_pk'])
-		context['category_material'] = Material.objects.filter(category_id=self.kwargs['category_pk'])
-		return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(category=self.kwargs['category_pk'])
+        context['category'] = Category.objects.get(id=self.kwargs['category_pk'])
+        context['category_material'] = Material.objects.filter(category_id=self.kwargs['category_pk'])
+        return context
 
 
 class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
@@ -759,13 +760,14 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
     template_name = "core/material_form.html"
     form_class = MaterialForm
 
-    def get_form(self, form_class=None):
-        form = super(MaterialFormView, self).get_form(form_class=self.form_class)
-        form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
-        return form
+    # def get_form(self, form_class=None):
+    #     form = super(MaterialFormView, self).get_form(form_class=self.form_class)
+    #     form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
+    #     return form
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.instance.category = get_object_or_404(Category, pk=self.kwargs['category_id'])
         form.instance.created_by = self.request.user
         form.save()
         return super().form_valid(form)

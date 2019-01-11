@@ -13,7 +13,7 @@
                         <h4><a href="#" title="">Category Details</a></h4>
                     </div>
                     <div class="widget-body">
-                        {{category.name}}
+                        <a href="{% url 'core:category_material' category.pk %}">{{category.name}}</a>
                     </div>
                 </div>
             </div>

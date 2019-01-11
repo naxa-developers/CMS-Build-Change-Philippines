@@ -124,7 +124,7 @@ tbody td, thead th {
                                     {% for category in category_list %}
                                     <tr>
                                         <td class="filterable-cell">{{forloop.counter}}</td>
-                                        <td class="filterable-cell"><a href="{% url 'core:category_detail' category.pk %}">{{ category }}</a></td>
+                                        <td class="filterable-cell"><a href="{% url 'core:category_material' category.pk %}">{{category.name}}</a></td>
                                         <td class="filterable-cell"><a href="{% url 'core:category_update' category.pk %}">Edit</a></td>
                                         <td class="filterable-cell"><a href="{% url 'core:category_delete' category.pk %}">Delete</a></td>
                                     </tr>

@@ -5,28 +5,77 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
-    <div class="formHolder">
-        <div class="widget-info margin-top-large">
-            <div class="widget-head">
-                <div class="widget-body mt-2 horizontalForm">
-                    <div class="widget-head">
-                        <h4><a href="#" title="">Category-Material</a></h4>
-                    </div>
-                    <div class="widget-body">
-                        {{category.name}}
-                    </div>
-                    <div>
-                        {% for material in category_material %}
 
-                        <h4>{{ forloop.counter }}. {{ material.title }}</h4>
-                        {% endfor %}
-                                <br><br>
-                        
+<style>
+table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 450px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+
+tbody td, thead th {
+    width: 207px;
+    float: left;
+}
+</style>
+
+        <div class="d-flex justify-content-center">
+            <div class="col-md-2 col-lg-9"><a href="{% url 'core:material_create' project.pk category.pk %}" title=""
+                                              class="btn btn-sm btn-xs btn-primary"><i
+                    class="la la-plus"></i>Add New Material</a>
+                <div class="dash-right">
+                    <div class="widget-info margin-top-large">
+                        <!--<div id="table-wrapper">-->
+                            <!--<div id="table-scroll">-->
+                                <table id="gallery" class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Title</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for material in category_material %}
+                                    <tr>
+                                        <td class="filterable-cell">{{forloop.counter}}</td>
+                                        <td class="filterable-cell"><a href="{% url 'core:material_detail' material.pk %}">{{ material.title }}</a></td>
+                                        <td class="filterable-cell"><a href="{% url 'core:material_update' material.pk %}">Edit</a></td>
+                                        <td class="filterable-cell"><a href="{% url 'core:material_delete' material.pk %}">Delete</a></td>
+                                    </tr>
+                                    {%endfor%}
+                                    </tbody>
+                                </table>
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 {% endblock content %}
 {% block  extra_script %}
     {% render_bundle 'project' 'js' %}
