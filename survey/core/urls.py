@@ -31,6 +31,7 @@ urlpatterns = [
     path('guideline-delete/<int:pk>/', views.MaterialDeleteView.as_view(), name="material_delete"),
     path('guideline-detail/<int:pk>', views.MaterialDetailView.as_view(), name="material_detail"),
     path('guideline-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
+    path('category-material/<int:category_pk>', views.CategoryMaterialView.as_view(), name="category_material"),
     path('site-guideline-create/<int:site_id>/', views.SiteMaterialFormView.as_view(), name="site_material_create"),
     path('site-guideline-list/<int:site_id>/', views.SiteMaterialListView.as_view(), name="site_material_list"),
     path('site-guideline-detail/<int:pk>/', views.SiteMaterialDetailView.as_view(), name="site_material_detail"),

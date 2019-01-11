@@ -356,7 +356,7 @@ class ConstructionSubSteps(models.Model):
     title = models.CharField(max_length=250)
     project = models.ForeignKey(Project, related_name="construction_substeps", on_delete=models.CASCADE, null=True, blank=True)
     step = models.ForeignKey(ConstructionSteps, related_name="sub_steps", on_delete=models.CASCADE)
-    description = models.TextField(max_length=300, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     order = models.IntegerField(default=0)
     call_inspector = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)

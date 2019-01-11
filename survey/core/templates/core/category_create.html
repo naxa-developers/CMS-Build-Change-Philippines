@@ -17,27 +17,45 @@
                     <li class="breadcrumb-item active" aria-current="page">Create Category</li>
                 </ol>
             </nav>
-        </div>
-            <div class="col-md-8 col-lg-9">
-                <div class="dash-left">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="widget-info margin-top-large">
-                                <div class="widget-head">
-                                    <h4><a href="#" title="">Category</a></h4>
-                                </div>
-                                <div class="widget-body">
-                                    <form method="post">{% csrf_token %}
-                                        {{ form.as_p }}
-                                        <input type="submit" value="Submit">
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+        <!--</div>-->
+            <!--<div class="col-md-8 col-lg-9">-->
+                <!--<div class="dash-left">-->
+                    <!--<div class="row">-->
+                        <!--<div class="col-md-6">-->
+                            <!--<div class="widget-info margin-top-large">-->
+                                <!--<div class="widget-head">-->
+                                    <!--<h4><a href="#" title="">Category</a></h4>-->
+                                <!--</div>-->
+                                <!--<div class="widget-body">-->
+                                    <!--<form method="post">{% csrf_token %}-->
+                                        <!--{{ form.as_p }}-->
+                                        <!--<input type="submit" value="Submit">-->
+                                    <!--</form>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <div class="widget-head">
+                        <h4><a href="#" title="">Category</a></h4>
+                    </div>
+                    <div class="widget-body">
+                        <h3>Category {% if category %}Edit{% else %}Add{% endif %}</h3>
+                        <form action="" method="POST" enctype="multipart/form-data" novalidate> {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-xs btn-primary">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}

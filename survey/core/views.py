@@ -742,6 +742,16 @@ class CategoryDeleteView(CategoryRoleMixin, DeleteView):
             return success_url
 
 
+class CategoryMaterialView(TemplateView):
+	template_name = 'core/category_material.html'
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['category'] = Category.objects.get(id=self.kwargs['category_pk'])
+		context['category_material'] = Material.objects.filter(category_id=self.kwargs['category_pk'])
+		return context
+
+
 class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
     """
     Material From View

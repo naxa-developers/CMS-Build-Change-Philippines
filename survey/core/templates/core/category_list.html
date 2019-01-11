@@ -6,6 +6,42 @@
 
 {% block content %}
 
+<style>
+table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 450px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+
+tbody td, thead th {
+    width: 207px;
+    float: left;
+}
+</style>
+
     <div class="row no-gutters">
         <div class="col-md-12">
             <nav aria-label="breadcrumb">
@@ -73,8 +109,8 @@
                     class="la la-plus"></i>Add New Category</a>
                 <div class="dash-right">
                     <div class="widget-info margin-top-large">
-                        <div id="table-wrapper">
-                            <div id="table-scroll">
+                        <!--<div id="table-wrapper">-->
+                            <!--<div id="table-scroll">-->
                                 <table id="gallery" class="table table-bordered">
                                     <thead>
                                     <tr>
@@ -95,8 +131,8 @@
                                     {%endfor%}
                                     </tbody>
                                 </table>
-                            </div>
-                        </div>
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
