@@ -42,7 +42,7 @@ class MaterialForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['category'].empty_label = None
+        # self.fields['category'].empty_label = None
         for field in iter(self.fields):
             self.fields[field].widget.attrs.update({
                 'class': 'form-control'
@@ -50,7 +50,7 @@ class MaterialForm(forms.ModelForm):
 
     class Meta:
         model = Material
-        exclude = ('project', 'title_en', 'description_en', 'created_by')
+        exclude = ('project', 'title_en', 'description_en', 'created_by', 'category')
 
 
 class ConstructionSubStepsForm(forms.ModelForm):

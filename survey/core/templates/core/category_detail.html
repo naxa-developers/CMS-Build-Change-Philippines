@@ -1,5 +1,3 @@
-
-
 {% extends '_base.html' %}
 
 {% load static %}
@@ -12,13 +10,10 @@
             <div class="widget-head">
                 <div class="widget-body mt-2 horizontalForm">
                     <div class="widget-head">
-                        <h4><a href="#" title="">Category Delete</a></h4>
+                        <h4><a href="#" title="">Category Details</a></h4>
                     </div>
                     <div class="widget-body">
-                        <form method="POST" action="{% url 'core:category_delete' category.id%}">{% csrf_token %}
-                        Click Yes To Delete {{category.name}}
-                        <button type="submit">YES</button>
-                        </form>
+                        <a href="{% url 'core:category_material' category.pk %}">{{category.name}}</a>
                     </div>
                 </div>
             </div>

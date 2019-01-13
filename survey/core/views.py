@@ -686,11 +686,7 @@ class CategoryFormView(CategoryRoleMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.group.name == "Super Admin":
-            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
-            return success_url
-        elif self.request.group.name == "Project Manager":
-            success_url = reverse_lazy('core:material_create', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:category_list', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -707,6 +703,10 @@ class CategoryListView(CategoryRoleMixin, ListView):
         context['category_list'] = Category.objects.filter(project=self.kwargs['project_id'])
 
         return context
+
+class CategoryDetailView(DetailView):
+    model = Category
+    temlate_name = "core/category_detail.html"
 
 
 class CategoryUpdateView(CategoryRoleMixin, UpdateView):
@@ -728,11 +728,7 @@ class CategoryUpdateView(CategoryRoleMixin, UpdateView):
             return context
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
-            return success_url
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:category_list', args=(self.object.project.pk,))
             return success_url
 
 
@@ -744,13 +740,19 @@ class CategoryDeleteView(CategoryRoleMixin, DeleteView):
     template_name = "core/category_confirm_delete.html"
 
     def get_success_url(self):
-        if self.request.user.user_roles.filter(group__name="Super Admin"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
+            success_url = reverse_lazy('core:category_list', args=(self.object.project.pk,))
             return success_url
 
-        elif self.request.user.user_roles.filter(group__name="Project Manager"):
-            success_url = reverse_lazy('core:project_dashboard', args=(self.object.project.pk,))
-            return success_url
+
+class CategoryMaterialView(TemplateView):
+    template_name = 'core/category_material.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['project'] = Project.objects.get(category=self.kwargs['category_pk'])
+        context['category'] = Category.objects.get(id=self.kwargs['category_pk'])
+        context['category_material'] = Material.objects.filter(category_id=self.kwargs['category_pk'])
+        return context
 
 
 class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
@@ -760,13 +762,14 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
     template_name = "core/material_form.html"
     form_class = MaterialForm
 
-    def get_form(self, form_class=None):
-        form = super(MaterialFormView, self).get_form(form_class=self.form_class)
-        form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
-        return form
+    # def get_form(self, form_class=None):
+    #     form = super(MaterialFormView, self).get_form(form_class=self.form_class)
+    #     form.fields['category'].queryset = form.fields['category'].queryset.filter(project=self.kwargs['project_id'])
+    #     return form
 
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
+        form.instance.category = get_object_or_404(Category, pk=self.kwargs['category_id'])
         form.instance.created_by = self.request.user
         form.save()
         return super().form_valid(form)
@@ -777,11 +780,7 @@ class MaterialFormView(ProjectGuidelineRoleMixin, FormView):
         return context
 
     def get_success_url(self):
-        if self.request.group.name == "Super Admin":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
-            return success_url
-        elif self.request.group.name == "Project Manager":
-            success_url = reverse_lazy('core:project_dashboard', args=(self.kwargs['project_id'],))
+            success_url = reverse_lazy('core:material_list', args=(self.kwargs['project_id'],))
             return success_url
 
 
@@ -1095,6 +1094,14 @@ class SiteReportDeleteView(DeleteView):
         site_id = Site.objects.get(site_reports=self.kwargs['pk']).id
         success_url = reverse_lazy('core:site_report_list', args=[site_id],)
         return success_url
+
+# class PhotoDelete(TemplateView):
+#     template_name = "core/substepreport_list.html"
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['substepreport'] = SubstepReport.objects.
+
 
 
 class SiteReportListView(ReportRoleMixin, ListView):
@@ -1946,8 +1953,8 @@ def ExportChecklistPdf(request):
     for qs in query_set:
         y = 900 - count * 100
         p.drawString(0, y-20, "Title: " + qs.title)
-        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist)
-        p.drawString(0, y+20, "Status: " + qs.status)
+        p.drawString(0, y, "Sub Checklist: " + qs.common_checklist.title)
+        p.drawString(0, y+20, "Status: " + str(qs.status))
         count = count + 1
 
     p.showPage()
@@ -2047,4 +2054,18 @@ class KeyPartsOfHouseDeleteView(DeleteView):
     model = BuildAHouseKeyPartsOfHouse
     template_name = "core/key_parts_house_delete.html"
     success_url = reverse_lazy('core:key_parts_house_list')
+
+
+
+def report_photo_delete(request, pk):
+    report_obj=get_object_or_404(SubstepReport, id=pk)
+    report_obj.photo.delete()
+    report_obj.save()
+    messages.success(request, "Successfully deleted")
+
+    return HttpResponseRedirect(reverse('core:substep_report_detail', args=[pk]))
+
+
+
+
 
