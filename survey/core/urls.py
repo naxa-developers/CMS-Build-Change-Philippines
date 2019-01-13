@@ -23,13 +23,15 @@ urlpatterns = [
     path('steps/<int:is_project>/<int:pk>/', views.SiteStepsView.as_view(), name="site-steps"),
     path('category-create/<int:project_id>/', views.CategoryFormView.as_view(), name="category_create"),
     path('category-list/<int:project_id>', views.CategoryListView.as_view(), name="category_list"),
+    path('category-detail/<int:pk>', views.CategoryDetailView.as_view(), name="category_detail"),
     path('category-update/<int:pk>', views.CategoryUpdateView.as_view(), name="category_update"),
     path('category-delete/<int:pk>', views.CategoryDeleteView.as_view(), name="category_delete"),
-    path('guideline-create/<int:project_id>/', views.MaterialFormView.as_view(), name="material_create"),
+    path('guideline-create/<int:project_id>/<int:category_id>/', views.MaterialFormView.as_view(), name="material_create"),
     path('guideline-update/<int:pk>/', views.MaterialUpdateView.as_view(), name="material_update"),
     path('guideline-delete/<int:pk>/', views.MaterialDeleteView.as_view(), name="material_delete"),
     path('guideline-detail/<int:pk>', views.MaterialDetailView.as_view(), name="material_detail"),
     path('guideline-list/<int:pk>', views.MaterialListView.as_view(), name="material_list"),
+    path('category-material/<int:category_pk>', views.CategoryMaterialView.as_view(), name="category_material"),
     path('site-guideline-create/<int:site_id>/', views.SiteMaterialFormView.as_view(), name="site_material_create"),
     path('site-guideline-list/<int:site_id>/', views.SiteMaterialListView.as_view(), name="site_material_list"),
     path('site-guideline-detail/<int:pk>/', views.SiteMaterialDetailView.as_view(), name="site_material_detail"),
@@ -103,5 +105,6 @@ urlpatterns = [
     path('key-parts-house-add/', views.KeyPartsOfHouseCreateView.as_view(), name="key_parts_house_add"),
     path('key-parts-house-edit/<int:pk>/', views.KeyPartsOfHouseUpdateView.as_view(), name="key_parts_house_edit"),
     path('key-parts-house-delete/<int:pk>/', views.KeyPartsOfHouseDeleteView.as_view(), name="key_parts_house_delete"),
+    path('report-photo-delete/<int:pk>/', views.report_photo_delete, name="report_photo_delete"),
 
 ]
