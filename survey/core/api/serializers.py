@@ -85,15 +85,17 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportFeedback
         fields = ('feedback',)
+        read_only_fields = ('feedback',)
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
     # substep = serializers.IntegerField(source='substep.id')
-    feedback = FeedbackSerializer()
+    feedback = FeedbackSerializer(read_only=True)
 
     class Meta:
         model = SubstepReport
         fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback')
+        read_only_fields = ('status', 'feedback',)
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
@@ -152,12 +154,12 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
 
 class SiteReportsSerializer(serializers.ModelSerializer):
     # site = serializers.CharField(source='site.name')
-    feedback = FeedbackSerializer()
+    feedback = FeedbackSerializer(read_only=True)
 
     class Meta:
         model = SiteReport
         fields = ('id', 'site', 'user', 'comment', 'photo', 'date', 'status', 'feedback',)
-
+        read_only_fields = ('status', 'feedback',)
 
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
