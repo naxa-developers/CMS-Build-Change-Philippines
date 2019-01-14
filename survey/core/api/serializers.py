@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
     ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist,\
-    SiteReport
+    SiteReport, ReportFeedback
 from userrole.models import UserRole, AdminProfile
 
 
@@ -80,12 +80,20 @@ class SubStepsCheckListSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'specification', 'sub_checklists')
 
 
+class FeedbackSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ReportFeedback
+        fields = ('feedback',)
+
+
 class SubstepReportSerializer(serializers.ModelSerializer):
     # substep = serializers.IntegerField(source='substep.id')
+    feedback = FeedbackSerializer()
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date')
+        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback')
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
@@ -144,10 +152,11 @@ class SiteDocumentSerializer(serializers.ModelSerializer):
 
 class SiteReportsSerializer(serializers.ModelSerializer):
     # site = serializers.CharField(source='site.name')
+    feedback = FeedbackSerializer()
 
     class Meta:
         model = SiteReport
-        fields = ('id', 'site', 'user', 'comment', 'photo', 'date', 'status')
+        fields = ('id', 'site', 'user', 'comment', 'photo', 'date', 'status', 'feedback',)
 
 
 class SitesSerializer(serializers.ModelSerializer):

@@ -50,6 +50,7 @@ from django.forms.models import inlineformset_factory
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseNotFound
 from fcm_django.models import FCMDevice
+from django.db import transaction
 
 
 @api_view(['POST'])
@@ -1017,33 +1018,40 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             sub_step.save()
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
 
-        if request.POST.get('feedback_submit'):
-            report_feedback = ReportFeedback()
-            report_feedback.user = self.request.user
-            report_feedback.report = SubstepReport.objects.get(id=self.kwargs['pk'])
-            report_feedback.feedback = request.POST.get('feedback_text')
-            report_feedback.save()
-
-            message_title = "User " + self.request.user.username + " Sent Feedback " + report_feedback.feedback
-            message_body = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
-
+        with transaction.atomic():
             try:
-                subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
-                report_data = {
-                    'report_id':subreport.id,
-                    'user': subreport.user.username,
-                    'status': subreport.status,
-                    'site': subreport.site.name,
-                    'step':subreport.step.step.name,
-                    'substep':subreport.substep.title,
-                    'comment':subreport.comment, 
-                    'feedback':request.POST.get('feedback_text')
-                    }
-                message = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
-                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
+                if request.POST.get('feedback_submit'):
+                    report_feedback = ReportFeedback()
+                    report_feedback.user = self.request.user
+                    report_feedback.feedback = request.POST.get('feedback_text')
+                    report_feedback.save()
+
+                    subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
+                    subreport.feedback = report_feedback
+                    subreport.save()
+
+                    message_title = "User " + self.request.user.username + " Sent Feedback " + report_feedback.feedback
+                    message_body = subreport.site.name + " - " + subreport.step.step.name + " - " + subreport.substep.title
+
+                    try:
+                        subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
+                        report_data = {
+                            'report_id':subreport.id,
+                            'user': subreport.user.username,
+                            'status': subreport.status,
+                            'site': subreport.site.name,
+                            'step':subreport.step.step.name,
+                            'substep':subreport.substep.title,
+                            'comment':subreport.comment, 
+                            'feedback':request.POST.get('feedback_text')
+                            }
+                        message = subreport.site.name + " - " + subreport.step.step.name + "-" + subreport.substep.title
+                        FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
+                    except Exception as e:
+                        print(e)
             except Exception as e:
-                print(e)
-            return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
+                print(e) 
+        return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
 
 
 class SiteReportDetailView(ReportRoleMixin, DetailView):
@@ -1061,29 +1069,45 @@ class SiteReportDetailView(ReportRoleMixin, DetailView):
         return context
     
     def post(self, request, *args, **kwargs):
-        # import ipdb
-        # ipdb.set_trace()
         if request.POST.get('status'):
-            sub_step = SiteReport.objects.get(id=self.kwargs['pk'])
-            sub_step.status=request.POST.get('status')
-            sub_step.save()
+            sitereport = SiteReport.objects.get(id=self.kwargs['pk'])
+            sitereport.status=request.POST.get('status')
+            sitereport.save()
             return HttpResponseRedirect('/core/site-report-detail/%s' %self.kwargs['pk'])
+        
+        with transaction.atomic():
+            try:
+                if request.POST.get('feedback_submit'):
+                    report_feedback = ReportFeedback()
+                    report_feedback.user = self.request.user
+                    report_feedback.feedback = request.POST.get('feedback_text')
+                    report_feedback.save()
 
-        # if request.POST.get('feedback_submit'):
-        #     report_feedback = ReportFeedback()
-        #     report_feedback.user = self.request.user
-        #     report_feedback.report = SiteReport.objects.get(id=self.kwargs['pk'])
-        #     report_feedback.feedback = request.POST.get('feedback_text')
-        #     report_feedback.save()
+                    sitereport = SiteReport.objects.get(id=self.kwargs['pk'])
+                    sitereport.feedback = report_feedback
+                    sitereport.save()
 
-        #     message_title = "User " + self.request.user.username + " Sent Feedback."
-        #     message_body = report_feedback.report.site.name + ""
+                    message_title = "User " + self.request.user.username + " Sent Feedback " + report_feedback.feedback
+                    message_body = sitereport.site.name
 
-        #     try:
-        #         FCMDevice.objects.filter(user=User.objects.get(id=SiteReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'text':'text'})
-        #     except Exception as e:
-        #         print(e)
+                    try:
+                        report_data = {
+                            'report_id':sitereport.id,
+                            'user': sitereport.user.username,
+                            'status': sitereport.status,
+                            'site': sitereport.site.name,
+                            'comment':sitereport.comment, 
+                            'feedback':request.POST.get('feedback_text')
+                            }
+                        message = sitereport.site.name
+                        FCMDevice.objects.filter(user=User.objects.get(id=SiteReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
+                    except Exception as e:
+                        print(e)
+            except Exception as e:
+                print(e)
         return HttpResponseRedirect('/core/site-report-detail/%s' %self.kwargs['pk'])
+
+            
 
 
 class SiteReportDeleteView(DeleteView):
@@ -1136,14 +1160,14 @@ class SubstepReportCreateView(CreateView):
     template_name = "core/substepreport_form.html"
 
     def get_success_url(self):
-        site_id = Site.objects.get(reports=self.kwargs['pk']).id
+        site_id = Site.objects.get(reports=self.object.pk).id
         success_url = reverse_lazy('core:substep_report_list', args=[site_id],) 
         return success_url
 
 
 class SubstepReportUpdateView(UpdateView):
     model = SubstepReport
-    fields = ('user', 'comment', 'photo')
+    fields = ('user', 'site', 'step', 'substep' 'comment', 'photo')
     template_name = "core/substepreport_form.html"
 
     def get_success_url(self):
