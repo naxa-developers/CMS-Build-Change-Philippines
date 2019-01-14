@@ -13,5 +13,6 @@ urlpatterns = [
         path('email-invitation/<int:project_id>/', views.SendInvitationView.as_view(), name="send_invitation"),
         path('thank-you/', views.Thankyou.as_view(), name="thankyou"),
         path('role-delete/<int:pk>', views.RoleDelete.as_view(), name="role_delete"),
+        path('project-manager-edit/<int:pk>', views.AssignProjectManagerPhoneNumber.as_view(), name="assign_phone_number"),
 
 ]

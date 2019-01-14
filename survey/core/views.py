@@ -388,6 +388,8 @@ class ProjectDashboard(ProjectRoleMixin, TemplateView):
         context['construction_steps_list'] = ConstructionSteps.objects.filter(project_id=self.kwargs['project_id']).order_by('order')
         context['total_reports'] = Report.objects.filter(checklist__step__site__project__id=self.kwargs['project_id']).count()
         context['assigned_manager'] = User.objects.filter(user_roles__project=self.kwargs['project_id']).first()
+        context['project_managers'] = UserRole.objects.filter(project_id=self.kwargs['project_id'], group__name="Project Manager").values('user__username', 'pk')
+
 
         project_id=self.kwargs['project_id']
 
@@ -1022,8 +1024,8 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
             report_feedback.feedback = request.POST.get('feedback_text')
             report_feedback.save()
 
-            message_title = "User " + self.request.user.username + " Sent Feedback."
-            message_body = report_feedback.report.site.name + ""
+            message_title = "User " + self.request.user.username + " Sent Feedback " + report_feedback.feedback
+            message_body = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
 
             try:
                 subreport = SubstepReport.objects.get(id=self.kwargs['pk'])
@@ -1037,7 +1039,8 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                     'comment':subreport.comment, 
                     'feedback':request.POST.get('feedback_text')
                     }
-                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data':report_data})
+                message = report_feedback.report.site.name + " - " + report_feedback.report.step.step.name + "-" + report_feedback.report.substep.title
+                FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
             except Exception as e:
                 print(e)
             return HttpResponseRedirect('/core/substep-report-detail/%s' %self.kwargs['pk'])
