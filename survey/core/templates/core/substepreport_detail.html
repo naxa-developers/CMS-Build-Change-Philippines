@@ -96,8 +96,8 @@
                     </tbody>
                 </table>
                 <div>
-                    {% if object.report_feedback %}
-                        {{ object.report_feedback }}
+                    {% if object.feedback %}
+                        {{ object.feedback.feedback }}
                     {% else %}
                         <form name="feedback" method="POST">{% csrf_token %}
                             <input name='feedback_text' id='feedback' placeholder="Enter Your Feedback">
