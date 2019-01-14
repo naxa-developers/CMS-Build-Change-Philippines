@@ -71,6 +71,7 @@
                                 <div id="photo">
                                     <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
                                 </div>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right"><small><i class="la la-close"></i></small></a>
                                 {% endif %}<br>
                                 {% if object.comment %}
                                     <div class="site_icon_float" style="">Message: {{ object.comment }}</div><br>
