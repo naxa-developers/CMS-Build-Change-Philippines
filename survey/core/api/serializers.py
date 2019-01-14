@@ -85,6 +85,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReportFeedback
         fields = ('feedback',)
+        extra_kwargs = {'feedback':{'read_only': True}}
 
 
 class SubstepReportSerializer(serializers.ModelSerializer):
@@ -94,6 +95,8 @@ class SubstepReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubstepReport
         fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback')
+        extra_kwargs = {'status': {'read_only': True}}
+        extra_kwargs = {'feedback':{'read_only': True}}
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):
@@ -157,7 +160,8 @@ class SiteReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteReport
         fields = ('id', 'site', 'user', 'comment', 'photo', 'date', 'status', 'feedback',)
-
+        extra_kwargs = {'status': {'read_only': True}}
+        extra_kwargs = {'feedback':{'read_only': True}}
 
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
