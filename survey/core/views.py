@@ -1734,7 +1734,7 @@ class ConstructionSitetepsList(TemplateView):
         context['checked_steps'] = checked_steps
         context['unchecked_steps'] = unchecked_steps.difference(checked_steps)
         context['site'] = get_object_or_404(Site, id=self.kwargs['site_id'])
-        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id'])
+        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id']).order_by('step__order')
 
         return context
 
