@@ -61,7 +61,7 @@ class SiteRoleMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if request.group.name == "Super Admin":
+        if request.group.name == "Super Admin" or request.group.name == "Project Manager":
             return super(SiteRoleMixin, self).dispatch(request, *args, **kwargs)
 
         elif self.kwargs.get('pk'):
@@ -195,7 +195,7 @@ class ReportRoleMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if request.group.name == "Super Admin":
+        if request.group.name == "Super Admin" or request.group.name == "Project Manager":
             return super(ReportRoleMixin, self).dispatch(request, *args, **kwargs)
 
         elif self.kwargs.get('site_pk'):
