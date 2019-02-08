@@ -988,7 +988,8 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reports'] = SubstepReport.objects.all()
+        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
         context['site'] = Site.objects.get(id=self.kwargs['pk'])
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
