@@ -68,8 +68,8 @@
                                     <strong>{{ object.comment }}</strong>
                                 </div>
                                  {% if object.photo %}
-                                <div id="photo">
-                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
+                                <div class="photo-item" id="photo">
+                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="Hello" >
                                 </div>
                                 <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right"><small><i class="la la-close"></i></small></a>
                                 {% endif %}<br>
@@ -104,7 +104,41 @@
             </div>
         </div>
     </div>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h6 class="modal-title">&nbsp;</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
+        <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
 {% endblock extra_script %}

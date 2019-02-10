@@ -3,12 +3,6 @@
 {% load static %}
 {% load render_bundle from webpack_loader %}
 {% load get_files from webpack_loader %}
-{% block extra_css %}
-<style>.widget-info .widget-body {
-    max-height: 300px;
-    overflow-y: scroll;
-</style>
-{% endblock %}
 
 
 {% block content %}
@@ -38,7 +32,7 @@
                                         {% if picture.0 %}
 
                                         <div class="col-md-4">
-                                            <div class="photo-holder photo-item margin-top">
+                                            <div class="photo-holder photo-item margin-top photo-item">
                                                 <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
                                             </div>
                                         </div>
@@ -74,4 +68,22 @@
 {% endblock %}
 {% block  extra_script %}
     {% render_bundle 'project' 'js' %}
+    <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
 {% endblock extra_script %}
