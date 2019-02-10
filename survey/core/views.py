@@ -1,6 +1,7 @@
 import os
 import zipfile
 import csv
+import xlwt
 import io
 import reportlab
 from django.contrib.auth.models import User
@@ -932,17 +933,47 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-def ExportReport(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = SubstepReport.objects.all()
+# def ExportReport(request):
+#     output = []
+#     response = HttpResponse(content_type='application/xls')
+#     writer = csv.writer(response, csv.excel)
+#     response.write(u'\ufeff'.encode('utf8'))
+#     query_set = SubstepReport.objects.all()
+#
+#     writer.writerow(['User', 'Comment', 'Date'])
+#     for query in query_set:
+#         writer.writerow([query.user, query.comment, query.date])
+#     # CSV Data
+#     return response
 
-    writer.writerow(['User', 'Comment', 'Date'])
-    for query in query_set:
-        writer.writerow([query.user, query.comment, query.date])
-    # CSV Data
+def ExportReport(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('SubstepReport')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['User', 'Comment', 'Date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = SubstepReport.objects.all().values_list('user', 'comment', 'date')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportPdf(request):
@@ -962,21 +993,6 @@ def ExportPdf(request):
     p.showPage()
     p.save()
     return response
-
-    # fs = FileSystemStorage()
-    # filename = 'download.pdf'
-    # query_set = SubstepReport.objects.all()
-    #
-    # with fs.open(filename, 'w') as pdf:
-    #     for qs in query_set:
-    #         pdf.write(qs.user.username + '\n' + qs.comment + '\n' + str(qs.date))
-    #     pdf.close()
-    #
-    # with fs.open(filename, 'r') as pdf:
-    #     response = HttpResponse(pdf, content_type='text/pdf')
-    #     response['Content-Disposition'] = 'filename=download.pdf'
-    #     pdf.close()
-    #     return response
 
 
 class SubstepReportListView(ReportRoleMixin, ListView):
@@ -1955,17 +1971,47 @@ class CheckListAllView(TemplateView):
         context['checklists_lists'] = checklists
         return context
 
+# def export(request):
+#     output = []
+#     response = HttpResponse(content_type='application/xls')
+#     writer = csv.writer(response, csv.excel)
+#     response.write(u'\ufeff'.encode('utf8'))
+#     query_set = NewSubStepChecklist.objects.all()
+#     # Header
+#     writer.writerow(['Title', 'Sub Checklist', 'Status'])
+#     for query in query_set:
+#         writer.writerow([query.title, query.common_checklist, query.status])
+#     # CSV Data
+#     return response
+
 def export(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = NewSubStepChecklist.objects.all()
-    # Header
-    writer.writerow(['Title', 'Sub Checklist', 'Status'])
-    for query in query_set:
-        writer.writerow([query.title, query.common_checklist, query.status])
-    # CSV Data
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('NewSubStepChecklist')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Title', 'Sub Checklist', 'Status']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = NewSubStepChecklist.objects.all().values_list('title', 'common_checklist', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportChecklistPdf(request):
