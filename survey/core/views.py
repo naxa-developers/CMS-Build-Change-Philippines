@@ -1,5 +1,6 @@
 import os
 import zipfile
+from itertools import chain
 import csv
 import xlwt
 import io
@@ -546,8 +547,12 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
-        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
@@ -933,19 +938,6 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-# def ExportReport(request):
-#     output = []
-#     response = HttpResponse(content_type='application/xls')
-#     writer = csv.writer(response, csv.excel)
-#     response.write(u'\ufeff'.encode('utf8'))
-#     query_set = SubstepReport.objects.all()
-#
-#     writer.writerow(['User', 'Comment', 'Date'])
-#     for query in query_set:
-#         writer.writerow([query.user, query.comment, query.date])
-#     # CSV Data
-#     return response
-
 def ExportReport(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="report.xls"'
@@ -1004,8 +996,12 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
-        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
         context['site'] = Site.objects.get(id=self.kwargs['pk'])
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
