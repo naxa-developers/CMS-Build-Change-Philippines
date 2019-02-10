@@ -26,32 +26,25 @@
                     <div class="col-md-12">
                         <div class="dash-right">
                             <div class="widget-info margin-top-large">
+                                <div class="widget-body no-padding-top" data-mh="sd-widget">
+                                    <div class="row">
+                                        {% for picture in site_pictures %}
+                                        {% if picture.0 %}
 
-                        <div class="widget-body no-padding-top" data-mh="sd-widget">
-                            <div class="row">
-                                {% for picture in site_pictures %}
-                                {% if picture.0 %}
-
-                                <div class="col-md-4">
-                                    <div class="photo-holder photo-item margin-top">
-                                        <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
-
+                                        <div class="col-md-4">
+                                            <div class="photo-holder photo-item margin-top photo-item">
+                                                <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% empty %}
+                                        <p>No Pictures Found.</p>
+                                        {% endfor %}
                                     </div>
-
                                 </div>
-                                {% endif %}
-
-                                {% empty %}
-                                <p>No Pictures Found.</p>
-                                {% endfor %}
-
-
-                            </div>
-                        </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -75,4 +68,22 @@
 {% endblock %}
 {% block  extra_script %}
     {% render_bundle 'project' 'js' %}
+    <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
 {% endblock extra_script %}

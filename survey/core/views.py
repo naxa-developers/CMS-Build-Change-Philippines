@@ -1,6 +1,8 @@
 import os
 import zipfile
+from itertools import chain
 import csv
+import xlwt
 import io
 import reportlab
 from django.contrib.auth.models import User
@@ -545,8 +547,12 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
-        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
@@ -678,7 +684,7 @@ class CategoryFormView(CategoryRoleMixin, FormView):
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         form.save()
-        return super(). form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -933,16 +939,33 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
 
 
 def ExportReport(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = SubstepReport.objects.all()
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
 
-    writer.writerow(['User', 'Comment', 'Date'])
-    for query in query_set:
-        writer.writerow([query.user, query.comment, query.date])
-    # CSV Data
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('SubstepReport')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['User', 'Comment', 'Date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = SubstepReport.objects.all().values_list('user', 'comment', 'date')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportPdf(request):
@@ -963,21 +986,6 @@ def ExportPdf(request):
     p.save()
     return response
 
-    # fs = FileSystemStorage()
-    # filename = 'download.pdf'
-    # query_set = SubstepReport.objects.all()
-    #
-    # with fs.open(filename, 'w') as pdf:
-    #     for qs in query_set:
-    #         pdf.write(qs.user.username + '\n' + qs.comment + '\n' + str(qs.date))
-    #     pdf.close()
-    #
-    # with fs.open(filename, 'r') as pdf:
-    #     response = HttpResponse(pdf, content_type='text/pdf')
-    #     response['Content-Disposition'] = 'filename=download.pdf'
-    #     pdf.close()
-    #     return response
-
 
 class SubstepReportListView(ReportRoleMixin, ListView):
     """
@@ -988,7 +996,12 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reports'] = SubstepReport.objects.all()
+        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
         context['site'] = Site.objects.get(id=self.kwargs['pk'])
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
@@ -1734,7 +1747,7 @@ class ConstructionSitetepsList(TemplateView):
         context['checked_steps'] = checked_steps
         context['unchecked_steps'] = unchecked_steps.difference(checked_steps)
         context['site'] = get_object_or_404(Site, id=self.kwargs['site_id'])
-        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id'])
+        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id']).order_by('step__order')
 
         return context
 
@@ -1954,17 +1967,47 @@ class CheckListAllView(TemplateView):
         context['checklists_lists'] = checklists
         return context
 
+# def export(request):
+#     output = []
+#     response = HttpResponse(content_type='application/xls')
+#     writer = csv.writer(response, csv.excel)
+#     response.write(u'\ufeff'.encode('utf8'))
+#     query_set = NewSubStepChecklist.objects.all()
+#     # Header
+#     writer.writerow(['Title', 'Sub Checklist', 'Status'])
+#     for query in query_set:
+#         writer.writerow([query.title, query.common_checklist, query.status])
+#     # CSV Data
+#     return response
+
 def export(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = NewSubStepChecklist.objects.all()
-    # Header
-    writer.writerow(['Title', 'Sub Checklist', 'Status'])
-    for query in query_set:
-        writer.writerow([query.title, query.common_checklist, query.status])
-    # CSV Data
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('NewSubStepChecklist')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Title', 'Sub Checklist', 'Status']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = NewSubStepChecklist.objects.all().values_list('title', 'common_checklist', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportChecklistPdf(request):
