@@ -951,7 +951,7 @@ def ExportReport(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['User', 'Comment', 'Date']
+    columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -959,7 +959,9 @@ def ExportReport(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = SubstepReport.objects.all().values_list('user', 'comment', 'date')
+    substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+    site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+    rows = list(chain(substep_report, site_report))
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
@@ -2001,7 +2003,7 @@ def export(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    rows = NewSubStepChecklist.objects.all().values_list('title', 'common_checklist', 'status')
+    rows = NewSubStepChecklist.objects.all().values_list('title', 'common_checklist__title', 'status')
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):

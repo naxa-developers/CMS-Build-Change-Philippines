@@ -470,7 +470,7 @@ class SubstepReport(models.Model):
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
     photo = models.ImageField(upload_to='reports/', null=True, blank=True)
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
 
