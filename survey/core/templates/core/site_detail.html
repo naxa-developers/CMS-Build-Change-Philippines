@@ -199,6 +199,7 @@
                         <div class="widget-body" data-mh="sd-widget">
                             <div class="update-wrap">
                                 <ul class="submission-list">
+                                    {% if substep_report %}
                                     {% for report in reports %}
                                     <li>
                                         {% if report.photo %}
@@ -218,6 +219,27 @@
                                     {% empty %}
                                     No Reports Found.
                                     {% endfor %}
+                                    {% else %}
+                                    {% for report in reports %}
+                                    <li>
+                                        {% if report.photo %}
+                                        <img src="{{ MEDIA_URL }} {{ report.photo.url }}" alt="">
+
+                                        {% endif %}
+                                        <a title="View submission detail"
+                                           href="{% url 'core:site_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>{{ report.user }}</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i>{{ report.date}}
+                                        </small>
+                                    </li>
+                                    {% empty %}
+                                    No Reports Found.
+                                    {% endfor %}
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>

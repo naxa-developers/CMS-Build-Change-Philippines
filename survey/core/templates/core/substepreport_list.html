@@ -97,8 +97,8 @@
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
                                                 </div>
                                                  {% if report.photo %}
-                                                <div id="photo">
-                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
+                                                <div id="photo" class="photo-item">
+                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="Hello">
                                                 </div>
                                                 {% endif %}<br>
                                                 {% if report.comment %}
@@ -125,9 +125,42 @@
                 </div>
             </div>
        </div>
-
      </div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h6 class="modal-title">&nbsp;</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
+    <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
 {% endblock extra_script %}
