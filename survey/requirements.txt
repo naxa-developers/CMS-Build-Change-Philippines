@@ -15,3 +15,4 @@ django-map-widgets==0.1.9
 django-import-export==1.1.0
 img2pdf
 fcm-django==0.2.21
+reportlab==3.5.12
