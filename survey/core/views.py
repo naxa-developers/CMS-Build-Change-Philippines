@@ -951,7 +951,8 @@ def ExportReport(request):
     font_style = xlwt.XFStyle()
     font_style.font.bold = True
 
-    columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
+    # columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
+    columns = ['User', 'Site', 'Step', 'Substep', 'Comment', 'Photo', 'Status', 'Feedback']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -959,9 +960,14 @@ def ExportReport(request):
     # Sheet body, remaining rows
     font_style = xlwt.XFStyle()
 
-    substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
-    site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
-    rows = list(chain(substep_report, site_report))
+    # substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+    # site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+   
+    substep_report = SubstepReport.objects.all().values_list('user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'photo', 'status', 'feedback__feedback')
+
+    # rows = list(chain(substep_report, site_report))
+
+    rows = list(substep_report)
     for row in rows:
         row_num += 1
         for col_num in range(len(row)):
