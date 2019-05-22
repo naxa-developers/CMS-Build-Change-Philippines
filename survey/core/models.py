@@ -463,6 +463,13 @@ class SiteReport(models.Model):
         ordering = ('-date',)
 
 
+REPORT_CATEGORY = [
+    (0, 'Progress update'),
+    (1, 'Issues/Concerns'),
+    (2, 'Questions/Inquiries'),
+]
+
+
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="reports", null=True, blank=True)
@@ -473,6 +480,7 @@ class SubstepReport(models.Model):
     date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
+    category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
 
     def __str__(self):
         return self.comment
