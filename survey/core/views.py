@@ -998,7 +998,14 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        # substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        # site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        # result_list = sorted(
+        #     chain(substep_report, site_report),
+        #     key=lambda instance: instance.date, reverse=True)
+        # context['reports'] = result_list
+
+        substep_report = SubstepReport.objects.filter(category=0)
         site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
         result_list = sorted(
             chain(substep_report, site_report),
