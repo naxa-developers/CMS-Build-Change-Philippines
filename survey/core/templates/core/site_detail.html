@@ -239,7 +239,7 @@
                             <ul class="row">
                                 {% for document in site_documents %}
                                 <li class="col-md-6">
-                                    <a href="#" class="plan-item margin-top"
+                                    <a href="{{ document.file.url }}" class="plan-item margin-top"
                                        title="{{ document.get_name }}">
                                         <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
                                         {{ document.get_name }}
