@@ -94,7 +94,7 @@ class SubstepReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback')
+        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback', 'category')
         read_only_fields = ('status', 'feedback',)
 
 
