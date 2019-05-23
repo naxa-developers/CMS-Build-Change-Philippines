@@ -1004,6 +1004,22 @@ class SubstepReportListView(ReportRoleMixin, ListView):
             chain(substep_report, site_report),
             key=lambda instance: instance.date, reverse=True)
         context['reports'] = result_list
+
+        substep_report1 = SubstepReport.objects.filter(category=1)
+        site_report1 = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list1 = sorted(
+            chain(substep_report1, site_report1),
+            key=lambda instance: instance.date, reverse=True)
+        context['report1'] = result_list1
+
+
+        substep_report2 = SubstepReport.objects.filter(category=2)
+        site_report2 = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list2 = sorted(
+            chain(substep_report2, site_report2),
+            key=lambda instance: instance.date, reverse=True)
+        context['report2'] = result_list2
+
         context['site'] = Site.objects.get(id=self.kwargs['pk'])
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
