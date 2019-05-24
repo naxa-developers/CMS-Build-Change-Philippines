@@ -70,16 +70,21 @@
                                  {% if object.photo %}
 
                                 <div class="photo-item" id="photo">
-                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="Hello">
+                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="">
 
                                 </div>
                                 <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right" ><small><i class="la la-close"></i></small></a>
 
 
                                 {% endif %}<br>
-                                {% if object.comment %}
-                                    <div class="site_icon_float" style="">Message: {{ object.comment }}</div><br>
+                                {% if object.step %}
+                                    <div class="site_icon_float" style="">Step: {{ object.step }}</div><br>
                                 {% endif %}
+
+                                {% if object.substep %}
+                                    <div class="site_icon_float" style="">Substep: {{ object.substep }}</div><br>
+                                {% endif %}
+
                                 {% if object.user %}
                                     <a href="#" title="View details of user">
                                         <small><i class="la la-user" style="color:grey;">Sent by: {{ object.user }}</i></small>
