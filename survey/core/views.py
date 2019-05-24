@@ -952,7 +952,7 @@ def ExportReport(request):
     font_style.font.bold = True
 
     # columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
-    columns = ['User', 'Site', 'Step', 'Substep', 'Comment', 'Photo', 'Status', 'Feedback']
+    columns = ['Date', 'User', 'School', 'Step', 'Substep', 'User Report', 'Reply', 'Photo']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -963,7 +963,7 @@ def ExportReport(request):
     # substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
     # site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
    
-    substep_report = SubstepReport.objects.all().values_list('user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'photo', 'status', 'feedback__feedback')
+    substep_report = SubstepReport.objects.all().values_list('date', 'user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'feedback__feedback', 'photo')
 
     # rows = list(chain(substep_report, site_report))
 
@@ -985,9 +985,14 @@ def ExportPdf(request):
     count = 0
     for qs in query_set:
         y = 900 - count * 100
-        p.drawString(0, y-20, "User: " + qs.user.username)
-        p.drawString(0, y, "Message: " + qs.comment)
-        p.drawString(0, y+20, "Date: " + str(qs.date))
+        p.drawString(0, y+30, "Date: " + str(qs.date))
+        p.drawString(0, y+20, "User: " + qs.user.username)
+        p.drawString(0, y+10, "School: " + qs.site.name)
+        p.drawString(0, y, "Step: " + qs.step.step.name)
+        p.drawString(0, y-10, "Substep: " + qs.substep.title)
+        p.drawString(0, y-20, "User Report: " + qs.comment)
+        p.drawString(0, y-30, "Reply: " + str(qs.feedback))
+        p.drawString(0, y-40, "Photo: " + str(qs.photo))
         count = count + 1
 
     p.showPage()
