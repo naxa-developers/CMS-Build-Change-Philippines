@@ -30,6 +30,18 @@ PROJECT_TYPES = (
     (2, 'Others'),
 )
 
+REPORT_CATEGORY = [
+    (0, 'Progress update'),
+    (1, 'Issues/Concerns'),
+    (2, 'Questions/Inquiries'),
+]
+
+REPORT_TYPE = [
+    ('Urgent', 'Urgent'),
+    ('Update', 'Update'),
+    ('Alert', 'Alert'),
+]
+
 
 class OverwriteStorage(FileSystemStorage):
 
@@ -446,7 +458,10 @@ class SiteReport(models.Model):
     date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='site_feedback', on_delete=models.CASCADE, null=True, blank=True)
-    
+    type = models.CharField(max_length=100, choices=REPORT_TYPE, default=0)
+    category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
+
+
     def __str__(self):
         return self.comment
 
@@ -463,11 +478,7 @@ class SiteReport(models.Model):
         ordering = ('-date',)
 
 
-REPORT_CATEGORY = [
-    (0, 'Progress update'),
-    (1, 'Issues/Concerns'),
-    (2, 'Questions/Inquiries'),
-]
+
 
 
 class SubstepReport(models.Model):
@@ -481,6 +492,7 @@ class SubstepReport(models.Model):
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
     category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
+
 
     def __str__(self):
         return self.comment
