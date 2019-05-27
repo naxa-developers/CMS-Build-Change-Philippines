@@ -469,6 +469,12 @@ REPORT_CATEGORY = [
     (2, 'Questions/Inquiries'),
 ]
 
+REPORT_TYPE = [
+    ('Urgent', 'Urgent'),
+    ('Update', 'Update'),
+    ('Alert', 'Alert'),
+]
+
 
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
@@ -481,6 +487,7 @@ class SubstepReport(models.Model):
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
     category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
+    type = models.CharField(max_length=100, choices=REPORT_TYPE, default=0)
 
     def __str__(self):
         return self.comment

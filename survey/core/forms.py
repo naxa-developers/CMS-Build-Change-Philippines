@@ -187,7 +187,7 @@ class SubstepReportForm(forms.ModelForm):
 
     class Meta:
         model = SubstepReport
-        fields = ('user', 'site', 'step', 'substep', 'comment', 'photo',)
+        fields = ('user', 'site', 'step', 'substep', 'comment', 'photo', 'category', 'type')
 
 
 class ReportFeedbackForm(forms.ModelForm):
