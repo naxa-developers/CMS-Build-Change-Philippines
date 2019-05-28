@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from core.models import Project, Site, Step, Checklist, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, \
     ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, NewSubStepChecklist, SubstepReport, GoodPhoto, BadPhoto, CallLog, NewCommonSubStepChecklist,NewSubStepChecklist,\
-    SiteReport, ReportFeedback
+    SiteReport, ReportFeedback, Images
 from userrole.models import UserRole, AdminProfile
 
 
@@ -94,8 +94,15 @@ class SubstepReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubstepReport
-        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'photo', 'date', 'feedback', 'category', 'type')
+        fields = ('id', 'site', 'step', 'substep', 'user', 'comment', 'status', 'date', 'feedback', 'category', 'type')
         read_only_fields = ('status', 'feedback',)
+
+
+class ImagesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Images
+        fields = ('image', 'substepreport')
 
 
 class ConstructionSubstepSerializer(serializers.ModelSerializer):

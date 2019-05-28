@@ -17,6 +17,10 @@ from rest_framework.authtoken.models import Token
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
+
 LOG_ACTIONS = (
         ('phoned_to', 'phoned to'),
         ('submitted_a_response', 'submitted a response for general form'),
@@ -482,7 +486,7 @@ class SubstepReport(models.Model):
     step = models.ForeignKey(SiteSteps, related_name="reports", on_delete=models.CASCADE, null=True, blank=True)
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='reports/', null=True, blank=True)
+    # photo = models.ImageField(upload_to='reports/', null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
@@ -501,9 +505,12 @@ class SubstepReport(models.Model):
             notification.read = False
             notification.save()
 
-
     class Meta:
         ordering = ('-date',)
+
+class Images(models.Model):
+    substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None)
+    image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 
 class Notification(models.Model):
