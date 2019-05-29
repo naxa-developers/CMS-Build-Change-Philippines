@@ -16,7 +16,6 @@ router.register(r'checklist', viewset.ChecklistViewset, base_name='checklist-api
 router.register(r'step', viewset.StepViewset, base_name='step-api')
 router.register(r'material', viewset.MaterialViewset, base_name='material-api')
 router.register(r'report', viewset.ReportViewset, base_name='checklist-report')
-router.register(r'images', viewset.ImagesViewset, base_name='images')
 router.register(r'site-report', viewset.SiteReportsViewSet, base_name='site-report')
 router.register(r'call-log', viewset.CallLogViewset, base_name='call_log')
 
@@ -25,6 +24,7 @@ router.register(r'call-log', viewset.CallLogViewset, base_name='call_log')
 urlpatterns = [
     path('', include(router.urls)),
     path('api-token-auth/', views.token),
+    path('report-image', views.ReportImage),
     path('list-steps/<int:is_project>/<int:pk>/',
          viewset.ProjectSiteStepsViewSet.as_view({'get':  'list'})),
     path('step-list/<int:site>/', viewset.StepViewset.as_view({'get': 'list',}), name="api_steps"),

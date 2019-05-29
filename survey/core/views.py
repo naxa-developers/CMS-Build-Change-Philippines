@@ -89,6 +89,33 @@ def token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@api_view(['POST'])
+def ReportImage(request):
+
+    try:
+        sub = request.POST.get('substepreport')
+        images = request.POST.get('images')
+
+        if sub.is_valid() and image.is_valid():
+            sub = SubstepReport.objects.create(user=request.post['user'], site=request.post['site'], step=request.post['step'], 
+                                subset=request.post['substep'], comment=request.post['comment'],  status=request.post['status'])
+            for image in images:
+                image = Images.objects.create(substepreport=sub, image=request.post['images'])
+
+            return Response({
+                'msg': 'Successfully Reported'
+                }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'msg': 'Invalid Report',
+            'data': request.POST
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 def project_material_photos(request, project_id):
 
     # response = HttpResponse(content_type='application/zip')

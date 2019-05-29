@@ -14,7 +14,7 @@ from core.models import Checklist, Step, Project, Material, Report, Category, Si
 HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
 StandardSchoolDesignPDF, CallLog, NewSubStepChecklist, SiteReport, Images
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
-    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer, ImagesSerializer,\
+    SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer,\
     SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer, NewSubStepChecklistSerializer, SiteReportsSerializer
 
 # from fcm.utils import get_device_model
@@ -130,10 +130,6 @@ class ReportViewset(viewsets.ModelViewSet):
     serializer_class = SubstepReportSerializer
     queryset = SubstepReport.objects.all()
 
-
-class ImagesViewset(viewsets.ModelViewSet):
-    serializer_class = ImagesSerializer
-    queryset = Images.objects.all()
 
 
 class SiteReportsViewSet(viewsets.ModelViewSet):
