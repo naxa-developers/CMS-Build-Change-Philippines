@@ -557,7 +557,7 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')[:10]
+        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
@@ -952,7 +952,7 @@ def ExportReport(request):
     font_style.font.bold = True
 
     # columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
-    columns = ['Date', 'User', 'School', 'Step', 'Substep', 'User Report', 'Reply', 'Photo']
+    columns = ['Date', 'User', 'School', 'Step', 'Substep', 'User Report', 'Reply']
 
     for col_num in range(len(columns)):
         ws.write(row_num, col_num, columns[col_num], font_style)
@@ -963,7 +963,7 @@ def ExportReport(request):
     # substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
     # site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
    
-    substep_report = SubstepReport.objects.all().values_list('date', 'user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'feedback__feedback', 'photo')
+    substep_report = SubstepReport.objects.all().values_list('date', 'user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'feedback__feedback')
 
     # rows = list(chain(substep_report, site_report))
 
@@ -992,7 +992,7 @@ def ExportPdf(request):
         p.drawString(0, y-10, "Substep: " + qs.substep.title)
         p.drawString(0, y-20, "User Report: " + qs.comment)
         p.drawString(0, y-30, "Reply: " + str(qs.feedback))
-        p.drawString(0, y-40, "Photo: " + str(qs.photo))
+        # p.drawString(0, y-40, "Photo: " + str(qs.photo))
         count = count + 1
 
     p.showPage()

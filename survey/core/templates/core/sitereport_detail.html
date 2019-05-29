@@ -67,12 +67,12 @@
                                 <div>
                                     <strong>{{ object.comment }}</strong>
                                 </div>
-                                 {% if object.photo %}
+ <!--                                 {% if object.photo %}
                                 <div class="photo-item" id="photo">
                                     <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="Hello" >
                                 </div>
                                 <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right"><small><i class="la la-close"></i></small></a>
-                                {% endif %}<br>
+                                {% endif %}<br> -->
                                 {% if object.comment %}
                                     <div class="site_icon_float" style="">Message: {{ object.comment }}</div><br>
                                 {% endif %}
