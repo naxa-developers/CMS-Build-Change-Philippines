@@ -94,24 +94,30 @@ def token(request):
 def ReportImage(request):
 
     try:
-        sub = request.POST.get('substepreport')
-        images = request.POST.get('images')
+        # print(request.POST)
+        # sub = request.POST.get('substepreport')
+        # images = request.POST.get('images')
 
-        if sub.is_valid() and image.is_valid():
-            sub = SubstepReport.objects.create(user=request.post['user'], site=request.post['site'], step=request.post['step'], 
-                                subset=request.post['substep'], comment=request.post['comment'],  status=request.post['status'])
-            for image in images:
-                image = Images.objects.create(substepreport=sub, image=request.post['images'])
+        user = User.objects.get(id=1)
+        site = Site.objects.get(id=2)
+        step = SiteSteps.objects.get(id=3)
+        substep = ConstructionSubSteps.objects.get(id=2)
 
-            return Response({
-                'msg': 'Successfully Reported'
-                }, status=status.HTTP_200_OK)
+        print(request.POST)
+
+        sub = SubstepReport.objects.create(user_id=int(request.POST['user']), site_id=int(request.POST['site']), step_id=int(request.POST['step']), 
+                            substep_id=int(request.POST['substep']), comment=request.POST['comment'],  status=int(request.POST['status']))
+        for image in images:
+            image = Images.objects.create(substepreport=sub, image=request.post['images'])
+
+        return Response({
+            'msg': 'Successfully Reported'
+            }, status=status.HTTP_200_OK)
 
     except Exception as e:
         return Response({
             'error': str(e),
             'msg': 'Invalid Report',
-            'data': request.POST
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
