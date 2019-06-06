@@ -7,10 +7,10 @@ import io
 import reportlab
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
-from django.shortcuts import reverse, get_object_or_404
+from django.shortcuts import reverse, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
@@ -89,6 +89,22 @@ def token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET'])
+def Verify(request):
+
+    u = User.objects.get(id=2)
+
+    role = UserRole.objects.filter(user=u, user_roles__group__name='Community Member').exists()
+    vrole = UserRole.objects.get(user=u)
+    if role:                
+        if(vrole.verified == True):
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+    else:
+        return JsonResponse({'error': 'You do not have any role assigned'})
+
 
 @api_view(['POST'])
 def ReportImage(request):
@@ -102,8 +118,6 @@ def ReportImage(request):
         site = Site.objects.get(id=2)
         step = SiteSteps.objects.get(id=3)
         substep = ConstructionSubSteps.objects.get(id=2)
-
-        print(request.POST)
 
         sub = SubstepReport.objects.create(user_id=int(request.POST['user']), site_id=int(request.POST['site']), step_id=int(request.POST['step']), 
                             substep_id=int(request.POST['substep']), comment=request.POST['comment'],  status=int(request.POST['status']))
@@ -526,8 +540,40 @@ class Dashboard(SuperAdminMixin, TemplateView):
         context['projects'] = Project.objects.all()
         context['total_projects'] = Project.objects.all().count()
         context['users'] = User.objects.all()[:20]
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member')
         context['total_project_managers'] = User.objects.filter(user_roles__group__name='Project Manager').count()
         return context
+
+class ManageCommunity(TemplateView):
+    """
+    Manage verification for Community Members
+    """
+    template_name = 'core/community_member.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()[:20]
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member')
+        return context
+
+    
+def ChangeCMStatus(request, pk, **kwargs):
+
+    obj = UserRole.objects.get(user_id=pk, group__name='Community Member')
+    status = obj.verified
+
+    if(status == True):
+        obj.verified = False
+        obj.save()
+
+    else:
+        obj.verified = True
+        obj.save()    
+
+    return HttpResponseRedirect('/core/manage-community')
+
+    # return render(request, "core/community_member.html")
+
 
 
 class SiteCreateView(SiteRoleMixin, CreateView):

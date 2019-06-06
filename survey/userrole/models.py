@@ -11,6 +11,7 @@ class UserRole(models.Model):
     project = models.ForeignKey(Project, null=True, blank=True, related_name="project_roles", on_delete=models.SET_NULL)
     site = models.ForeignKey(Site, null=True, blank=True, related_name="site_roles", on_delete=models.SET_NULL)
     extra = JSONField(null=True, blank=True)
+    verified = models.BooleanField(default=False)
 
     # def clean(self):
     #     if self.group.name in ['Field Engineer', 'Community Member'] and not self.site_id:
