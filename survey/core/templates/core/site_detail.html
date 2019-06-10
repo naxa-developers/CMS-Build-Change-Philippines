@@ -201,10 +201,10 @@
                                 <ul class="submission-list">
                                     {% for report in reports %}
                                     <li>
-                                        {% if report.photo %}
+<!--                                         {% if report.photo %}
                                         <img src="{{ MEDIA_URL }} {{ report.photo.url }}" alt="">
 
-                                        {% endif %}
+                                        {% endif %} -->
                                         <a title="View submission detail"
                                            href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
                                         <br>

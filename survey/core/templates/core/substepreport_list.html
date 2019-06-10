@@ -34,6 +34,16 @@
     padding: 30px;
 
 }
+
+.urgent {background-color: #f44336;}
+.urgent:hover {background: #da190b;}
+
+.update {background-color: #4CAF50;}
+.update:hover {background-color: #46a049;}
+
+.alert {background-color: #ff9800;}
+.alert:hover {background: #e68a00;}
+
 </style>
      <div class="row no-gutters">
         <div class="col-md-12">
@@ -96,12 +106,29 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <!-- <span  style="color:red;">{{ report.type }}</span> -->
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                 <!--    <span style="color:green; text-align: center">{{ report.type }}</span> -->
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <!-- <span  style="color:orange;">{{ report.type }}</span> -->
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
                                                 </div>
+                                                {% endif %}
+<!-- 
                                                  {% if report.photo %}
                                                 <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
                                                 </div>
-                                                {% endif %}<br>
+                                                {% endif %}<br> -->
                                                 {% if report.step %}
                                                     <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
                                                 {% endif %}
@@ -153,12 +180,25 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
                                                 </div>
-                                                 {% if report.photo %}
+                                                {% endif %}
+
+ <!--                                                 {% if report.photo %}
                                                 <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
                                                 </div>
-                                                {% endif %}<br>
+                                                {% endif %}<br> -->
                                                 {% if report.step %}
                                                     <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
                                                 {% endif %}
@@ -209,12 +249,25 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
                                                 </div>
+                                                {% endif %}
+<!-- 
                                                  {% if report.photo %}
                                                 <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
                                                 </div>
-                                                {% endif %}<br>
+                                                {% endif %}<br> -->
                                                 {% if report.step %}
                                                     <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
                                                 {% endif %}
