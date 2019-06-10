@@ -59,7 +59,7 @@ from django.db import transaction
 @authentication_classes([])
 @permission_classes([AllowAny])
 def token(request):
-
+    print(request.POST)
     try:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -89,10 +89,10 @@ def token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def Verify(request):
-
-    u = User.objects.get(id=2)
+    print('Post',request.POST)
+    u = User.objects.get(auth_token=request.POST.get('token'))
 
     role = UserRole.objects.filter(user=u, user_roles__group__name='Community Member').exists()
     vrole = UserRole.objects.get(user=u)
