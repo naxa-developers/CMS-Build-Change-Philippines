@@ -92,18 +92,23 @@ def token(request):
 @api_view(['POST'])
 def Verify(request):
     print('Post',request.POST)
-    u = User.objects.get(auth_token=request.POST.get('token'))
+    try:
+        u = User.objects.get(auth_token=request.POST.get('token'))
 
-    role = UserRole.objects.filter(user=u, user_roles__group__name='Community Member').exists()
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+
+    role = UserRole.objects.filter(user=u, group__name='Community Member').exists()
     vrole = UserRole.objects.get(user=u)
     if role:                
         if(vrole.verified == True):
-            return Response(status=status.HTTP_200_OK)
+            return Response({'status':status.HTTP_200_OK,'data':'True'})
         else:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response({'status':status.HTTP_403_FORBIDDEN, 'data':'False'})
 
     else:
-        return JsonResponse({'error': 'You do not have any role assigned'})
+        return JsonResponse({'error': 'You do not have role assigned as Community Member'})
+
 
 
 @api_view(['POST'])
