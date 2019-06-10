@@ -17,6 +17,10 @@ from rest_framework.authtoken.models import Token
 from django.core.files.storage import FileSystemStorage
 from django.db import transaction
 
+from django.db import models
+from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
+
 LOG_ACTIONS = (
         ('phoned_to', 'phoned to'),
         ('submitted_a_response', 'submitted a response for general form'),
@@ -411,6 +415,9 @@ class NewCommonSubStepChecklist(models.Model):
     substep = models.ForeignKey(ConstructionSubSteps, related_name="new_checklists", on_delete=models.CASCADE)
     step = models.ForeignKey(SiteSteps, related_name="new_checklists", on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        ordering = ('title',)
+
     def __str__(self):
         return self.title
 
@@ -419,6 +426,9 @@ class NewSubStepChecklist(models.Model):
     common_checklist = models.ForeignKey(NewCommonSubStepChecklist, related_name="sub_checklists", on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     status = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ('title',)
 
     def __str__(self):
         return self.title
@@ -457,16 +467,31 @@ class SiteReport(models.Model):
         ordering = ('-date',)
 
 
+REPORT_CATEGORY = [
+    (0, 'Progress update'),
+    (1, 'Issues/Concerns'),
+    (2, 'Questions/Inquiries'),
+]
+
+REPORT_TYPE = [
+    ('Urgent', 'Urgent'),
+    ('Update', 'Update'),
+    ('Alert', 'Alert'),
+]
+
+
 class SubstepReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="reports", null=True, blank=True)
     step = models.ForeignKey(SiteSteps, related_name="reports", on_delete=models.CASCADE, null=True, blank=True)
     substep = models.ForeignKey(ConstructionSubSteps, related_name='reports', on_delete=models.CASCADE)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='reports/', null=True, blank=True)
-    date = models.DateTimeField(default=datetime.now)
+    # photo = models.ImageField(upload_to='reports/', null=True, blank=True)
+    date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
+    category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
+    type = models.CharField(max_length=100, choices=REPORT_TYPE, default=0)
 
     def __str__(self):
         return self.comment
@@ -480,9 +505,12 @@ class SubstepReport(models.Model):
             notification.read = False
             notification.save()
 
-
     class Meta:
         ordering = ('-date',)
+
+class Images(models.Model):
+    substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None)
+    image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 
 class Notification(models.Model):

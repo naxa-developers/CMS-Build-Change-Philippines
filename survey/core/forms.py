@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from .models import Project, Category, Material, Site, SiteMaterials, SiteDocument, ConstructionSteps, \
     ConstructionSubSteps, PrimaryPhoto, SubStepCheckList, BadPhoto, GoodPhoto, NewCommonSubStepChecklist, \
     NewSubStepChecklist, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-    SubstepReport, ReportFeedback
+    SubstepReport, ReportFeedback, Images
 from django.forms.models import inlineformset_factory
 
 from mapwidgets.widgets import GooglePointFieldWidget
@@ -187,7 +187,15 @@ class SubstepReportForm(forms.ModelForm):
 
     class Meta:
         model = SubstepReport
-        fields = ('user', 'site', 'step', 'substep', 'comment', 'photo', 'status')
+        fields = ('user', 'site', 'step', 'substep', 'comment', 'category', 'type')
+
+
+class ImageForm(forms.ModelForm):
+    image = forms.ImageField(label='Image')
+
+    class Meta:
+        model = Images
+        fields = ('image', )
 
 
 class ReportFeedbackForm(forms.ModelForm):

@@ -199,29 +199,12 @@
                         <div class="widget-body" data-mh="sd-widget">
                             <div class="update-wrap">
                                 <ul class="submission-list">
-                                    {% for report in site_reports %}
+                                    {% for report in reports %}
                                     <li>
-                                        {% if report.photo %}
-                                        <img src="{{ MEDIA_URL }}{{ report.photo.url }}" alt="">
-
-                                        {% endif %}
-                                        <a title="View submission detail"
-                                           href="{% url 'core:site_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
-                                        <br>
-                                        <a href="#" title="View details of user">
-                                            <small><i class="la la-user"></i>{{ report.user }}</small>
-                                        </a>
-                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
-                                                                                   aria-hidden="true"></i>{{ report.date}}
-                                        </small>
-                                    </li>
-                                    {% endfor %}
-                                    {% for report in site_substep_reports %}
-                                    <li>
-                                        {% if report.photo %}
+<!--                                         {% if report.photo %}
                                         <img src="{{ MEDIA_URL }} {{ report.photo.url }}" alt="">
 
-                                        {% endif %}
+                                        {% endif %} -->
                                         <a title="View submission detail"
                                            href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
                                         <br>
@@ -256,7 +239,7 @@
                             <ul class="row">
                                 {% for document in site_documents %}
                                 <li class="col-md-6">
-                                    <a href="#" class="plan-item margin-top"
+                                    <a href="{{ document.file.url }}" class="plan-item margin-top"
                                        title="{{ document.get_name }}">
                                         <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
                                         {{ document.get_name }}

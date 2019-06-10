@@ -40,7 +40,7 @@
                         <tbody>
                         {% for document in documents %}
                             <td>{{ forloop.counter }}</td>
-                            <td>{{ document.file }}</td>
+                            <td><a href="{{ document.file.url }}">{{ document.file }}</a></td>
                             <td>{% if document.document_name %}{{ document.document_name }}{% endif %}</td>
                             <td><a href="{% url 'core:document_delete' document.pk %}">Delete</a></td>
                         </tr>

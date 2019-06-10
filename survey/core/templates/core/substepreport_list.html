@@ -34,6 +34,16 @@
     padding: 30px;
 
 }
+
+.urgent {background-color: #f44336;}
+.urgent:hover {background: #da190b;}
+
+.update {background-color: #4CAF50;}
+.update:hover {background-color: #46a049;}
+
+.alert {background-color: #ff9800;}
+.alert:hover {background: #e68a00;}
+
 </style>
      <div class="row no-gutters">
         <div class="col-md-12">
@@ -85,6 +95,7 @@
                             <h4><a href="#" title="">Report List</a></h4>
                             <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
                             <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+                            <p style="text-align:center">Category: Progress update</p>
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -95,15 +106,35 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <!-- <span  style="color:red;">{{ report.type }}</span> -->
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                 <!--    <span style="color:green; text-align: center">{{ report.type }}</span> -->
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <!-- <span  style="color:orange;">{{ report.type }}</span> -->
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
                                                 </div>
+                                                {% endif %}
+<!-- 
                                                  {% if report.photo %}
-                                                <div id="photo">
+                                                <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
                                                 </div>
-                                                {% endif %}<br>
-                                                {% if report.comment %}
-                                                    <div class="site_icon_float" style="">Comment: {{ report.comment }}</div><br>
+                                                {% endif %}<br> -->
+                                                {% if report.step %}
+                                                    <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
                                                 {% endif %}
+                                                {% if report.substep %}
+                                                    <a class="site_icon_float" style="">Substep: {{ report.substep }}</a><br>
+                                                {% endif %}<br><br>
                                                 {% if report.user %}
                                                     <a href="#" title="View details of user">
                                                         <small><i class="la la-user" style="color:grey;">Sent by: {{ report.user }}</i></small>
@@ -126,8 +157,187 @@
             </div>
        </div>
 
+
+
+
+
+       <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Report List </a></h4>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+                            <p style="text-align:center">Category: Issues/Concerns</p>
+                        </div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="display table table-bordered table-striped">
+                                    <tbody>
+                                        {% for report in report1 %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+
+ <!--                                                 {% if report.photo %}
+                                                <div id="photo" class="photo-item">
+                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
+                                                </div>
+                                                {% endif %}<br> -->
+                                                {% if report.step %}
+                                                    <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
+                                                {% endif %}
+                                                {% if report.substep %}
+                                                    <a class="site_icon_float" style="">Substep: {{ report.substep }}</a><br>
+                                                {% endif %}<br><br>
+                                                {% if report.user %}
+                                                    <a href="#" title="View details of user">
+                                                        <small><i class="la la-user" style="color:grey;">Sent by: {{ report.user }}</i></small>
+                                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                {% endif %}
+                                                {% if report.date %}
+                                                    <small><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
+                                                                                                                     aria-hidden="true"></i>{{ report.date }}</i></small>
+                                                    <!--<label>Photo:</label>-->
+                                                {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+
+
+
+
+              <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Report List </a></h4>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+                            <p style="text-align:center">Category: Questions/Inquiries</p>
+                        </div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="display table table-bordered table-striped">
+                                    <tbody>
+                                        {% for report in report2 %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                
+                                                 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                                                {% if report.type %}
+                                                
+                                                    {% if report.type == 'Urgent' %}
+                                                    <button class="btn urgent">{{ report.type }}</button>
+                                                    {% elif report.type == 'Update'  %}
+                                                    <button class="btn update">{{ report.type }}</button>
+                                                    {% elif report.type == 'Alert'  %}
+                                                    <button class="btn alert">{{ report.type }}</button>
+                                                    {% endif %}
+                                                </div>
+                                                {% endif %}
+<!-- 
+                                                 {% if report.photo %}
+                                                <div id="photo" class="photo-item">
+                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
+                                                </div>
+                                                {% endif %}<br> -->
+                                                {% if report.step %}
+                                                    <a class="site_icon_float" style="">Step: {{ report.step }}</a><br>
+                                                {% endif %}
+                                                {% if report.substep %}
+                                                    <a class="site_icon_float" style="">Substep: {{ report.substep }}</a><br>
+                                                {% endif %}<br><br>
+                                                {% if report.user %}
+                                                    <a href="#" title="View details of user">
+                                                        <small><i class="la la-user" style="color:grey;">Sent by: {{ report.user }}</i></small>
+                                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                {% endif %}
+                                                {% if report.date %}
+                                                    <small><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
+                                                                                                                     aria-hidden="true"></i>{{ report.date }}</i></small>
+                                                    <!--<label>Photo:</label>-->
+                                                {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+
+
+
+
+
+
+
      </div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h6 class="modal-title">&nbsp;</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
 {% block extra_script %}
     {% render_bundle 'project' 'js' %}
+    <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
 {% endblock extra_script %}

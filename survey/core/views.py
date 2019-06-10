@@ -1,14 +1,16 @@
 import os
 import zipfile
+from itertools import chain
 import csv
+import xlwt
 import io
 import reportlab
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView, FormView, ListView
-from django.shortcuts import reverse, get_object_or_404
+from django.shortcuts import reverse, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import TemplateView
 from django.core.exceptions import PermissionDenied
@@ -85,6 +87,53 @@ def token(request):
             'msg': 'Invalid Username and Password',
             'data': request.POST
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def Verify(request):
+
+    u = User.objects.get(id=2)
+
+    role = UserRole.objects.filter(user=u, user_roles__group__name='Community Member').exists()
+    vrole = UserRole.objects.get(user=u)
+    if role:                
+        if(vrole.verified == True):
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+    else:
+        return JsonResponse({'error': 'You do not have any role assigned'})
+
+
+@api_view(['POST'])
+def ReportImage(request):
+
+    try:
+        # print(request.POST)
+        # sub = request.POST.get('substepreport')
+        # images = request.POST.get('images')
+
+        user = User.objects.get(id=1)
+        site = Site.objects.get(id=2)
+        step = SiteSteps.objects.get(id=3)
+        substep = ConstructionSubSteps.objects.get(id=2)
+
+        sub = SubstepReport.objects.create(user_id=int(request.POST['user']), site_id=int(request.POST['site']), step_id=int(request.POST['step']), 
+                            substep_id=int(request.POST['substep']), comment=request.POST['comment'],  status=int(request.POST['status']))
+        for image in images:
+            image = Images.objects.create(substepreport=sub, image=request.post['images'])
+
+        return Response({
+            'msg': 'Successfully Reported'
+            }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({
+            'error': str(e),
+            'msg': 'Invalid Report',
+        }, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 def project_material_photos(request, project_id):
@@ -491,8 +540,40 @@ class Dashboard(SuperAdminMixin, TemplateView):
         context['projects'] = Project.objects.all()
         context['total_projects'] = Project.objects.all().count()
         context['users'] = User.objects.all()[:20]
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member')
         context['total_project_managers'] = User.objects.filter(user_roles__group__name='Project Manager').count()
         return context
+
+class ManageCommunity(TemplateView):
+    """
+    Manage verification for Community Members
+    """
+    template_name = 'core/community_member.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['users'] = User.objects.all()[:20]
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member')
+        return context
+
+    
+def ChangeCMStatus(request, pk, **kwargs):
+
+    obj = UserRole.objects.get(user_id=pk, group__name='Community Member')
+    status = obj.verified
+
+    if(status == True):
+        obj.verified = False
+        obj.save()
+
+    else:
+        obj.verified = True
+        obj.save()    
+
+    return HttpResponseRedirect('/core/manage-community')
+
+    # return render(request, "core/community_member.html")
+
 
 
 class SiteCreateView(SiteRoleMixin, CreateView):
@@ -545,13 +626,17 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['step_list'] = Step.objects.filter(site=self.kwargs['pk'])[:10]
         context['site_materials'] = SiteMaterials.objects.filter(site=self.kwargs['pk'])[:5]
-        context['site_substep_reports'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
-        context['site_reports'] = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('photo')[:10]
+        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
@@ -678,7 +763,7 @@ class CategoryFormView(CategoryRoleMixin, FormView):
     def form_valid(self, form):
         form.instance.project = get_object_or_404(Project, pk=self.kwargs['project_id'])
         form.save()
-        return super(). form_valid(form)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -933,16 +1018,41 @@ class SiteMaterialDeleteView(SiteGuidelineRoleMixin, DeleteView):
 
 
 def ExportReport(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = SubstepReport.objects.all()
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
 
-    writer.writerow(['User', 'Comment', 'Date'])
-    for query in query_set:
-        writer.writerow([query.user, query.comment, query.date])
-    # CSV Data
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('SubstepReport')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    # columns = ['User', 'Comment', 'Site', 'Status', 'Feedback']
+    columns = ['Date', 'User', 'School', 'Step', 'Substep', 'User Report', 'Reply']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    # substep_report = SubstepReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+    # site_report = SiteReport.objects.all().values_list('user__username', 'comment', 'site', 'status', 'feedback__feedback')
+   
+    substep_report = SubstepReport.objects.all().values_list('date', 'user__username', 'site__name', 'step__step__name', 'substep__title', 'comment', 'feedback__feedback')
+
+    # rows = list(chain(substep_report, site_report))
+
+    rows = list(substep_report)
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportPdf(request):
@@ -954,29 +1064,19 @@ def ExportPdf(request):
     count = 0
     for qs in query_set:
         y = 900 - count * 100
-        p.drawString(0, y-20, "User: " + qs.user.username)
-        p.drawString(0, y, "Message: " + qs.comment)
-        p.drawString(0, y+20, "Date: " + str(qs.date))
+        p.drawString(0, y+30, "Date: " + str(qs.date))
+        p.drawString(0, y+20, "User: " + qs.user.username)
+        p.drawString(0, y+10, "School: " + qs.site.name)
+        p.drawString(0, y, "Step: " + qs.step.step.name)
+        p.drawString(0, y-10, "Substep: " + qs.substep.title)
+        p.drawString(0, y-20, "User Report: " + qs.comment)
+        p.drawString(0, y-30, "Reply: " + str(qs.feedback))
+        # p.drawString(0, y-40, "Photo: " + str(qs.photo))
         count = count + 1
 
     p.showPage()
     p.save()
     return response
-
-    # fs = FileSystemStorage()
-    # filename = 'download.pdf'
-    # query_set = SubstepReport.objects.all()
-    #
-    # with fs.open(filename, 'w') as pdf:
-    #     for qs in query_set:
-    #         pdf.write(qs.user.username + '\n' + qs.comment + '\n' + str(qs.date))
-    #     pdf.close()
-    #
-    # with fs.open(filename, 'r') as pdf:
-    #     response = HttpResponse(pdf, content_type='text/pdf')
-    #     response['Content-Disposition'] = 'filename=download.pdf'
-    #     pdf.close()
-    #     return response
 
 
 class SubstepReportListView(ReportRoleMixin, ListView):
@@ -988,7 +1088,35 @@ class SubstepReportListView(ReportRoleMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['reports'] = SubstepReport.objects.all()
+        # substep_report = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        # site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        # result_list = sorted(
+        #     chain(substep_report, site_report),
+        #     key=lambda instance: instance.date, reverse=True)
+        # context['reports'] = result_list
+
+        substep_report = SubstepReport.objects.filter(category=0)
+        site_report = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list = sorted(
+            chain(substep_report, site_report),
+            key=lambda instance: instance.date, reverse=True)
+        context['reports'] = result_list
+
+        substep_report1 = SubstepReport.objects.filter(category=1)
+        site_report1 = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list1 = sorted(
+            chain(substep_report1, site_report1),
+            key=lambda instance: instance.date, reverse=True)
+        context['report1'] = result_list1
+
+
+        substep_report2 = SubstepReport.objects.filter(category=2)
+        site_report2 = SiteReport.objects.filter(site_id=self.kwargs['pk'])[:5]
+        result_list2 = sorted(
+            chain(substep_report2, site_report2),
+            key=lambda instance: instance.date, reverse=True)
+        context['report2'] = result_list2
+
         context['site'] = Site.objects.get(id=self.kwargs['pk'])
         context['project'] = Project.objects.get(sites=self.kwargs['pk'])
         return context
@@ -1734,7 +1862,7 @@ class ConstructionSitetepsList(TemplateView):
         context['checked_steps'] = checked_steps
         context['unchecked_steps'] = unchecked_steps.difference(checked_steps)
         context['site'] = get_object_or_404(Site, id=self.kwargs['site_id'])
-        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id'])
+        context['site_steps'] = SiteSteps.objects.filter(site_id=self.kwargs['site_id']).order_by('step__order')
 
         return context
 
@@ -1954,17 +2082,47 @@ class CheckListAllView(TemplateView):
         context['checklists_lists'] = checklists
         return context
 
+# def export(request):
+#     output = []
+#     response = HttpResponse(content_type='application/xls')
+#     writer = csv.writer(response, csv.excel)
+#     response.write(u'\ufeff'.encode('utf8'))
+#     query_set = NewSubStepChecklist.objects.all()
+#     # Header
+#     writer.writerow(['Title', 'Sub Checklist', 'Status'])
+#     for query in query_set:
+#         writer.writerow([query.title, query.common_checklist, query.status])
+#     # CSV Data
+#     return response
+
 def export(request):
-    output = []
-    response = HttpResponse(content_type='application/xls')
-    writer = csv.writer(response, csv.excel)
-    response.write(u'\ufeff'.encode('utf8'))
-    query_set = NewSubStepChecklist.objects.all()
-    # Header
-    writer.writerow(['Title', 'Sub Checklist', 'Status'])
-    for query in query_set:
-        writer.writerow([query.title, query.common_checklist, query.status])
-    # CSV Data
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('NewSubStepChecklist')
+
+    # Sheet header, first row
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Title', 'Sub Checklist', 'Status']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    # Sheet body, remaining rows
+    font_style = xlwt.XFStyle()
+
+    rows = NewSubStepChecklist.objects.all().values_list('title', 'common_checklist__title', 'status')
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num], font_style)
+
+    wb.save(response)
     return response
 
 def ExportChecklistPdf(request):
