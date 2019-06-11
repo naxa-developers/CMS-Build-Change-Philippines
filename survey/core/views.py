@@ -1324,7 +1324,7 @@ class NotificationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        notification = Notification.objects.all().order_by('-pk')
+        notification = Notification.objects.filter(user=self.request.user).order_by('-pk')
         rep_dict = {}
         rep_list = []
         for item in notification:
@@ -1333,6 +1333,7 @@ class NotificationView(TemplateView):
             rep_list.append(dict(rep_dict))
         context['notifications'] = rep_list
         return context
+
 
 
 class ReportFeedbackView(CreateView):
