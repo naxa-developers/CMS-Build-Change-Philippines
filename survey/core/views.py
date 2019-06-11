@@ -117,7 +117,8 @@ def ReportImage(request):
     try:
         # print(request.POST)
         # sub = request.POST.get('substepreport')
-        # images = request.POST.get('images')
+        images = request.FILES['images']
+        print(images)
 
         user = User.objects.get(id=request.POST.get('user'))
         site = Site.objects.get(id=request.POST.get('site'))
@@ -125,9 +126,8 @@ def ReportImage(request):
         substep = ConstructionSubSteps.objects.get(id=request.POST.get('substep'))
 
         sub = SubstepReport.objects.create(user_id=user, site_id=site, step_id=step, 
-                            substep_id=substep, comment=request.POST['comment'],  status=int(request.POST['status']))
-        # for image in images:
-        #     image = Images.objects.create(substepreport=sub, image=request.post['images'])
+                            substep_id=substep, comment=request.POST.get['comment'])
+        image = Images.objects.create(substepreport=sub, image=image)
 
         return Response({
             'msg': 'Successfully Reported'
