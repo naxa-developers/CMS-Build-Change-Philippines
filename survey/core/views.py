@@ -119,15 +119,15 @@ def ReportImage(request):
         # sub = request.POST.get('substepreport')
         # images = request.POST.get('images')
 
-        user = User.objects.get(id=1)
-        site = Site.objects.get(id=2)
-        step = SiteSteps.objects.get(id=3)
-        substep = ConstructionSubSteps.objects.get(id=2)
+        user = User.objects.get(id=request.POST.get('user'))
+        site = Site.objects.get(id=request.POST.get('site'))
+        step = SiteSteps.objects.get(id=request.POST.get('step'))
+        substep = ConstructionSubSteps.objects.get(id=request.POST.get('substep'))
 
-        sub = SubstepReport.objects.create(user_id=int(request.POST['user']), site_id=int(request.POST['site']), step_id=int(request.POST['step']), 
-                            substep_id=int(request.POST['substep']), comment=request.POST['comment'],  status=int(request.POST['status']))
-        for image in images:
-            image = Images.objects.create(substepreport=sub, image=request.post['images'])
+        sub = SubstepReport.objects.create(user_id=user, site_id=site, step_id=step, 
+                            substep_id=substep, comment=request.POST['comment'],  status=int(request.POST['status']))
+        # for image in images:
+        #     image = Images.objects.create(substepreport=sub, image=request.post['images'])
 
         return Response({
             'msg': 'Successfully Reported'
