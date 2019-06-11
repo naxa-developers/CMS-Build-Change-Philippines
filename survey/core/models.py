@@ -523,7 +523,6 @@ class SubstepReport(models.Model):
 
 class Images(models.Model):
     substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None)
-    sitereport = models.ForeignKey(SiteReport, on_delete=models.CASCADE, default=None)
     image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 

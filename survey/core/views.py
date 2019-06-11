@@ -38,7 +38,7 @@ from userrole.models import UserRole
 from .models import Project, Site, Category, Material, Step, Report, ReportFeedback, SiteMaterials, SiteDocument, Checklist, ConstructionSteps, \
     ConstructionSubSteps, CONSTRUCTION_STEPS_LIST, CONSTRUCTION_SUB_STEPS_LIST, SiteSteps, SubStepCheckList, SubstepReport, \
     Notification, HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist, SiteReport
+    StandardSchoolDesignPDF, CallLog, EventLog, NewCommonSubStepChecklist, NewSubStepChecklist, SiteReport, Images
 from .forms import ProjectForm, CategoryForm, MaterialForm, SiteForm, SiteMaterialsForm, SiteDocumentForm, \
     UserCreateForm, SiteConstructionStepsForm, ConstructionSubStepsForm, PrimaryPhotoFormset, \
      BadPhotoFormset, GoodPhotoFormset, NewCommonChecklistForm, NewChecklistFormset, ConstructionSubStepsChoiceForm, \
@@ -117,17 +117,18 @@ def ReportImage(request):
     try:
         # print(request.POST)
         # sub = request.POST.get('substepreport')
-        images = request.FILES['images']
-        print(images)
+        images = request.FILES.getlist('images')
+
 
         user = User.objects.get(id=request.POST.get('user'))
         site = Site.objects.get(id=request.POST.get('site'))
         step = SiteSteps.objects.get(id=request.POST.get('step'))
         substep = ConstructionSubSteps.objects.get(id=request.POST.get('substep'))
 
-        sub = SubstepReport.objects.create(user_id=user, site_id=site, step_id=step, 
-                            substep_id=substep, comment=request.POST.get['comment'])
-        image = Images.objects.create(substepreport=sub, image=image)
+        sub = SubstepReport.objects.create(user_id=user.id, site_id=site.id, step_id=step.id, 
+                            substep_id=substep.id, comment=request.POST.get('comment'), category=request.POST.get('category'), type=request.POST.get('type'))
+        for image in images:
+            image = Images.objects.create(substepreport_id=sub.id, image=image)
 
         return Response({
             'msg': 'Successfully Reported'
