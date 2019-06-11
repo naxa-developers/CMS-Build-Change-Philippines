@@ -117,17 +117,17 @@ def ReportImage(request):
     try:
         # print(request.POST)
         # sub = request.POST.get('substepreport')
-        # images = request.POST.get('images')
+        images = request.FILES['images']
+        print(images)
 
-        user = User.objects.get(id=1)
-        site = Site.objects.get(id=2)
-        step = SiteSteps.objects.get(id=3)
-        substep = ConstructionSubSteps.objects.get(id=2)
+        user = User.objects.get(id=request.POST.get('user'))
+        site = Site.objects.get(id=request.POST.get('site'))
+        step = SiteSteps.objects.get(id=request.POST.get('step'))
+        substep = ConstructionSubSteps.objects.get(id=request.POST.get('substep'))
 
-        sub = SubstepReport.objects.create(user_id=int(request.POST['user']), site_id=int(request.POST['site']), step_id=int(request.POST['step']), 
-                            substep_id=int(request.POST['substep']), comment=request.POST['comment'],  status=int(request.POST['status']))
-        for image in images:
-            image = Images.objects.create(substepreport=sub, image=request.post['images'])
+        sub = SubstepReport.objects.create(user_id=user, site_id=site, step_id=step, 
+                            substep_id=substep, comment=request.POST.get['comment'])
+        image = Images.objects.create(substepreport=sub, image=image)
 
         return Response({
             'msg': 'Successfully Reported'
@@ -1230,6 +1230,8 @@ class SiteReportDetailView(ReportRoleMixin, DetailView):
                             'status': sitereport.status,
                             'site': sitereport.site.name,
                             'comment':sitereport.comment, 
+                            'type': sitereport.type,
+                            'category': sitereport.category,
                             'feedback':request.POST.get('feedback_text')
                             }
                         message = sitereport.site.name
@@ -1324,7 +1326,7 @@ class NotificationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        notification = Notification.objects.all().order_by('-pk')
+        notification = Notification.objects.filter(user=self.request.user).order_by('-pk')
         rep_dict = {}
         rep_list = []
         for item in notification:
@@ -1333,6 +1335,7 @@ class NotificationView(TemplateView):
             rep_list.append(dict(rep_dict))
         context['notifications'] = rep_list
         return context
+
 
 
 class ReportFeedbackView(CreateView):
