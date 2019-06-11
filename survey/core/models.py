@@ -34,6 +34,18 @@ PROJECT_TYPES = (
     (2, 'Others'),
 )
 
+REPORT_CATEGORY = [
+    (0, 'Progress update'),
+    (1, 'Issues/Concerns'),
+    (2, 'Questions/Inquiries'),
+]
+
+REPORT_TYPE = [
+    ('Urgent', 'Urgent'),
+    ('Update', 'Update'),
+    ('Alert', 'Alert'),
+]
+
 
 class OverwriteStorage(FileSystemStorage):
 
@@ -442,15 +454,26 @@ class ReportFeedback(models.Model):
         return self.feedback
 
 
+
+REPORT_TYPE = [
+    ('Urgent', 'Urgent'),
+    ('Update', 'Update'),
+    ('Alert', 'Alert'),
+]
+
+
 class SiteReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='site_reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site_reports", null=True, blank=True)
     comment = models.TextField()
-    photo = models.ImageField(upload_to='reports/', null=True, blank=True)
+    # photo = models.ImageField(upload_to='reports/', null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50, choices=REPORT_STATUS, default=0)
     feedback = models.OneToOneField(ReportFeedback, related_name='site_feedback', on_delete=models.CASCADE, null=True, blank=True)
-    
+    type = models.CharField(max_length=100, choices=REPORT_TYPE, default=0)
+    category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
+
+
     def __str__(self):
         return self.comment
 
@@ -467,17 +490,6 @@ class SiteReport(models.Model):
         ordering = ('-date',)
 
 
-REPORT_CATEGORY = [
-    (0, 'Progress update'),
-    (1, 'Issues/Concerns'),
-    (2, 'Questions/Inquiries'),
-]
-
-REPORT_TYPE = [
-    ('Urgent', 'Urgent'),
-    ('Update', 'Update'),
-    ('Alert', 'Alert'),
-]
 
 
 class SubstepReport(models.Model):
@@ -492,6 +504,7 @@ class SubstepReport(models.Model):
     feedback = models.OneToOneField(ReportFeedback, related_name='substep_feedback', on_delete=models.CASCADE, null=True, blank=True)
     category = models.CharField(max_length=100, choices=REPORT_CATEGORY, default=0)
     type = models.CharField(max_length=100, choices=REPORT_TYPE, default=0)
+
 
     def __str__(self):
         return self.comment
@@ -510,6 +523,7 @@ class SubstepReport(models.Model):
 
 class Images(models.Model):
     substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None)
+    sitereport = models.ForeignKey(SiteReport, on_delete=models.CASCADE, default=None)
     image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 

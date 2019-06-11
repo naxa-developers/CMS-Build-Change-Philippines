@@ -96,11 +96,7 @@
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
                                                 </div>
-                                                 {% if report.photo %}
-                                                <div id="photo">
-                                                    <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
-                                                </div>
-                                                {% endif %}<br>
+                                                <br>
                                                 {% if report.comment %}
                                                     <div class="site_icon_float" style="">Comment: {{ report.comment }}</div><br>
                                                 {% endif %}

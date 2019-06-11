@@ -1230,6 +1230,8 @@ class SiteReportDetailView(ReportRoleMixin, DetailView):
                             'status': sitereport.status,
                             'site': sitereport.site.name,
                             'comment':sitereport.comment, 
+                            'type': sitereport.type,
+                            'category': sitereport.category,
                             'feedback':request.POST.get('feedback_text')
                             }
                         message = sitereport.site.name
