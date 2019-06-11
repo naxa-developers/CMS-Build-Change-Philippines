@@ -160,7 +160,7 @@ class SiteReportsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SiteReport
-        fields = ('id', 'site', 'user', 'comment', 'photo', 'type', 'category', 'date', 'status', 'feedback',)
+        fields = ('id', 'site', 'user', 'comment', 'category', 'type', 'date', 'status', 'feedback',)
         read_only_fields = ('status', 'feedback',)
 
 class SitesSerializer(serializers.ModelSerializer):
