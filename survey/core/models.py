@@ -490,7 +490,7 @@ class SiteReport(models.Model):
         ordering = ('-date',)
 
 class SiteImage(models.Model):
-    sitereport = models.ForeignKey(SiteReport, on_delete=models.CASCADE, default=None)
+    sitereport = models.ForeignKey(SiteReport, related_name="siteimages", on_delete=models.CASCADE, default=None)
     image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 

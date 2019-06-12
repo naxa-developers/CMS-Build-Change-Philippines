@@ -163,6 +163,9 @@ class SiteReportsSerializer(serializers.ModelSerializer):
         fields = ('id', 'site', 'user', 'comment', 'category', 'type', 'date', 'status', 'feedback',)
         read_only_fields = ('status', 'feedback',)
 
+
+
+
 class SitesSerializer(serializers.ModelSerializer):
     #steps = ProjectStepsSerializer(many=True)
     site_steps = SiteStepsSerializer(many=True)
