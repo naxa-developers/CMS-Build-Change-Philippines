@@ -12,7 +12,7 @@ from userrole.models import UserRole
 from core.api.serializers import StepSerializer, ChecklistSerializer
 from core.models import Checklist, Step, Project, Material, Report, Category, SiteMaterials, SiteDocument, SiteSteps, ConstructionSteps, SubStepCheckList, SubstepReport, ConstructionSubSteps, \
 HousesAndGeneralConstructionMaterials, BuildAHouseMakesHouseStrong, BuildAHouseKeyPartsOfHouse, \
-StandardSchoolDesignPDF, CallLog, NewSubStepChecklist, SiteReport, Images
+StandardSchoolDesignPDF, CallLog, NewSubStepChecklist, SiteReport, Images, SiteImage
 from .serializers import ProjectSerializer, StepsSerializer, MaterialSerializer, CategorySerializer,\
     SiteMaterialSerializer, SiteDocumentSerializer, SiteReportSerializer, SiteEngineerSerializer,\
     SubStepsCheckListSerializer, SubstepReportSerializer, CallLogSerializer, NewSubStepChecklistSerializer, SiteReportsSerializer
@@ -135,6 +135,26 @@ class ReportViewset(viewsets.ModelViewSet):
 class SiteReportsViewSet(viewsets.ModelViewSet):
     serializer_class = SiteReportsSerializer
     queryset = SiteReport.objects.all()
+
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        obj=self.perform_create(serializer)
+
+        images = request.FILES.getlist('images')
+        for image in images:
+            image = SiteImage.objects.create(sitereport_id=obj.id, image=image)
+
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        obj = serializer.save()
+        return obj
+        # serilaizer.save()
+
 
 
 class CallLogViewset(viewsets.ModelViewSet):
