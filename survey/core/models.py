@@ -454,14 +454,6 @@ class ReportFeedback(models.Model):
         return self.feedback
 
 
-
-REPORT_TYPE = [
-    ('Urgent', 'Urgent'),
-    ('Update', 'Update'),
-    ('Alert', 'Alert'),
-]
-
-
 class SiteReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='site_reports', on_delete=models.CASCADE)
     site = models.ForeignKey(Site, on_delete=models.CASCADE, related_name="site_reports", null=True, blank=True)
