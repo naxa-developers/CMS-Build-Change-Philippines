@@ -5,6 +5,18 @@
 {% load get_files from webpack_loader %}
 
 {% block content %}
+
+<style>
+    .urgent {background-color: #f44336;}
+    .urgent:hover {background: #da190b;}
+
+    .update {background-color: #4CAF50;}
+    .update:hover {background-color: #46a049;}
+
+    .alert {background-color: #ff9800;}
+    .alert:hover {background: #e68a00;}
+</style>
+
     <div class="row no-gutters">
     <div class="col-md-12">
         <nav aria-label="breadcrumb">
@@ -69,9 +81,9 @@
 
                                     {% if object.category == '0' %}
                                       Progress update
-                                    {% elif object.type == '1'  %}
+                                    {% elif object.category == '1'  %}
                                         Issues/Concerns
-                                    {% elif object.type == '2'  %}
+                                    {% elif object.category == '2'  %}
                                         Questions/Inquiries
                                         {% endif %}
                                     </p>
