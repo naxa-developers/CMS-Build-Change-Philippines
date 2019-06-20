@@ -65,7 +65,30 @@
                         <tr>
                             <td>
                                 <div>
-                                    <strong>{{ object.comment }}</strong>
+                                    <p>Category:
+
+                                    {% if object.category == '0' %}
+                                      Progress update
+                                    {% elif object.type == '1'  %}
+                                        Issues/Concerns
+                                    {% elif object.type == '2'  %}
+                                        Questions/Inquiries
+                                        {% endif %}
+                                    </p>
+                                    <strong>{{ object.comment }}
+
+                                    {% if object.type %}
+
+                                        {% if object.type == 'Urgent' %}
+                                            <button class="btn urgent">{{ object.type }}</button>
+                                            {% elif object.type == 'Update'  %}
+                                            <button class="btn update">{{ object.type }}</button>
+                                            {% elif object.type == 'Alert'  %}
+                                            <button class="btn alert">{{ object.type }}</button>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    </strong>
                                 </div>
 <!--                                  {% if object.photo %}
 
