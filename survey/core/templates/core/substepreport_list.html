@@ -87,15 +87,17 @@
                 <!--</div>-->
             <!--</div>-->
         <!--</div>-->
-         <div class="formHolder">
-            <div class="widget-info margin-top-large">
+         <div class="row">
+             <div class="formHolder col-sm-4" >
+                <div class="widget-info margin-top-large">
                 <div class="widget-head">
                     <div class="widget-body mt-2 horizontalForm">
                         <div class="widget-head">
+                            <p style="text-align:center">Category: Progress update</p>
+
                             <h4><a href="#" title="">Report List</a></h4>
                             <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
                             <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
-                            <p style="text-align:center">Category: Progress update</p>
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -106,11 +108,11 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
-                                                
+
                                                 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 
                                                 {% if report.type %}
-                                                
+
                                                     {% if report.type == 'Urgent' %}
                                                     <!-- <span  style="color:red;">{{ report.type }}</span> -->
                                                     <button class="btn urgent">{{ report.type }}</button>
@@ -123,7 +125,7 @@
                                                     {% endif %}
                                                 </div>
                                                 {% endif %}
-<!-- 
+<!--
                                                  {% if report.photo %}
                                                 <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
@@ -156,21 +158,23 @@
                     </div>
                 </div>
             </div>
+
        </div>
 
 
 
 
 
-       <div class="formHolder">
+       <div class="formHolder col-sm-4">
             <div class="widget-info margin-top-large">
                 <div class="widget-head">
                     <div class="widget-body mt-2 horizontalForm">
                         <div class="widget-head">
+                            <p style="text-align:center">Category: Issues/Concerns</p>
+
                             <h4><a href="#" title="">Report List </a></h4>
                             <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
                             <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
-                            <p style="text-align:center">Category: Issues/Concerns</p>
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -181,10 +185,10 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
-                                                
+
                                                  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                                 {% if report.type %}
-                                                
+
                                                     {% if report.type == 'Urgent' %}
                                                     <button class="btn urgent">{{ report.type }}</button>
                                                     {% elif report.type == 'Update'  %}
@@ -231,16 +235,15 @@
 
 
 
-
-              <div class="formHolder">
+         <div class="formHolder col-sm-4">
             <div class="widget-info margin-top-large">
                 <div class="widget-head">
                     <div class="widget-body mt-2 horizontalForm">
                         <div class="widget-head">
+                            <p style="text-align:center">Category: Questions/Inquiries</p>
                             <h4><a href="#" title="">Report List </a></h4>
                             <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
                             <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
-                            <p style="text-align:center">Category: Questions/Inquiries</p>
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -251,10 +254,10 @@
                                             <td>
                                                 <div>
                                                     <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
-                                                
+
                                                  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                                 {% if report.type %}
-                                                
+
                                                     {% if report.type == 'Urgent' %}
                                                     <button class="btn urgent">{{ report.type }}</button>
                                                     {% elif report.type == 'Update'  %}
@@ -264,7 +267,7 @@
                                                     {% endif %}
                                                 </div>
                                                 {% endif %}
-<!-- 
+<!--
                                                  {% if report.photo %}
                                                 <div id="photo" class="photo-item">
                                                     <img src="{{report.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;">
@@ -298,11 +301,6 @@
                 </div>
             </div>
        </div>
-
-
-
-
-
 
 
      </div>
