@@ -87,7 +87,12 @@
                 <!--</div>-->
             <!--</div>-->
         <!--</div>-->
+                <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
+                <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+
+
          <div class="row">
+
              <div class="formHolder col-sm-4" >
                 <div class="widget-info margin-top-large">
                 <div class="widget-head">
@@ -96,8 +101,7 @@
                             <p style="text-align:center">Category: Progress update</p>
 
                             <h4><a href="#" title="">Report List</a></h4>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -173,8 +177,7 @@
                             <p style="text-align:center">Category: Issues/Concerns</p>
 
                             <h4><a href="#" title="">Report List </a></h4>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
@@ -242,8 +245,7 @@
                         <div class="widget-head">
                             <p style="text-align:center">Category: Questions/Inquiries</p>
                             <h4><a href="#" title="">Report List </a></h4>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
-                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+
                         </div>
                         <div id="table-wrapper">
                             <div id="table-scroll">
