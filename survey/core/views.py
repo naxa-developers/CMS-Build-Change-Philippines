@@ -558,14 +558,16 @@ class ManageCommunity(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['users'] = User.objects.all()[:20]
-        context['community_member'] = UserRole.objects.filter(group__name='Community Member')
+        project_id = get_object_or_404(Project, id=self.kwargs['project_id'])
+
+        context['project_id'] = self.kwargs['project_id']
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member',  project_id=project_id).order_by('-pk')
         return context
 
     
-def ChangeCMStatus(request, pk, **kwargs):
-
-    obj = UserRole.objects.get(user_id=pk, group__name='Community Member')
+def ChangeCMStatus(request, project_id, pk, **kwargs):
+    user = get_object_or_404(User, id=pk)
+    obj = UserRole.objects.get(user=user, group__name='Community Member')
     status = obj.verified
 
     if(status == True):
@@ -574,12 +576,9 @@ def ChangeCMStatus(request, pk, **kwargs):
 
     else:
         obj.verified = True
-        obj.save()    
+        obj.save()
 
-    return HttpResponseRedirect('/core/manage-community')
-
-    # return render(request, "core/community_member.html")
-
+    return HttpResponseRedirect(reverse('core:community_member', args=[project_id]))
 
 
 class SiteCreateView(SiteRoleMixin, CreateView):

@@ -57,16 +57,16 @@
                             <tr>
                               <th>S.N</th>
                               <th>User</th>
-                              <th>Status</th>
+                              <th colspan="2">Status</th>
                             </tr>
                             </thead>
                             <tbody>
                               {% for cm in community_member %}
                               <tr>
                                 <td class="filterable-cell">{{ forloop.counter }}</td>
-                                <td class="filterable-cell">{{ cm.user }}</td>
+                                <td class="filterable-cell"><a href="{% url 'core:user_profile_detail' cm.user.pk %}">{{ cm.user }}</a></td>
                                 <td class="filterable-cell">{% if cm.verified == True %}Verified{% else %}Unverified{% endif %}</td>
-                                <td class="filterable-cell"><a href="{% url 'core:change_cm_status' cm.user.id %}">Change</a></td>
+                                <td class="filterable-cell"><a href="{% url 'core:change_cm_status' project_id cm.user.id %}">Change</a></td>
                               </tr>
 
                               {% endfor %}
