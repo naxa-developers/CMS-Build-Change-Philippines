@@ -26,7 +26,7 @@ class Redirection(RedirectView):
             return reverse("login")
 
 
-class AssignProjectManagerView(SuperAdminMixin, CreateView):
+class AssignProjectManagerView(ManagerSuperAdminMixin, CreateView):
     """
     Project Manager
     """
@@ -56,7 +56,9 @@ class AssignProjectManagerView(SuperAdminMixin, CreateView):
 
     def get_form(self, form_class=None):
         form = super(AssignProjectManagerView, self).get_form(form_class=self.form_class)
-        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id'])
+        form.fields['user'].queryset = form.fields['user'].queryset.filter(user_roles__project_id=self.kwargs['project_id']).\
+            exclude(user_roles__group__name="Project Manager")
+
         return form
 
 

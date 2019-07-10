@@ -56,6 +56,9 @@ class UserRole(models.Model):
     #
     #     super(UserRole, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.group.name
+
     @staticmethod
     def get_active_roles(user):
         return UserRole.objects.filter(user=user).select_related()
