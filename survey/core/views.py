@@ -25,7 +25,7 @@ from reportlab.pdfgen import canvas
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.utils import json
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -89,9 +89,9 @@ def token(request):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@permission_classes([IsAuthenticated])
 @api_view(['POST'])
 def Verify(request):
-    print('Post',request.POST)
     try:
         u = User.objects.get(auth_token=request.POST.get('token'))
 
@@ -99,9 +99,11 @@ def Verify(request):
         return JsonResponse({'error': str(e)})
 
     role = UserRole.objects.filter(user=u, group__name='Community Member').exists()
-    vrole = UserRole.objects.get(user=u)
-    if role:                
-        if(vrole.verified == True):
+    if role:
+        role_obj = UserRole.objects.get(user=u, group__name='Community Member')
+
+        if role_obj.verified == True:
+
             return Response({'status':status.HTTP_200_OK,'data':'True'})
         else:
             return Response({'status':status.HTTP_403_FORBIDDEN, 'data':'False'})
@@ -115,8 +117,6 @@ def Verify(request):
 def ReportImage(request):
 
     try:
-        # print(request.POST)
-        # sub = request.POST.get('substepreport')
         images = request.FILES.getlist('images')
 
 
@@ -144,8 +144,6 @@ def ReportImage(request):
 
 def project_material_photos(request, project_id):
 
-    # response = HttpResponse(content_type='application/zip')
-    # zip_file = zipfile.ZipFile(response, 'w', zipfile.ZIP_DEFLATED)
     zip_file = zipfile.ZipFile(os.path.join(BASE_DIR) + '/media/ProjectMaterialPhotos.zip', 'w', zipfile.ZIP_DEFLATED)
 
     material_photos = ConstructionSubSteps.objects.filter(project_id=project_id)
@@ -227,8 +225,6 @@ def project_material_photos(request, project_id):
         if data.pdf:
             zip_file.write(os.path.join(BASE_DIR) + data.pdf.url, arcname=data.pdf.url)
 
-
-    # response['Content-Disposition'] = 'attachment; filename={}MaterialPhotos.zip'.format(project.name)
     messages.success(request, 'successfully created zip')
     return HttpResponseRedirect(reverse('core:project_dashboard', args=[project_id]))
 
@@ -247,20 +243,6 @@ def site_documents_zip(request, site_id):
 
     response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
     return response
-
-# def site_documents_zip(request, site_id):
-#
-#     # response = HttpResponse(content_type='application/zip')
-#     zip_file = zipfile.ZipFile(os.path.join(BASE_DIR)+'/abc.zip', 'w', zipfile.ZIP_DEFLATED)
-#     site_documents = SiteDocument.objects.filter(site=site_id)
-#     site = get_object_or_404(Site, id=site_id)
-#
-#     for filename in site_documents:
-#         if filename.file:
-#             zip_file.write(os.path.join(BASE_DIR) + filename.file.url, arcname=filename.file.url)
-#
-#     # response['Content-Disposition'] = 'attachment; filename={}Documents.zip'.format(site.name)
-#     return HttpResponse('successs')
 
 
 class ProjectPersonnelList(TemplateView):
@@ -2256,12 +2238,11 @@ class KeyPartsOfHouseDeleteView(DeleteView):
 
 
 def report_photo_delete(request, pk):
-    report_obj=get_object_or_404(SubstepReport, id=pk)
-    report_obj.photo.delete()
-    report_obj.save()
+    report_obj=get_object_or_404(Images, id=pk)
+    report_obj.delete()
     messages.success(request, "Successfully deleted")
 
-    return HttpResponseRedirect(reverse('core:substep_report_detail', args=[pk]))
+    return HttpResponseRedirect(reverse('core:substep_report_detail', args=[report_obj.substepreport.id]))
 
 
 
