@@ -652,12 +652,14 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         return context
 
 
-class PictureList(TemplateView):
+class SitePictureList(TemplateView):
     template_name = 'core/picture_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['site_pictures'] = SubstepReport.objects.all().values_list('photo')
+        site = get_object_or_404(Site, id=self.kwargs.get('site_id'))
+        site_substep_reports = SubstepReport.objects.filter(site=site)
+
         return context
 
 
