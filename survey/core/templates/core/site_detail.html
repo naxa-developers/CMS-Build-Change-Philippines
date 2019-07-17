@@ -262,16 +262,14 @@
                         <div class="widget-body no-padding-top" data-mh="sd-widget">
                             <div class="row">
                                 {% for picture in site_pictures %}
-                                {% if picture.0 %}
 
                                 <div class="col-md-4">
                                     <div class="photo-holder photo-item margin-top">
-                                        <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
+                                        <img src="{{picture.image.url}}" img-title="Hello" alt="">
 
                                     </div>
 
                                 </div>
-                                {% endif %}
 
                                 {% empty %}
                                 <p>No Pictures Found.</p>
