@@ -60,7 +60,7 @@ urlpatterns = [
     path('community-users/<int:project_id>', views.CommunityUsersList.as_view(), name="community_users"),
 
     path('site-documents-zip/<int:site_id>', views.site_documents_zip, name="site_documents_zip"),
-    path('picture-list/', views.PictureList.as_view(), name="picture_list"),
+    path('picture-list/<int:site_id>', views.SitePictureList.as_view(), name="site_picture_list"),
 
     # Updated urls
     path('construction-substep-create/<int:project_id>/<int:step_id>', views.ConstructionSubstepCreate.as_view(), name="construction_substep_create"),

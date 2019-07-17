@@ -518,7 +518,7 @@ class SubstepReport(models.Model):
         ordering = ('-date',)
 
 class Images(models.Model):
-    substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None)
+    substepreport = models.ForeignKey(SubstepReport, on_delete=models.CASCADE, default=None, related_name="substep_report_images")
     image = models.ImageField(upload_to='reports/', verbose_name='Image')
 
 
