@@ -641,7 +641,9 @@ class SiteDetailView(SiteRoleMixin, DetailView):
         context['site_engineers'] = UserRole.objects.filter(site__id=self.kwargs['pk'], group__name='Field Engineer')\
                                     .values_list('user__username','id')
         context['site_documents'] = SiteDocument.objects.filter(site__id=self.kwargs['pk'])[:6]
-        context['site_pictures'] = SubstepReport.objects.filter(site_id=self.kwargs['pk'])[:10]
+        site_substep_reports = SubstepReport.objects.filter(site_id=self.kwargs['pk']).values_list('id', flat=True)
+        images = Images.objects.filter(substepreport_id__in=list(site_substep_reports))[:10]
+        context['site_pictures'] = images
         context['construction_steps_list'] = SiteSteps.objects.filter(site_id=self.kwargs['pk']).order_by('step__order')
         checklist_status_true_count = Checklist.objects.filter(step__site__id=self.kwargs['pk'], status=True).count()
         total_site_checklist_count = Checklist.objects.filter(step__site__id=self.kwargs['pk']).count()
@@ -662,6 +664,7 @@ class SitePictureList(TemplateView):
         images = Images.objects.filter(substepreport_id__in=list(site_substep_reports))
         context['project'] = site.project
         context['images'] = images
+        context['site'] = site
 
         return context
 
