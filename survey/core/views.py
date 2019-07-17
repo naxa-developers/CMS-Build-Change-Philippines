@@ -658,7 +658,10 @@ class SitePictureList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         site = get_object_or_404(Site, id=self.kwargs.get('site_id'))
-        site_substep_reports = SubstepReport.objects.filter(site=site)
+        site_substep_reports = SubstepReport.objects.filter(site=site).values_list('id', flat=True)
+        images = Images.objects.filter(substepreport_id__in=list(site_substep_reports))
+        context['project'] = site.project
+        context['images'] = images
 
         return context
 
