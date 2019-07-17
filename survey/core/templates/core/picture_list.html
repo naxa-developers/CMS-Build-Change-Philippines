@@ -28,15 +28,12 @@
                             <div class="widget-info margin-top-large">
                                 <div class="widget-body no-padding-top" data-mh="sd-widget">
                                     <div class="row">
-                                        {% for picture in site_pictures %}
-                                        {% if picture.0 %}
-
-                                        <div class="col-md-4">
-                                            <div class="photo-holder photo-item margin-top photo-item">
-                                                <img src="{{ MEDIA_URL }}{{ picture.0 }}" img-title="Hello" alt="">
-                                            </div>
-                                        </div>
-                                        {% endif %}
+                                        {% for img in images %}
+                                                <div class="col-md-4">
+                                                    <div class="photo-holder photo-item margin-top photo-item">
+                                                        <img src="{{img.image.url}}" img-title="Hello" alt="">
+                                                    </div>
+                                                </div>
                                         {% empty %}
                                         <p>No Pictures Found.</p>
                                         {% endfor %}
