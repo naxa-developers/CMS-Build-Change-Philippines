@@ -15,6 +15,19 @@
 
     .alert {background-color: #ff9800;}
     .alert:hover {background: #e68a00;}
+    .photo-item{
+        max-width:170px;
+        display:inline-block;
+        position:relative;
+        margin-right:1rem;
+    }
+    .photo-item:last-child{
+    margin-right:0;
+    }
+    .photo-item .btn-danger{
+    position:absolute;
+    right:0;
+    top:0;}
 </style>
 
     <div class="row no-gutters">
@@ -72,6 +85,7 @@
                         <!--<a href="{% url 'core:substep_report_delete' object.id %}" style="color:red;"><button>Delete</button></a>-->
                     <!--</div>-->
                 <!--</div>-->
+                    <div class="table-responsive">
                 <table class="display table table-bordered table-striped">
                     <tbody>
                         <tr>
@@ -102,16 +116,7 @@
 
                                     </strong>
                                 </div>
-<!--                                  {% if object.photo %}
 
-                                <div class="photo-item" id="photo">
-                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="">
-
-                                </div>
-                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right" ><small><i class="la la-close"></i></small></a>
-
-
-                                {% endif %}<br> -->
                                 {% if object.step %}
                                     <div class="site_icon_float" style="">Step: {{ object.step }}</div><br>
                                 {% endif %}
@@ -132,9 +137,28 @@
                                 {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                             </td>
+
+
                         </tr>
                     </tbody>
                 </table>
+                    <strong>Pictures</strong>
+                        <div>
+                             {% if object.substep_report_images.all %}
+
+                                {% for img in object.substep_report_images.all %}
+
+                                        <div class="photo-item" id="photo">
+                                            <img src="{{img.image.url}}">
+                                             <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' img.pk %}"><small><i class="la la-close"></i></small></a>
+
+                                        </div>
+
+                                {% endfor %}
+
+
+                            {% endif %}
+                        </div>
                 <div>
                     {% if object.feedback %}
                         {{ object.feedback.feedback }}
