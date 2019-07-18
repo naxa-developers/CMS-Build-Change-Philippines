@@ -25,7 +25,7 @@ LOG_ACTIONS = (
         ('phoned_to', 'phoned to'),
         ('submitted_a_response', 'submitted a response for general form'),
         ('updated_a_response', 'updated a response for general form'),
-        # ('buy_object', 'User buy object'),
+        ('submit_feedback', 'Admit submitted a feedback'),
     )
 
 PROJECT_TYPES = (
@@ -586,6 +586,8 @@ class CallLog(models.Model):
 class EventLog(models.Model):
     user = models.ForeignKey(User, related_name="event_logs", on_delete=models.CASCADE)
     action = models.CharField(max_length=300, choices=LOG_ACTIONS)
+    title = models.CharField(max_length=300, null=True, blank=True)
+    body = models.TextField(null=True, blank=True)
     project = models.ForeignKey(Project, related_name="event_logs", on_delete=models.CASCADE)
     extra = JSONField()
     date = models.DateTimeField(auto_now_add=True)

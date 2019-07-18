@@ -26,6 +26,7 @@ urlpatterns = [
     path('api-token-auth/', views.token),
     path('report-image', views.ReportImage),
     path('verify', views.Verify, name='verify'),
+    path('feedback-notification/', views.feedback_notification),
     path('list-steps/<int:is_project>/<int:pk>/',
          viewset.ProjectSiteStepsViewSet.as_view({'get':  'list'})),
     path('step-list/<int:site>/', viewset.StepViewset.as_view({'get': 'list',}), name="api_steps"),

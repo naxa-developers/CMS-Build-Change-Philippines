@@ -302,7 +302,10 @@
                                         <li>
                                             <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
                                             <a href="{% url 'userrole:assign_phone_number' user.pk %}">{{ user.user__username }} </a>
+                                            <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' user.pk %}?role=manager" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
+
                                             {% empty %}
+
                                             <p>No Project Manager Found.</p>
                                         </li>{% endfor %}
                                 </ul>

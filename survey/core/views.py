@@ -54,6 +54,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from fcm_django.models import FCMDevice
 from django.db import transaction
 
+from core.models import LOG_ACTIONS
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -110,6 +111,16 @@ def Verify(request):
 
     else:
         return JsonResponse({'error': 'You do not have role assigned as Community Member'})
+
+
+@permission_classes([IsAuthenticated])
+@api_view(['GET'])
+def feedback_notification(request):
+
+   data = EventLog.objects.filter(action=LOG_ACTIONS[3][0]).order_by('-date')
+   up = [{'id': event.id, 'title': event.title, 'body': event.body, 'date': event.date.strftime("%b, %d, %Y, %X %p")} for event in data]
+
+   return Response(data=up, status=status.HTTP_200_OK)
 
 
 
@@ -543,7 +554,7 @@ class ManageCommunity(TemplateView):
         project_id = get_object_or_404(Project, id=self.kwargs['project_id'])
 
         context['project_id'] = self.kwargs['project_id']
-        context['community_member'] = UserRole.objects.filter(group__name='Community Member',  project_id=project_id).order_by('-pk')
+        context['community_member'] = UserRole.objects.filter(group__name='Community Member',  project_id=project_id).select_related('user').order_by('-pk')
         return context
 
     
@@ -1133,8 +1144,6 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
         return context
     
     def post(self, request, *args, **kwargs):
-        # import ipdb
-        # ipdb.set_trace()
         if request.POST.get('status'):
             sub_step = SubstepReport.objects.get(id=self.kwargs['pk'])
             sub_step.status=request.POST.get('status')
@@ -1165,10 +1174,11 @@ class SubstepReportDetailView(ReportRoleMixin, DetailView):
                             'site': subreport.site.name,
                             'step':subreport.step.step.name,
                             'substep':subreport.substep.title,
-                            'comment':subreport.comment, 
+                            'comment':subreport.comment,
                             'feedback':request.POST.get('feedback_text')
                             }
                         message = subreport.site.name + " - " + subreport.step.step.name + "-" + subreport.substep.title
+                        EventLog.objects.create(user=self.request.user , action="submit_feedback", title=message_title, body=message_body, extra=report_data, project=subreport.site.project)
                         FCMDevice.objects.filter(user=User.objects.get(id=SubstepReport.objects.get(id=self.kwargs.get('pk')).user_id)).send_message(title=message_title, body=message_body, data={'report_data': report_data, 'message': message})
                     except Exception as e:
                         print(e)
