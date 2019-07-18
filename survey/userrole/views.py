@@ -217,8 +217,18 @@ class RoleDelete(DeleteView):
     template_name = "userrole/role_delete.html"
 
     def get_success_url(self):
-        success_url = reverse_lazy('core:site_detail',  args=(self.object.site.id,))
-        return success_url
+
+        role  = self.request.GET.get('role')
+
+        if role == 'engineer':
+
+            success_url = reverse_lazy('core:site_detail',  args=(self.object.site.id,))
+            return success_url
+
+        elif role == 'manager':
+            success_url = reverse_lazy('core:project_dashboard',  args=(self.object.project.id,))
+
+            return success_url
 
 
 class AssignProjectManagerPhoneNumber(TemplateView):

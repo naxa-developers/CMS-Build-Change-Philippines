@@ -8,7 +8,14 @@
             <div class="dash-right">
                 <div class="widget-info margin-top-large">
                     <form action="" method="post">{% csrf_token %}
-                        Are you sure you want to delete {{ object.user }} from {{object.site}}
+
+                        Are you sure you want to delete {{ object.user }} from
+                        {% if object.site %}
+                            {{object.site}} ?
+                        {% elif object.project %}
+                            {{object.project}} ?
+
+                        {% endif %}
                         <input type="submit">
                         
                     </form>

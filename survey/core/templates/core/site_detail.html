@@ -102,7 +102,7 @@
                                     <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
                                     {{ engineer.0 }}
                                 </a>
-                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}?role=engineer" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
 
 
                                 {% empty %}
@@ -263,13 +263,16 @@
                             <div class="row">
                                 {% for picture in site_pictures %}
 
-                                <div class="col-md-4">
-                                    <div class="photo-holder photo-item margin-top">
-                                        <img src="{{picture.image.url}}" alt="">
+                                {% if picture.image %}
+
+                                    <div class="col-md-4">
+                                        <div class="photo-holder photo-item margin-top">
+                                            <img src="{{picture.image.url}}" alt="">
+
+                                        </div>
 
                                     </div>
-
-                                </div>
+                                {% endif %}
 
                                 {% empty %}
                                 <p>No Pictures Found.</p>
