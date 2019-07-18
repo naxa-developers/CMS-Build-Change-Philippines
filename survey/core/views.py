@@ -105,9 +105,9 @@ def Verify(request):
 
         if role_obj.verified == True:
 
-            return Response({'status':status.HTTP_200_OK,'data':'True'})
+            return Response({'status':status.HTTP_200_OK,'data':True})
         else:
-            return Response({'status':status.HTTP_403_FORBIDDEN, 'data':'False'})
+            return Response({'status':status.HTTP_403_FORBIDDEN, 'data':False})
 
     else:
         return JsonResponse({'error': 'You do not have role assigned as Community Member'})
