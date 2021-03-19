@@ -1,4 +1,4 @@
 django==2.0
-djangorestframework==3.8.2
+djangorestframework==3.11.2
 django-webpack-loader==0.5.0
 django-phonenumber-field==2.0.0
