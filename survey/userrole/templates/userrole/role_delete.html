@@ -1,0 +1,26 @@
+{% extends '_base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <div class="d-flex justify-content-center">
+        <div class="col-md-4 col-lg-6">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+                    <form action="" method="post">{% csrf_token %}
+
+                        Are you sure you want to delete {{ object.user }} from
+                        {% if object.site %}
+                            {{object.site}} ?
+                        {% elif object.project %}
+                            {{object.project}} ?
+
+                        {% endif %}
+                        <input type="submit">
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

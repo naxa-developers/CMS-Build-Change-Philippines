@@ -25,7 +25,7 @@ SECRET_KEY = ')fr_ek(mgen5_r!ra-jv^rhxt^!5dh3051cmumhdm31e8lak0('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,11 +41,18 @@ INSTALLED_APPS = [
     # third party apps
     'rest_framework',
     'phonenumber_field',
+    'rest_framework.authtoken',
+    'rest_framework_swagger',
+    'mapwidgets',
+    'import_export',
+    'fcm_django',
 
     # local apps
     'core',
     'userrole',
     'webpack_loader',
+    'modeltranslation',
+    'django.contrib.gis',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +79,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
+                'core.context_processors.reports_list',
             ],
         },
     },
@@ -85,11 +94,14 @@ WSGI_APPLICATION = 'survey.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
+FCM_DJANGO_SETTINGS = {
+        "FCM_SERVER_KEY": "[AAAAErlWVmc:APA91bEu52IIQ3gpwWuihnwgLoKMqb-A9uHGgnUkzvjKysL5etBn9EW8l6k817jjqhbhUzRPzuHSua_sMA4bg8-D3h4gLCtQwmdRoIDFSijl8LbL3hKSk_w92_iTNqFobEf0ElClcgUx]"
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -124,8 +136,15 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('de', gettext('German')),
+    ('en', gettext('English')),
+)
+MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
@@ -140,11 +159,11 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
@@ -152,11 +171,30 @@ REST_FRAMEWORK = {
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': False,
-        # 'BUNDLE_DIR_NAME': '/dist/',#('/build/' if DEBUG else '/dist/'),
-        'BUNDLE_DIR_NAME': '/build/',#('/build/' if DEBUG else '/dist/'),
-        # 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-local.json'),
+        'BUNDLE_DIR_NAME': '/dist/',#('/build/' if DEBUG else '/dist/'),
+        # 'BUNDLE_DIR_NAME': '/build/',#('/build/' if DEBUG else '/dist/'),
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+        # 'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats-local.json'),
     }
+}
+
+MAP_WIDGETS = {
+    "GooglePointFieldWidget": (
+        ("zoom", 8),
+        ("mapCenterLocation", [12.8797, 121.7740]),
+    ),
+    "GOOGLE_MAP_API_KEY": "AIzaSyADDQuj6F2x8p1dEa_oSyinWepcGHrVxvU"
+}
+
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'puskarjoshi22@gmail.com'
+EMAIL_HOST_PASSWORD = '********'
+EMAIL_PORT = 587
+
+FCM_DJANGO_SETTINGS = {
+        "FCM_SERVER_KEY": "AAAAAWtWQfs:APA91bEpXDHToGF7COLM0MYc_W3hcHoncILGepywbnBLqgyQAbBSIWl_NpbRhoI5rnfhagoDNVnqOiKNESgjwY3JUNJxW7ncskJ91PPtBt25hWSGXpPz3GoFv47lwzQGEfBQ4LGjDM6-"
 }
 
 try:

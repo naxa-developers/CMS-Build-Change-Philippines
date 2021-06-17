@@ -1,0 +1,129 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+<style>
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  height:500px;
+  overflow:auto;
+  margin-top:20px;
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+  color:black;
+}
+#table-wrapper table thead th .text {
+  position:absolute;
+  top:-20px;
+  z-index:2;
+  height:20px;
+  width:35%;
+  border:1px solid red;
+}
+.site_icon_float {
+
+    padding: 30px;
+
+}
+</style>
+     <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+                    {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Report List</li>
+                </ol>
+            </nav>
+        </div>
+        <!--<div class="formHolder">-->
+            <!--<div class="widget-info margin-top-large">-->
+                <!--<div class="widget-head">-->
+                    <!--<div class="widget-body mt-2 horizontalForm">-->
+                    <!--{% for report in reports  %}-->
+                    <!--<li>-->
+                            <!--<a href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{ report.comment }}</strong></a>-->
+                            <!--<br>-->
+                            <!--{% if report.user %}-->
+                                <!--<a href="#" title="View details of user">-->
+                                    <!--<small><i class="la la-user"></i>Created by: {{ report.user }}</small>-->
+                                <!--</a><br>{% endif %}-->
+                            <!--{% if report.date %}-->
+                            <!--<small class="site_icon_float" style=""><i class="la la-clock-o"-->
+                                                                       <!--aria-hidden="true"></i> {{ report.date }}-->
+                            <!--</small><br>{% endif %}-->
+
+                            <!--{% if report.date %}-->
+                                <!--<small class="site_icon_float" style="">{{ report.date }}</small><br>{% endif %}-->
+                        <!--</li>-->
+                    <!--{% empty %}-->
+                        <!--No Reports Found.-->
+
+                   <!--{% endfor %}-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+         <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Report List</a></h4>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report' %}"><button>Export Excel</button></a></span>
+                            <span class="tools pull-right"><a href="{% url 'core:export_report_pdf' %}"><button>Export Pdf </button></a></span>
+                        </div>
+                        <div id="table-wrapper">
+                            <div id="table-scroll">
+                                <table class="display table table-bordered table-striped">
+                                    <tbody>
+                                        {% for report in reports %}
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <a href="{% url 'core:substep_report_detail' report.pk %}" style="color:black;"><strong>{{ report.comment }}</strong></a>
+                                                </div>
+                                                <br>
+                                                {% if report.comment %}
+                                                    <div class="site_icon_float" style="">Comment: {{ report.comment }}</div><br>
+                                                {% endif %}
+                                                {% if report.user %}
+                                                    <a href="#" title="View details of user">
+                                                        <small><i class="la la-user" style="color:grey;">Sent by: {{ report.user }}</i></small>
+                                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                {% endif %}
+                                                {% if report.date %}
+                                                    <small><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
+                                                                                                                     aria-hidden="true"></i>{{ report.date }}</i></small>
+                                                    <!--<label>Photo:</label>-->
+                                                {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+
+     </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

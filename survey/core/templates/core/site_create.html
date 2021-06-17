@@ -1,14 +1,132 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block extra_css %}    
+    <script src="{% static 'assets/js/vendor/jquery-1.11.2.min.js' %}"></script>
+{% endblock extra_css %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-</form>
-<p>
 
-    <a href="{% url 'core:project_create' %}">Add Project</a><br>
-    <a href="{% url 'core:user_create' %}">Create User</a>
-
-</p>
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Site</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Site</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<!-- <div class="d-flex justify-content-center">
+    <div class="col-md-1 col-lg-8">
+        <div class="dash-right">
+            <div class="widget-info margin-top-large">
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ form.media }}
+                    {{ form.as_p }}
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!-- <div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <form method="post">{% csrf_token %}
+                    <div class="">
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Name</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Type</label>
+                            {{ form.type }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Photo</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Address</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Location</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="inputSchoolName">Contact Number</label>
+                            {{ form.contact_number }}
+                        </div>                        
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                     </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <form method="post">{% csrf_token %}
+                    {{ form.media }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputType">Type</label>
+                            {{ form.type }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputPhoto">Photo</label>
+                            {{ form.photo }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputAddress">Address</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputLocation">Location</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="inputContactNumber">Contact Number</label>
+                            {{ form.contact_number }}
+                        </div>                        
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                     </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'site' 'js' %}
+{% endblock extra_script %}
+

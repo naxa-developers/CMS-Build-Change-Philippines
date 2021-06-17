@@ -1,0 +1,170 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a
+                        href="{% url 'core:project_dashboard' object.project.pk %}">{{ object.project }}
+                    Dashboard</a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' object.project.pk %}">Project Dashboard</a></li>
+
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- <div class="d-flex justify-content-center">
+    <div class="col-md-2 col-lg-5">
+
+    </div> -->
+<!--     <div class="col-md-8 col-lg-9">
+        <div class="dash-left">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Materials &nbsp</a></h4>
+                            <a href="{% url 'core:construction_substeps_delete' object.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-delete"></i>Delete</a>
+                            <a href="{% url 'core:construction_substeps_update' object.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i class="la la-edit"></i>Edit &nbsp</a>
+                        </div>
+                        <div class="widget-body">
+                            {% if object.title %}
+                            <h5>Name</h5><br>
+                            {{ object.title }}
+                            </p><br>{% endif %}{% if object.step %}
+                            <p>
+                            <h5>Step</h5><br>
+                            <p>
+                                {{ object.step }}
+                            </p><br>{% endif %}
+
+                            {% if object.primary_photos.all %}
+                            <h5>Primary Photo</h5><br>
+                            {% for primary_photo in object.primary_photos.all %}
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ primary_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            <br>
+                            {% endif %}
+
+
+                            {% if object.good_photos.all %}
+                            <h5>Good Photo</h5><br>
+                            {% for good_photo in object.good_photos.all %}
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ good_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            {% endif %}
+
+                            {% if object.bad_photos.all %}
+                            {% for bad_photo in object.bad_photos.all %}
+
+                            <h5>Bad Photo</h5><br>
+                            <p>
+                                <img src="{{ MEDIA_URL }}{{ bad_photo.image }}">
+                            </p><br>
+                            {% endfor %}
+                            {% endif %}
+                            {% if object.description %}
+                            <h5>Description</h5><br>
+                            <p>
+                                {{ object.description }}
+                            </p><br>
+                            {% endif %}
+
+                            {% if object.order %}
+                            <p>
+                            <h5>Step</h5><br>
+                            <p>
+                                {{ object.order }}
+                            </p><br>{% endif %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+        <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Materials &nbsp</a></h4>
+                                <a href="{% url 'core:construction_substeps_delete' object.id %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-delete"></i>Delete</a>
+                                <a href="{% url 'core:construction_substeps_update' object.id %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-edit"></i>Edit &nbsp</a>
+                            </div>
+                            <div class="widget-body mt-2 horizontalForm">
+                                <form method="post">{% csrf_token %}
+                                    <div class="form-row">
+                                        {% if object.title %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Title</label>
+                                            {{ object.title }}
+                                        </div>{% endif %}
+                                        {% if object.step %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Step</label>
+                                            {{ object.step }}
+                                        </div>{% endif %}
+                                        {% if object.primary_photos.all %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Primary Photo</label>
+                                        {% for primary_photo in object.primary_photos.all %}
+                                        <p>
+                                            <img src="{{ MEDIA_URL }}{{ primary_photo.image }}">
+                                        </p><br>
+                                        {% endfor %}
+                                        <br>
+                                        </div>{% endif %}
+                                        {% if object.good_photos.all %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Good Photo</label>
+                                        {% for good_photo in object.good_photos.all %}
+                                        <p>
+                                            <img src="{{ MEDIA_URL }}{{ good_photo.image }}">
+                                        </p><br>
+                                        {% endfor %}
+                                        </div>{% endif %}
+                                        {% if object.bad_photos.all %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Bad Photo</label>
+                                        {% for bad_photo in object.bad_photos.all %}
+                                        <p>
+                                            <img src="{{ MEDIA_URL }}{{ bad_photo.image }}">
+                                        </p><br>
+                                        {% endfor %}
+                                        </div>{% endif %}
+                                        {% if object.description %}
+                                        <div class="form-group col-md-12">
+                                        <label for="inputSchoolName">Description</label>
+                                            {{ object.description }}
+                                        </div>{% endif %}
+                                    </div>
+                                </form>
+                            </div>
+                </div>
+            </div>
+        </div>
+
+
+{% endblock content %}
+{% block extra_script %}
+{% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

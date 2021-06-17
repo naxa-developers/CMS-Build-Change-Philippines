@@ -1,8 +1,82 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit">
-</form>
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a>
+                    </li>
+                {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">{% if projects %}New Project{% else %}Edit {{ project.name }}{% endif %}</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+<!-- 
+        <div class="d-flex justify-content-center">
+        <div class="col-md-4 col-lg-7">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+                                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                                    {{ form.as_p }}
+                                    <input type="submit" class="btn btn-primary">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+<div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Organization</label>
+                            {{ form.organization }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Logo</label>
+                            {{ form.logo }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Type</label>
+                            {{ form.type }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Phone Number</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Email Address</label>
+                            {{ form.email_address }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Short Description</label>
+                            {{ form.short_description }}
+                        </div>                        
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                    </div>                    
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock content %}
+{% block extra_script %}
+{% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

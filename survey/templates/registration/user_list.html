@@ -1,0 +1,37 @@
+{% extends '_base.html' %}
+{% load staticfiles %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">User List</li>
+                </ol>
+            </nav>
+    <!--<div class="d-flex justify-content-center">-->
+        <!--<div class="col-md-3 col-lg-6">-->
+            <!--<div class="dash-right">-->
+                <!--<div class="widget-info margin-top-large">-->
+    <!--{% for user in users %}-->
+    <!--{{ forloop.counter }}. {{ user }}<br>-->
+    <!--{% endfor %}-->
+                <!--</div></div></div></div>-->
+
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    {% for user in users %}
+                    {{ forloop.counter }}. {{ user }}<br>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

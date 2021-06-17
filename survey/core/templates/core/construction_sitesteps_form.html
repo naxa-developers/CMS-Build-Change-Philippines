@@ -1,0 +1,76 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            <!--<li class="breadcrumb-item"><a href="{% url 'core:site_steps_create' site.pk %}">{{ site }}</a></li>-->
+            {% if object %}
+            <li class="breadcrumb-item"><a href=""></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Site Construction Step</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href=""></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Site Construction Step</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<div class="formHolder">
+    <div class="widget-info margin-top-large">
+		<div class="dash-right">
+			<div class="widget-info margin-top-large">
+                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                        <!--{{ form.as_p }}-->
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="form-group col-md-6">
+                            <label for="inputSchoolName">Name [de]</label>
+                                {{ form.name_de }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Order</label>
+                                {{ form.order }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Image</label>
+                                {{ form.image }}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Icon</label>
+                                {{ form.icon }}
+                            </div>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                         </div>
+                    </form>
+				<!-- <form action="" method="post">{% csrf_token %}
+					<h5>Site Construction steps</h5>
+					<ul id="id_construction_steps">
+						{% for step in construction_steps %}
+						<li><label for="id_construction_steps_{{forloop.counter0}}"><input type="checkbox" name="construction_steps" value="{{step.id}}"
+                                                        id="id_construction_steps_{{forloop.counter0}}">
+                                                    {{step}}</label></li>
+                        {% endfor %}
+                    </ul>
+                    <input type="submit">
+                </form> -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

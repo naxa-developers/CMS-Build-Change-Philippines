@@ -1,0 +1,139 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+
+{% block content %}
+
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                {% if project %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{project}}</a></li>
+                {% if object %}
+                <li class="breadcrumb-item"><a href="{% url 'core:material_detail' object.pk %}">{{object}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit {{object}}</li>
+                {% endif %}{% else %}
+                <li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
+                {% endif %}
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% if object %}
+                <li class="breadcrumb-item"><a href="{% url 'core:material_detail' object.pk %}">{{object}}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit {{object}}</li>
+                {% else %}
+                <li class="breadcrumb-item active" aria-current="page">Guideline Form</li>
+                {% endif %}
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+    <!--<div class="col-md-4 col-lg-3">-->
+        <!--<div class="module-school-list">-->
+            <!--<div class="school-wrap">-->
+                <!--<ul class="school-list">-->
+                    <!--{% if request.user.is_superuser %}-->
+                    <!--{% for project in projects %}-->
+                    <!--<li>-->
+                        <!--<a href="{% url 'core:project_dashboard' project.pk %}" title="">-->
+                            <!--<img src="{{ MEDIA_URL }}{{ project.logo }}" class="project-logo" alt="">-->
+                            <!--<h6>{{ project }}</h6>-->
+                            <!--<span>{{ project.address }}</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--{% endfor %}-->
+                    <!--{% else %}-->
+                    <!--{% for site in project.sites.all %}-->
+                    <!--<li>-->
+                        <!--<a href="{% url 'core:site_detail' site.pk %}" title="">-->
+                            <!--<img src="assets/img/img-school.png" class="school-logo" alt="">-->
+                            <!--<h6>{{ site }}</h6>-->
+                            <!--<span>{{ site.address }}</span>-->
+                        <!--</a>-->
+                    <!--</li>-->
+                    <!--{% endfor %}-->
+                    <!--{% endif %}-->
+                <!--</ul>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>
+    <div class="d-flex justify-content-center">
+        <div class="col-md-2 col-lg-9">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+                    <div class="widget-head">
+                        <h4><a href="#" title="">Material Create/Update</a></h4>
+                    </div>
+                    <!--<div class="widget-body">-->
+                        <!--<h3>Material{% if object %}&nbsp;Edit{% else %}&nbsp;Add{% endif %}</h3>-->
+                        <!--<form method="post" enctype="multipart/form-data">{% csrf_token %}-->
+                            <!--{% for error in form.non_field_errors %}-->
+                            <!--<div class="form-group has-errors text-danger small">-->
+                                <!--{{ error }}-->
+                            <!--</div>-->
+                            <!--{% endfor %}-->
+                            <!--{% for field in form %}-->
+                            <!--<div class="form-group">-->
+                                <!--{{ field.errors }}-->
+                                <!--{{ field.label_tag }}-->
+                                <!--{{ field }}-->
+                            <!--</div>-->
+                            <!--{% endfor %}-->
+                            <!--<div class="col-md-8">-->
+                                <!--<button type="submit" class="btn btn-primary">Submit-->
+                                <!--</button>-->
+                            <!--</div>-->
+                        <!--</form>-->
+                    <!--</div>-->
+                    <div class="formHolder">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <div class="widget-body mt-2 horizontalForm">
+                                    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="inputSchoolName">Title</label>
+                                                {{ form.title }}
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="inputSchoolName">Title [de]</label>
+                                                {{ form.title_de }}
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label for="inputSchoolName">Description</label>
+                                                {{ form.description }}
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label for="inputSchoolName">Description [de]</label>
+                                                {{ form.description_de }}
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label for="inputSchoolName">Good Photo</label>
+                                                {{ form.good_photo }}
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label for="inputSchoolName">Bad Photo</label>
+                                                {{ form.bad_photo }}
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            <button type="submit" class="btn btn-xs btn-primary"><i class="la la-plus"></i> Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

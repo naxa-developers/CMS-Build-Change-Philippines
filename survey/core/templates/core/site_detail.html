@@ -1,17 +1,312 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+{% block extra_css %}
+<style>.widget-info .widget-body {
+    max-height: 300px;
+    overflow-y: scroll;
+</style>
+{% endblock %}
 
 {% block content %}
-<h3>{{object}}</h3>
-<h4>Under Project: {{object.project}}</h4>
-<h4>Type: {{object.type}}</h4>
-<h4>Photo: {{object.photo}}</h4>
-<h4>Address: {{object.address}}</h4>
-<h4>Latitude: {{object.latitude}}</h4>
-<h4>Longitude: {{object.longitude}}</h4>
-<h4>Contact Number: {{object.contact_number}}</h4>
-<p>
-    <a href="{% url 'core:project_create' %}">Add Project</a><br>
-    <a href="{% url 'core:user_create' %}">Create User</a>
+<div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a
+                        href="{% url 'core:project_dashboard' object.project.pk %}">{{ object.project }}
+                    Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">{{ object }} Detail</li>
+                {% endif %}
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="school-profile bg-white">
+            <div class="profile-head">
+                {% if site.photo %}
+                <img src="{{ site.photo.url }}" class="school-logo" alt="">
 
-</p>
+                {% endif %}
+                <h4>{{ site.name }}</h4>
+                <span>{{ site.address }}</span>
+                <div class="text-center margin-top">
+                    <div class="btn-group" role="group">
+
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a href="#" id="btnGroupDrop2" class="btn btn-secondary dropdown-toggle"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="la la-cogs"></i> Manage
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+                                <a class="dropdown-item"
+                                   href="{% url 'userrole:assign_field_engineer' object.pk %}"><i
+                                        class="la la-user"></i> People</a>
+                                <a class="dropdown-item"
+                                   href="{% url 'core:document_list' site.pk %}"><i
+                                        class="la la-user"></i> Documents</a>
+                                <a class="dropdown-item" href="{% url 'core:checklist_all' object.pk %}"><i
+                                        class="la la-tasks"></i> Checklist</a>
+                                <a class="dropdown-item" href="{% url 'core:site_update' object.pk %}"><i
+                                        class="la la-tasks"></i> Edit</a>
+                                <a class="dropdown-item" href="{% url 'core:site_delete' object.pk %}"><i
+                                        class="la la-cog"></i> Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ progress }}%;"
+                         aria-valuenow="{{ progress }}"
+                         aria-valuemin="0" aria-valuemax="100">
+                        <span class="popOver" data-toggle="tooltip" data-placement="top"
+                              title="{{ progress }}%"> </span>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-body">
+                <div class="scrolling-wrap">
+                    <p>
+                    <div class="widget-body">
+                        <ul class="submission-list">
+                            {% if object.address %}
+                            <li>
+                                <strong>Address: {{ object.address }}</strong>
+                                <br>
+                            </li>
+                            {% endif %}
+                            {% if object.contact_number %}
+                            <li>
+                                <strong>Contact Number: {{ object.contact_number }}</strong>
+                                <br>
+
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    </p>
+                    <div class="small-card margin-top">
+                        <h6><strong>Engineer Assigned</strong></h6>
+                        <ul class="user-list-sm">
+                            {% for engineer in site_engineers %}
+                            <li>
+                                <a href="#" title="">
+                                    <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
+                                    {{ engineer.0 }}
+                                </a>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' engineer.1 %}?role=engineer" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
+
+
+                                {% empty %}
+                                <p>No Engineer Found.</p>
+                            </li>
+
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-lg-9">
+        <div class="dash-right">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4>Steps</h4>
+                            {% if site.site_steps.all %}
+
+                            <a href="{% url 'core:construction_site_steps_list' site.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> Update Step</a>
+                            {% else %}
+                              <a href="{% url 'core:site_steps_create' object.id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> Add New Step</a>
+                            {% endif %}
+
+
+                        </div>
+
+
+                        <div class="widget-body">
+
+                            <div class="guidelines-wrap">
+                                <ul id="accordion" class="collapseableWrap">
+                                    {% for step in construction_steps_list %}
+                                    <li>
+                                        <div class="collapseHeader" id="{{ step.pk }}"
+                                             data-toggle="collapse"
+                                             data-target="#target_{{ forloop.counter0 }}" aria-expanded="true"
+                                             aria-controls="target_{{ forloop.counter0 }}">{{ step }} <i
+                                                class="la la-plus-circle"></i>
+                                        </div>
+                                        <div id="target_{{ forloop.counter0 }}" class="collapse collapseBody"
+                                             aria-labelledby="{{ step.pk }}"
+                                             data-parent="#accordion">
+                                            <ul class="guideline-list">
+                                                {% for sub_step in step.step.sub_steps.all %}
+
+
+                                                <li>
+                                                    <h6>
+                                                        <a href= "{% url 'core:checklist' object.pk step.pk sub_step.pk %}">{{ sub_step.title }}</a>
+                                                    </h6>
+                                                        <a href="{% url 'core:construction_substeps_update' sub_step.pk %}"
+                                                           data-toggle="tooltip" data-placement="top"
+                                                           title="Edit">Edit</a>
+
+                                                    {% empty %}
+                                                    <small>No Sub Steps Found.</small>
+
+                                                    {% endfor %}
+                                            </ul>
+                                            <a href="{% url 'core:site_sub_steps_create' object.pk step.step.pk %}" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> Add New Sub Step</a>
+
+                                        </div>
+
+                                    </li>
+                                    </li>
+                                    {% empty %}
+                                    <small>No Steps Found</small>
+                                    {% endfor %}
+                                </ul>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Reports</a></h4>
+                            <a href="{% url 'core:substep_report_list' site.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-caret-right"></i> View All</a>
+                        </div>
+                        <div class="widget-body" data-mh="sd-widget">
+                            <div class="update-wrap">
+                                <ul class="submission-list">
+                                    {% for report in reports %}
+                                    <li>
+<!--                                         {% if report.photo %}
+                                        <img src="{{ MEDIA_URL }} {{ report.photo.url }}" alt="">
+
+                                        {% endif %} -->
+                                        <a title="View submission detail"
+                                           href="{% url 'core:substep_report_detail' report.pk %}"><strong>{{report.comment|truncatechars:20 }}</strong></a>
+                                        <br>
+                                        <a href="#" title="View details of user">
+                                            <small><i class="la la-user"></i>{{ report.user }}</small>
+                                        </a>
+                                        <small class="site_icon_float" style=""><i class="la la-clock-o"
+                                                                                   aria-hidden="true"></i>{{ report.date}}
+                                        </small>
+                                    </li>
+                                    {% empty %}
+                                    No Reports Found.
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Plans</a></h4>
+                            <a href="{% url 'core:document_create' site.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i> Add</a>
+                            <a href="{% url 'core:document_list' site.pk %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-caret-right"></i> View All</a>
+                        </div>
+                        <div class="widget-body no-padding-top" data-mh="sd-widget">
+                            <ul class="row">
+                                {% for document in site_documents %}
+                                <li class="col-md-6">
+                                    <a href="{{ document.file.url }}" class="plan-item margin-top"
+                                       title="{{ document.get_name }}">
+                                        <i class="la la-file-{{ document.css_class }}-o color-{{ document.css_class }}"></i>
+                                        {{ document.get_name }}
+                                    </a>
+                                </li>
+                                {% empty %}<p>No Plans Found.</p>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="widget-info margin-top-large">
+                        <div class="widget-head">
+                            <h4><a href="" title="">Pictures</a></h4>
+                            <a href="{% url 'core:site_picture_list' object.id %}" title="" class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-caret-right"></i> View All</a>
+                        </div>
+                        <div class="widget-body no-padding-top" data-mh="sd-widget">
+                            <div class="row">
+                                {% for picture in site_pictures %}
+
+                                {% if picture.image %}
+
+                                    <div class="col-md-4">
+                                        <div class="photo-holder photo-item margin-top">
+                                            <img src="{{picture.image.url}}" alt="">
+
+                                        </div>
+
+                                    </div>
+                                {% endif %}
+
+                                {% empty %}
+                                <p>No Pictures Found.</p>
+                                {% endfor %}
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h6 class="modal-title">&nbsp;</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
+
+{% block extra_script %}
+{% render_bundle 'sitedetail' 'js' %}
+{% endblock extra_script %}

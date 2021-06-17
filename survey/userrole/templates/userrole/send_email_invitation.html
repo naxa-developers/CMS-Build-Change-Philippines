@@ -1,0 +1,56 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+    <div class="row no-gutters">
+        <div class="col-md-12">
+<!--         <div class="d-flex justify-content-center">
+            <div class="col-md-2 col-lg-5"> -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ project.name }} User List</li>
+                </ol>
+            </nav>
+        </div>
+        <!--<div class="col-md-2">-->
+            <!--<h6><strong>Send Invitation To:</strong></h6><br>-->
+            <!--<form method="post">{% csrf_token %}-->
+                <!--{{ form }}-->
+                <!--{% if data %}-->
+                <!--{{ data }}<br>-->
+                <!--{% endif %}-->
+                <!--<br><input type="submit" value="Send" class="btn btn-sm btn-primary">-->
+            <!--</form>-->
+        <!--</div>-->
+       <div class="formHolder">
+            <div class="widget-info margin-top-large">
+                <div class="widget-head">
+                    <div class="widget-body mt-2 horizontalForm">
+                        <div class="widget-head">
+                            <h4><a href="#" title="">Send Invitation To:</a></h4>
+                        </div>
+                        <form method="post">{% csrf_token %}
+                            <div class="form-row">
+                                {{ form }}
+                                {% if data %}
+                                {{ data }}<br>
+                                {% endif %}<br>
+                            </div>
+                            <div class=""><br>
+                                <button type="submit" class="btn btn-success"></i> Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+       </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends '_base.html' %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+{% csrf_token %}
+
+<div id="app"></div>
+
+
+{% endblock content %}
+
+{% block extra_script %}
+<script>
+    template_data.site_id={{site_id}};
+    template_data.site={{site|safe}};
+    template_data.document_url="{{document_url}}";
+    template_data.add_user_url="{{add_user_url}}";
+    template_data.people_url="{{people_url}}";
+    template_data.site_edit_url="{{site_edit_url}}";
+    template_data.site_delete_url="{{site_delete_url}}";
+
+
+    
+</script>
+{% render_bundle 'site' 'js' %}
+{% endblock extra_script %}

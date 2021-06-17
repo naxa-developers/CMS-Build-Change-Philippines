@@ -1,0 +1,145 @@
+{% extends '_base.html' %}
+{% block extra_css %}
+{% endblock extra_css %}
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css">
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+
+<div class="d-flex justify-content-center">
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <div class="widget-head">
+                        <h4><a href="#" title="">CheckList</a></h4>
+                            <span class="tools pull-right"><a href="{% url 'core:export' %}"><button>Export Excel</button></a></span>
+                            <scan class="tools pull-right"><a href="{% url 'core:export_checklist_pdf' %}"><button>Export Pdf</button></a></scan>
+                    </div>
+                    <form method="post">{% csrf_token %}
+                        <!--{{form.as_p}}-->
+                        <div class="mb-3 pb-3 bg-white">
+                            <div class="table-responsive">
+                                <table id="checklist" class="table table-hover table-striped">
+                                        <thead>
+                                                <tr>
+                                                    <th>S.N</th>
+                                                    <th>Title</th>
+                                                    <th>Sub Checklist</th>
+                                                    <th>Status</th>
+        
+                                                    <th>Edit</th>
+                                                    <th>Delete</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for checklist in checklists_lists %}
+                                                <tr>
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{checklist.title}}</td>
+                                                    <td>
+                                                        {% for sub_checklist in checklist.sub_checklists.all %}
+                                                            {{ sub_checklist.title }}<br>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td>
+                                                        {% for sub_checklist in checklist.sub_checklists.all %}
+                                                            {% if sub_checklist.status is True %}
+                                                            <i class="fa fa-check-circle"></i>
+                                                            {% else %}
+                                                            <i class="fa fa-times-circle"></i>
+                                                            {% endif %}
+                                                            <br>
+                                                        {% endfor %}
+                                                    </td>
+        
+                                                    <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
+                                                    <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                </table>
+                                <div class="pagination">
+                                    <span class="step-links">
+                                        {% if checklists_lists.has_previous %}
+                                            <a href="?page=1">&laquo; first</a>
+                                            <a href="?page={{ checklists_lists.previous_page_number }}">previous</a>
+                                        {% endif %}
+
+                                        <span class="current">
+                                            Page {{ checklists_lists.number }} of {{ checklists_lists.paginator.num_pages }}.
+                                        </span>
+
+                                        {% if checklists_lists.has_next %}
+                                            <a href="?page={{ checklists_lists.next_page_number }}">next</a>
+                                            <a href="?page={{ checklists_lists.paginator.num_pages }}">last &raquo;</a>
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+ <script>
+
+     //var baseUrl = 'http://localhost:8000/';
+     var baseUrl = 'http://bccms.naxa.com.np/';
+
+     //$(document).ready(function() {
+      //  $('#checklist').DataTable( {
+     //       dom: 'Bfrtip',
+     //       buttons: [
+     //       'copy', 'csv', 'excel', 'pdf', 'print'
+     //       ]
+     //   } );
+        
+    //} );
+
+
+    $("#id_step").change(function () {
+      var stepId = $(this).val();
+         var current_url = document.URL;
+            var siteId = current_url.split('/')[5];
+
+      $.ajax({
+        url: baseUrl+'core/api/load-substeps',
+        data: {
+          'step_id': stepId,
+            'site_id': siteId,
+        },
+        success: function (data) {
+          $("#id_substep").html(data);
+            console.log(data);
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}

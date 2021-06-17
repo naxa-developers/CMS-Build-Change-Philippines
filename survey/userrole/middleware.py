@@ -3,6 +3,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import logout
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils.deprecation import MiddlewareMixin
 
 
 def clear_roles(request):
@@ -16,12 +17,7 @@ def clear_roles(request):
     return request
 
 
-class RoleMiddleware(object):
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        return self.get_response(request)
+class RoleMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
 
@@ -32,24 +28,27 @@ class RoleMiddleware(object):
             except:
                 pass
 
-        if not request.user.is_anonymous():
+        if not request.user.is_anonymous:
 
             role = None
             if request.session.get('role'):
+
                 try:
-                    role = Role.objects.select_related('group', 'organization').get(pk=request.session.get('role'),
+                    role = Role.objects.select_related().get(pk=request.session.get('role'),
                                                                                     user=request.user)
                 except Role.DoesNotExist:
                     pass
 
             if not role:
+
                 roles = Role.get_active_roles(request.user)
-                # roles = Role.objects.filter(user=request.user).select_related('group', 'organization')
+                # roles = Role.objects.filter(user=request.user).select_related()
                 if roles:
                     role = roles[0]
                     request.session['role'] = role.id
 
             if role:
+
                 request.__class__.role = role
                 request.__class__.project = role.project
                 request.__class__.site = role.site

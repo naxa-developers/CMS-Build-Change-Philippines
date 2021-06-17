@@ -1,0 +1,134 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block content %}
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href="{% url 'core:checklist_update' object.pk %}">{{ object }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Checklist Form</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<div class="d-flex justify-content-center">
+
+    <!--<div class="col-md-2 col-lg-6">-->
+        <!--<div class="dash-right"><h3 style="text-align: center">CheckList Form</h3>-->
+            <!--<div class="widget-info margin-top-large">-->
+
+
+                <!--<form action="" method="post">{% csrf_token %}-->
+                                    <!--{{form.as_p}}-->
+                    <!--<input type="submit">-->
+                <!--</form>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <div class="widget-head">
+                        <h4><a href="#" title="">CheckList Form</a></h4>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            {% for item in form %}
+                            <div class="form-group col-md-12">
+                                <label for="{{ item.label_id }}">{{ item.label_tag }}</label>
+                                {{ item }}
+                            </div>
+                            {% endfor %}
+                            <div class="form-group col-md-12">
+                                    <label for="inputSchoolName">CheckList</label>
+                                    {{ checklist_formset.management_form }}
+                                    {{ checklist_formset.non_form_errors }}
+                                    {% for form in checklist_formset %}
+                                    {{ form.id }}
+                                    <div class="inline {{ checklist_formset.prefix }}">
+                                        {{ form.title.errors }}
+                                        {{ form.title.label_tag }}
+                                        {{ form.title }}
+                                    </div>
+                                    {% endfor %}
+                            </div>
+                            <!-- <div class="form-group col-md-12">
+                                <label for="inputSchoolName">Description</label>
+                                {{ form.description }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputSchoolName">Step</label>
+                                {{ form.step }}
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputSchoolName">Sub Step</label>
+                                {{ form.substep }}
+                            </div> -->
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+<script type="text/javascript" src="{% static 'assets/formset/jquery.formset.js' %}"></script>
+ <script>
+
+     //var baseUrl = 'http://localhost:8000/';
+     var baseUrl = 'http://bccms.naxa.com.np/';
+
+        $(function() {
+            $(".inline.{{ checklist_formset.prefix }}").formset({
+                prefix: "{{ checklist_formset.prefix }}",
+            })
+
+        })
+
+
+    $("#id_step").change(function () {
+      var stepId = $(this).val();
+         var current_url = document.URL;
+            var siteId = current_url.split('/')[5];
+
+      $.ajax({
+        url: baseUrl+'core/api/load-substeps',
+        data: {
+          'step_id': stepId,
+            'site_id': siteId,
+        },
+        success: function (data) {
+          $("#id_substep").html(data);
+            console.log(data);
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}

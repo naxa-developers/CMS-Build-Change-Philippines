@@ -1,0 +1,144 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+    <div class="row no-gutters">
+    <div class="col-md-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">{% if request.user.is_superuser %}
+                <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% endif %}
+                <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Detail</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <div class="widget-head">
+                        <h4><a href="#" title=""><strong>Report Details</strong></a></h4></div>
+                    <div class="tools pull-right">
+
+                        <form name="filter" method="POST">{% csrf_token %}
+                            <select id="status" name="status" onChange="form.submit();">
+                            {% for choice in choices %}
+                            {% if object.status == choice.1 %}
+                            <option selected>{{ choice.1 }}</option>
+                            {% else %}
+                            <option>{{ choice.1 }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                            <button style="background-color:red;"><a href="{% url 'core:site_report_delete' object.id %}">Delete</a></button>
+                        </form>
+                    </div>
+                <!--<li>-->
+                       <!--<strong>{{ object.comment }}</strong>-->
+                        <!--<br>-->
+                        <!--{% if object.user %}-->
+                            <!--<a href="#" title="View details of user">-->
+                                <!--<small><button><i class="la la-user"></i>Sent by: {{ object.user }}</button></small>-->
+                            <!--</a><br>{% endif %}-->
+                        <!--{% if object.comment %}-->
+                            <!--<small class="site_icon_float" style="">Comment: {{ object.comment }}</small><br>{% endif %}-->
+                         <!--{% if object.date %}-->
+                        <!--<small class="site_icon_float" style=""><i class="la la-clock-o"-->
+                                                                   <!--aria-hidden="true"></i>{{ object.date }}-->
+                        <!--</small><br>-->
+                         <!--{% endif %}-->
+                <!--</li>-->
+                    <!--{% if object.photo %}-->
+                    <!--<img src="{{ object.photo.url }}" alt="">-->
+                    <!--{% endif %}-->
+                    <!--<div>-->
+                        <!--<a href="{% url 'core:substep_report_delete' object.id %}" style="color:red;"><button>Delete</button></a>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <table class="display table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ object.comment }}</strong>
+                                </div>
+ <!--                                 {% if object.photo %}
+                                <div class="photo-item" id="photo">
+                                    <img src="{{object.photo.url}}" style="height: 80px;float: right;padding: 0px;margin-right: 111px;" img-title="Hello" >
+                                </div>
+                                <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'core:report_photo_delete' object.pk %}" style="float:right"><small><i class="la la-close"></i></small></a>
+                                {% endif %}<br> -->
+                                {% if object.comment %}
+                                    <div class="site_icon_float" style="">Message: {{ object.comment }}</div><br>
+                                {% endif %}
+                                {% if object.user %}
+                                    <a href="#" title="View details of user">
+                                        <small><i class="la la-user" style="color:grey;">Sent by: {{ object.user }}</i></small>
+                                    </a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                {% endif %}
+                                {% if object.date %}
+                                    <small><i class="site_icon_float" style="color:grey;"><i class="la la-clock-o"
+                                                                                                     aria-hidden="true"></i>{{ object.date }}</i></small>
+                                    <!--<label>Photo:</label>-->
+                                {% endif %}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    {% if object.feedback %}
+                        {{ object.feedback.feedback }}
+                    {% else %}
+                        <form name="feedback" method="POST">{% csrf_token %}
+                            <input name='feedback_text' id='feedback' placeholder="Enter Your Feedback">
+                            <button name="feedback_submit" id="feedback" value="feedback" type="submit" class="btn btn-xs btn-primary">Send</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h6 class="modal-title">&nbsp;</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+        <script>
+            $('.photo-item img').on('click',function(){
+                    var title = $(this).attr('img-title');
+                    var src = $(this).attr('src');
+                    var img = '<img src="' + src + '" class="img-responsive"/>';
+                    var html = '';
+                    html += img;
+                    $('#myModalLabel').modal();
+                    $('#myModalLabel').on('shown.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html(title);
+                        $('#myModalLabel .modal-body').html(html);
+                    })
+                    $('#myModalLabel').on('hidden.bs.modal', function(){
+                        $('#myModalLabel .modal-header .modal-title').html('');
+                        $('#myModalLabel .modal-body').html('');
+                    });
+                });
+        </script>
+{% endblock extra_script %}

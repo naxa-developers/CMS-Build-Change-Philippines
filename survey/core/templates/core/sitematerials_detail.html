@@ -1,0 +1,36 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+     <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+
+        {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ site_material }} Detail</li>
+        </ol>
+    </nav>
+<div class="d-flex justify-content-center">
+        <div class="col-md-4 col-lg-6">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+    {% for material in site_material.materials.all %}
+        {% if material.title %}
+        Title: {{ material.title }}<br>{% endif %}
+        {% if material.category %}
+        Category: {{ material.category }}<br>{% endif %}
+        {% if material.description %}
+        Description: {{ material.description }}<br>{% endif %}{% if material.good_photo %}
+        Good Photo: <p><img src="{{ MEDIA_URL }}{{ material.good_photo }}"></p><br>{% endif %}
+        {% if material.bad_photo  %}
+        Bad Photo: <p><img src="{{ MEDIA_URL }}{{ material.bad_photo }}"></p>{% endif %}
+
+    {% endfor %}
+                </div></div></div></div>
+{% endblock content %}
+
+{% block extra_script %}
+{% render_bundle 'site' 'js' %}
+{% endblock extra_script %}

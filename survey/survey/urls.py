@@ -16,16 +16,22 @@ Including another URLconf
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
-from django.views.generic import TemplateView
 from django.contrib import admin
+
+from userrole.views import Redirection
+
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='CMS API DOCS')
 
 urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html')),
+    path('', Redirection.as_view(), name="home"),
     path('core/', include('core.urls', namespace="core")),
     path('userrole/', include('userrole.urls', namespace="userrole")),
     path('core/api/', include('core.api.urls')),
+    path('core/api/docs/', schema_view),
     path('api-auth/', include('rest_framework.urls')),
 
 ]

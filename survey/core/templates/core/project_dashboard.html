@@ -1,18 +1,391 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+  integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+  integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+  crossorigin=""></script>
+
+{% endblock extra_css %}
 {% block content %}
-{% for project in project %}
-<h3>{{ project }}</h3>   <a href="{% url 'core:project_update' project.pk %}">Edit</a><br>
-<h4>Sites:</h4>
-    {% for site in project.sites.all %}
-    <a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a>
-    <a href="{% url 'core:site_update' site.pk %}">Update Site</a>
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% if project %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ project }}</li>
+                    {% endif %}
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' request.project.pk %}">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                {% endif %}
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <div class="module-school-list">
+                <div class="school-action margin-bottom">
+                    <a href="{% url 'core:site_create' project.pk %}" title="" class="btn btn-primary btn-block"><i
+                            class="la la-plus"></i> New School</a>
+                </div>
+                <div class="school-wrap">
+                    <ul class="school-list">
+                        {% for site in project.sites.all %}
+                            <li>
+                                <a href="{% url 'core:site_detail' site.pk %}" title="">
+                                    <img src="{{ MEDIA_URL }}{{ site.logo }}" class="school-logo" alt="">
+                                    <h6>{{ site }}</h6>
+                                    {% if site.address %}
+                                        <span>{{ site.address }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-right">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Overview</a></h4>
+                                {% if create_zip %}
+                                <a href="{% url 'core:project_material_photos' project.pk %}"><button type="button" class="btn btn-sm btn-xs btn btn-danger" style="float:right; margin-bottom:10px">Create zip for offline</button></a>
 
-    <form action="{% url 'core:site_delete' site.pk %}" method="post">{% csrf_token %}
-        <input type="submit" value="Delete {{site}}" />
-    </form><br>
-    {% endfor %}
-<a href="{% url 'core:site_create' project.pk %}">Create New Site</a></br>
-{% endfor %}
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-xs btn btn-success" style="float:right; margin-bottom:10px">Zip for offline uptodate</button>
+
+                                {% endif %}
+
+
+
+                            </div>
+                            <div class="widget-body no-padding-top">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <a href="#" title="" class="stat-item margin-top">
+                                            <span class="stat-count">{{ project.total_sites }}</span>
+                                            <span class="stat-label">Schools</span>
+                                            <i class="la la-building"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="#" title="" class="stat-item margin-top">
+                                            <span class="stat-count">{{ total_reports }}</span>
+                                            <span class="stat-label">Reports</span>
+                                            <i class="la la-file-text"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{% url 'core:project_personnel' project.pk %}" title="" class="stat-item margin-top">
+                                            <span class="stat-count">{{ project.total_personnel }}</span>
+                                            <span class="stat-label">Project Personnel</span>
+                                            <i class="la la-user"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="{% url 'core:community_member' project.pk %}" title="" class="stat-item margin-top">
+                                            <span class="stat-count">{{ project.total_common_users }}</span>
+                                            <span class="stat-label">Community Users</span>
+                                            <i class="la la-users"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">School Map</a></h4>
+                            </div>
+                            <div class="widget-body">
+                                <div id="school-map" style="height:229px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Construction Steps</a></h4>
+                                <a href="{% url 'core:configure_project_steps' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>Add Steps</a>
+                               
+                            </div>
+                            <div class="widget-body">
+
+                                <div class="guidelines-wrap">
+                                    <ul id="accordion" class="collapseableWrap">
+                                        {% for step in construction_steps_list %}
+                                        {{step.all}}
+                                            <li>
+                                                <div class="collapseHeader" id="{{ step.pk }}"
+                                                     data-toggle="collapse"
+                                                     data-target="#target_{{ forloop.counter0 }}" aria-expanded="true"
+                                                     aria-controls="target_{{ forloop.counter0 }}">{{ step }} <i
+                                                        class="la la-plus-circle"></i>
+                                                </div>
+                                                
+                                                <div id="target_{{ forloop.counter0 }}" class="collapse collapseBody"
+                                                     aria-labelledby="{{ step.pk }}"
+                                                     data-parent="#accordion">
+                                                    <ul class="guideline-list">
+                                                            <a href="{% url 'core:construction_step_update' step.pk %}"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            title="Edit {{step}}"><i class="la la-edit"></i></a>
+                                                            <a href="{% url 'core:construction_step_update' step.pk %}"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            title="Delete {{step}}"><i class="la la-delete"></i></a>
+                                                            <a href="{% url 'core:construction_step_delete' step.pk %}" title="Delete {{step}}"><i class="fa fa-trash-o"></i></a><br>
+
+            
+                                                        {% for sub_step in step.sub_steps.all %}
+                                                        
+                                                            <li>
+                                                                <h6>
+                                                                    <a href="{% url 'core:construction_substeps_detail' sub_step.pk %}">{{ sub_step }}</a>
+                                                                </h6>
+                                                                <small>Created By: {{ sub_step.created_by.username }}
+                                                                </small>
+                                                                <div class="guideline-action">
+                                                                    <a href="{% url 'core:construction_substeps_update' sub_step.pk %}"
+                                                                       data-toggle="tooltip" data-placement="top"
+                                                                       title="Edit"><i class="la la-edit"></i></a>
+                                                                </div>
+                                                                
+                                                                
+                                                                {% empty %}
+                                                               
+
+                                                                <small>No Sub Steps Found.</small>
+                                                            </li>
+                                                        {% endfor %}
+                                                        
+                                                    </ul><br>
+                                                    <a href="{% url 'core:construction_substep_create' project.pk step.pk %}" title=""
+                                                    class="btn btn-sm btn-xs btn-primary"><i class="la la-plus"></i>New Substeps</a>
+                                                </div>
+
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Recent Updates</a></h4>
+                                <a href="{% url 'core:recent_updates' project.pk %}" title=""
+                                   class="btn btn-sm btn-xs btn-primary"><i
+                                        class="la la-caret-right"></i> View All</a>
+                            </div>
+                            <div class="widget-body">
+                                <div class="update-wrap">
+                                    <div class="update-item">
+                                        <h6>Today</h6>
+                                        <ul class="update-list">
+                                            
+                                            <!-- {% for log in event_logs %}
+                                                
+                                                {% if log.action == 'phoned_to' %}
+                                                <li>
+                
+                                                        <a href="#" title=""><strong>{{ log.user }}</strong></a>
+                                                        {{log.get_action_display}} <a
+                                                            href="#"
+                                                            title=""><strong>{{ log.extra.call_to }}
+                                                    </strong></a>.
+                                                        <span class="time"><i class="la la-clock-o"
+                                                                              aria-hidden="true"></i>{{ log.date }}</span>
+                                                    </li>
+                                               {% else %}
+                                               <li>
+                                                    <img src="#" alt="">
+                                                    <a href="#" title=""><strong>{{ log.user }}</strong></a>
+                                                   {{log.get_action_display}} <a
+                                                        href="#"
+                                                        title=""><strong>{{ log.comment }}
+                                                    </strong></a> in site <a href="#" title=""><strong>
+                                                    {{ log.extra.site }}
+                                                </strong></a>.
+                                                    <span class="time"><i class="la la-clock-o"
+                                                                          aria-hidden="true"></i>{{ log.date }}</span>
+                                                </li>
+                                                {% endif %}
+                                                
+                                            {% endfor %}
+                                                 -->
+                                           
+                                             {% for log in call_logs %}
+                                                 <li>
+                                                     <img src="#" alt="">
+                                                     <a href="#" title=""><strong>{{ log.call_from }}</strong></a>
+                                                   called
+                                                   <a href="#" title=""><strong>{{ log.call_to }}</strong></a>
+                                                     <span class="time"><i class="la la-clock-o"
+                                                                           aria-hidden="true"></i>{{ log.time }}</span>
+                                                 </li>
+                                             {% endfor %} 
+                                             
+                                             
+                                            {% for report in recent_activities_report %}
+                                                <li>
+                                                    <img src="#" alt="">
+                                                    <a href="#" title=""><strong>{{ report.user }}</strong></a>
+                                                    submitted a
+                                                    response for general form <a
+                                                        href="#"
+                                                        title=""><strong>{{ report.comment }}
+                                                    </strong></a> in site <a href="#" title=""><strong>
+                                                    {{ report.site }}
+                                                </strong></a>.
+                                                    <span class="time"><i class="la la-clock-o"
+                                                                          aria-hidden="true"></i>{{ report.date }}</span>
+                                                </li>
+                                            {% endfor %} 
+                                            {% for report in recent_activities_site_report %}
+                                                <li>
+                                                    <img src="#" alt="">
+                                                    <a href="#" title=""><strong>{{ report.user }}</strong></a>
+                                                    submitted a
+                                                    response for general form <a
+                                                        href="#"
+                                                        title=""><strong>{{ report.comment }}
+                                                    </strong></a> in site <a href="#" title=""><strong>
+                                                    {{ report.site }}
+                                                </strong></a>.
+                                                    <span class="time"><i class="la la-clock-o"
+                                                                          aria-hidden="true"></i>{{ report.date }}</span>
+                                                </li>
+                                            {% endfor %} 
+
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Project Manager</a></h4>
+                                    <a href="{% url 'userrole:project_user_create' project.pk %}"><i class="la la-user-plus"></i>Create Project User</a>
+                                    <a href="{% url 'userrole:send_invitation' project.pk %}"><i
+                                            class="la la-user-plus"></i>Invite New User</a>
+                                    <a href="{% url 'userrole:userrole_create' project.pk %}"><i
+                                            class="la la-user"></i>Assign Project Manager</a>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="user-list-sm">
+                                    {% for user in project_managers %}
+                                        <li>
+                                            <img src="{% static 'assets/img/img-avatar.jpg' %}" alt="">
+                                            <a href="{% url 'userrole:assign_phone_number' user.pk %}">{{ user.user__username }} </a>
+                                            <a class="btn btn-xs btn-sm btn-action btn-danger" href="{% url 'userrole:role_delete' user.pk %}?role=manager" style="color:white;border-radius: 4px;"><small><i class="la la-close"></i></small></a>
+
+                                            {% empty %}
+
+                                            <p>No Project Manager Found.</p>
+                                        </li>{% endfor %}
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">House and General Construction Materials</a></h4>
+                                <!--{% if request.user.is_superuser %}-->
+                                    <!--<a href="{% url 'userrole:send_invitation' project.pk %}"><i-->
+                                            <!--class="la la-user-plus"></i>Invite New User</a>-->
+                                    <!--<a href="{% url 'userrole:userrole_create' project.pk %}"><i-->
+                                            <!--class="la la-user"></i>Add Manager</a>-->
+                                <!--{% endif %}-->
+                            </div>
+                            <div class="widget-body">
+                                <ul class="user-list-sm">
+                                    <li>
+                                        <a href="{% url 'core:category_list' project.pk %}">More About Materials</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'core:build_house' %}">Build A House</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
 
 {% endblock content %}
+
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+
+
+<script>
+        setTimeout(function(){
+            $('.alert-success').fadeOut('slow');
+        },1000);
+
+        function myMap() {
+            {#var if_locations = {{ locations|escapejs }};#}
+
+            var locations = JSON.parse("{{ locations|escapejs }}");
+            var address = JSON.parse("{{ site_address|escapejs }}");
+            var latlong = JSON.parse("{{ site_latlong|escapejs }}");
+            console.log(locations);
+
+           var map = L.map("school-map").setView([11.7,124.7],9);
+
+               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        for(var i=0;i<locations.features.length;i++){
+        console.log(locations.features[i].properties)
+        var popupContent =`<div> <a href="http://bccms.naxa.com.np/core/site-detail/${locations.features[i].properties.pk}/"><h5><mark> ${locations.features[i].properties.name}</mark></h5></a>
+        ${locations.features[i].properties.address}</div>`
+
+
+            L.marker([locations.features[i].geometry.coordinates[1],
+                        locations.features[i].geometry.coordinates[0]])
+            .addTo(map)
+            .bindPopup(popupContent);
+
+
+        }
+
+        }
+
+        myMap();
+    </script>
+
+{% endblock extra_script %}

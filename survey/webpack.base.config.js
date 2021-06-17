@@ -10,9 +10,14 @@ module.exports = {
 
   entry: {
     // rare: './static/css/style.css',
-    vendor_stylesheets: ['./static/css/vendor.css'],
+//    vendor_stylesheets: ['./static/css/vendor.css'],
+    asset_stylesheets: ['./static/css/asset.css'],
+    style: ['./static/assets/css/style.css'],
     main: ['./static/js/survey'], // entry point of our app. assets/js/index.js should require other js modules and dependencies it needs
     steps: ['./static/js/steps'],
+    site: ['./static/js/site-detail'],
+    project: ['./static/js/project-dashboard'],
+    sitedetail: ['./static/js/sitedetail'],
 //    dashboard: ['./static/js/dashboard-report.js'],
 
   },

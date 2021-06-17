@@ -1,12 +1,9 @@
-{% extends 'base.html' %}
+{% extends '_base.html' %}
 {% load render_bundle from webpack_loader %}
 {% load get_files from webpack_loader %}
 
 {% block content %}
-<h3>Site Steps</h3>
-<p>
-    <a href="{% url 'core:site_detail' is_project pk %}"> Detail</a><br>
-</p>
+{% csrf_token %}
 
 <div id="app"></div>
 
@@ -15,10 +12,10 @@
 
 {% block extra_script %}
 <script>
-    var template_data = template_data ||  {};
     template_data.is_project={{is_project}};
     template_data.pk={{pk}};
-
+    template_data.project={{project}};
+    template_data.dashboard_url="{{dashboard_url}}";
 </script>
 {% render_bundle 'steps' 'js' %}
 {% endblock extra_script %}

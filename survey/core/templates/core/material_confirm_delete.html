@@ -1,0 +1,40 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="col-md-8 col-lg-9">
+            <div class="dash-left">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <form action="" method="post">{% csrf_token %}
+                                    Are you sure you want to delete {{ object }}
+                                    <button type="submit">YES</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

@@ -1,0 +1,19 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+    <div class="d-flex justify-content-center">
+        <div class="col-md-4 col-lg-6">
+            <div class="dash-right">
+                <div class="widget-info margin-top-large">
+                    Thank-you for signing into CMS Build Change Platform. Stay Connected.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

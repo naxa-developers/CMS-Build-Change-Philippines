@@ -1,0 +1,115 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:site_detail' site.pk %}">{{ site }}</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href=""></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Checklist</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if object %}
+            <li class="breadcrumb-item"><a href=""></a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ object }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Checklist</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<!--<div class="col-md-8 col-lg-9">-->
+    <!--<div class="dash-left">-->
+        <!--<div class="row">-->
+            <!--<div class="col-md-6">-->
+                <!--<div class="widget-info margin-top-large">-->
+                    <!--<div class="widget-head">-->
+                        <!--<h4><a href="#" title="">Checklist</a></h4>-->
+                    <!--</div>-->
+                    <!--<div class="widget-body">-->
+                        <!--{% for checklist in checklists %}-->
+                        <!--{{forloop.counter}}.-->
+                            <!--{% if checklist.status is True %}-->
+
+                            <!--<i class="fa fa-check-circle"></i>-->
+
+                        <!--{% else %}-->
+                        <!--<i class="fa fa-times-circle"></i>-->
+
+                        <!--{% endif %}-->
+
+                        <!--{{checklist.text}} <a-->
+                            <!--href="#">Edit</a> <a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a><br>-->
+                        <!--{% empty %}-->
+                        <!--<p>Checklist not found</p>-->
+                        <!--{% endfor %}-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div></div>-->
+   <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                    <div class="widget-head">
+                        <h4><a href="#" title="">Checklist</a></h4>
+                        <a href="{% url 'core:checklist_create' site.pk step_id substep_id %}" title=""
+                               class="btn btn-sm btn-xs btn-primary"><i
+                                    class="la la-plus"></i>Add Checklist</a>
+                    </div>
+                    <form method="post">{% csrf_token %}
+                        <!--{{form.as_p}}-->
+                        <div class="mb-3 pb-3 bg-white">
+                            <div class="table-responsive">
+                                <table id="checklist" class="table table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Title</th>
+                                        <th>Sub Checklist</th>
+                                        <th>Status</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for checklist in checklists %}
+                                    <tr>
+                                        <td>{{forloop.counter}}</td>
+                                        <td>{{checklist.title}}</td>
+                                        <td>{% for sub_checklist in checklist.sub_checklists.all %}
+                                            {{ sub_checklist.title }}<br>
+                                            {% endfor %}</td>
+                                        <td>{% for sub_checklist in checklist.sub_checklists.all %}
+                                            {% if sub_checklist.status is True %}
+                                            <i class="fa fa-check-circle"></i>
+                                            {% else %}
+                                            <i class="fa fa-times-circle"></i>
+                                            {% endif %}<br>
+                                            {% endfor %}</td>
+                                        <td><a href="{% url 'core:checklist_update' checklist.pk %}">Edit</a></td>
+                                        <td><a href="{% url 'core:checklist_delete' checklist.pk %}">Delete</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+   </div>
+
+{% endblock content %}

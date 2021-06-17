@@ -1,0 +1,72 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+<style>
+#table-wrapper {
+  position:relative;
+}
+#table-scroll {
+  height:500px;
+  overflow:auto;
+  margin-top:20px;
+}
+#table-wrapper table {
+  width:100%;
+
+}
+#table-wrapper table * {
+  color:black;
+}
+#table-wrapper table thead th .text {
+  position:absolute;
+  top:-20px;
+  z-index:2;
+  height:20px;
+  width:35%;
+  border:1px solid red;
+}
+.site_icon_float {
+
+    padding: 30px;
+
+}
+</style>
+ <div class="formHolder">
+    <div class="widget-info margin-top-large">
+        <div class="widget-head">
+            <div class="widget-body mt-2 horizontalForm">
+                <div class="widget-head">
+                    <h4><a href="#" title="">Notification List</a></h4>
+                </div>
+                <div id="table-wrapper">
+                    <div id="table-scroll">
+                        <table class="display table table-bordered table-striped">
+                            <tbody>
+                                {% for notification in notifications %}
+                                <tr>
+                                    <td>
+                                    <div class="notification-highlight">
+                                        <p class="notification-highlight-excerpt">
+                                            <a href="{% url 'core:substep_report_detail' notification.pk %}">{{notification.notif.report.user}} submitted a report for {{notification.notif.report.substep}} in site {{notification.notif.report.site}}</a>
+                                        </p>
+                                        <p class="notification-highlight-time">{{notification.notif.report.date}}</p>
+                                    </div>&nbsp;&nbsp
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+{% endblock content %}
+{% block extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}

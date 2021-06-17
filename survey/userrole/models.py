@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
-from django.core.exceptions import ValidationError
+from django.contrib.postgres.fields import JSONField
+
 from core.models import Project, Site
 
 
@@ -9,6 +10,8 @@ class UserRole(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="group_roles")
     project = models.ForeignKey(Project, null=True, blank=True, related_name="project_roles", on_delete=models.SET_NULL)
     site = models.ForeignKey(Site, null=True, blank=True, related_name="site_roles", on_delete=models.SET_NULL)
+    extra = JSONField(null=True, blank=True)
+    verified = models.BooleanField(default=False)
 
     # def clean(self):
     #     if self.group.name in ['Field Engineer', 'Community Member'] and not self.site_id:
@@ -27,28 +30,47 @@ class UserRole(models.Model):
     #             'user': ValidationError(_('User Role Already Exists.')),
     #         })
     #
-    def save(self, *args, **kwargs):
-        if self.group.name == 'Super Admin':
-            self.project = None
-            self.site = None
-        elif self.group.name == 'Field Engineer':
-            self.project = None
-        elif self.group.name == 'Project Manager':
-            self.site = None
-        elif self.group.name in ['Community Member']:
-            self.site = None
+    # def save(self, *args, **kwargs):
+    #     if self.group.name == 'Super Admin':
+    #         self.project = None
+    #         self.site = None
+    #     elif self.group.name == 'Field Engineer':
+    #         self.project = None
+    #     elif self.group.name == 'Project Manager':
+    #         self.site = None
+    #     elif self.group.name in ['Community Member']:
+    #         self.site = None
+    #
+    #     super(UserRole, self).save(*args, **kwargs)
+    #
+    # def update(self, *args, **kwargs):
+    #     if self.group.name == 'Super Admin':
+    #         self.project = None
+    #         self.site = None
+    #     elif self.group.name == 'Field Engineer':
+    #         self.project = None
+    #     elif self.group.name == 'Project Manager':
+    #         self.site = None
+    #     elif self.group.name in ['Community Member']:
+    #         self.site = None
+    #
+    #     super(UserRole, self).save(*args, **kwargs)
 
-        super(UserRole, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.group.name
 
-    def update(self, *args, **kwargs):
-        if self.group.name == 'Super Admin':
-            self.project = None
-            self.site = None
-        elif self.group.name == 'Field Engineer':
-            self.project = None
-        elif self.group.name == 'Project Manager':
-            self.site = None
-        elif self.group.name in ['Community Member']:
-            self.site = None
+    @staticmethod
+    def get_active_roles(user):
+        return UserRole.objects.filter(user=user).select_related()
 
-        super(UserRole, self).save(*args, **kwargs)
+
+class FieldEngineerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='field_engineer')
+    first_name = models.CharField(max_length=250)
+    last_name = models.CharField(max_length=250)
+    email = models.EmailField(blank=True)
+    phone_number = models.CharField(max_length=250, blank=True)
+
+
+class AdminProfile(UserRole):
+    phone_number = models.CharField(max_length=250, blank=True)

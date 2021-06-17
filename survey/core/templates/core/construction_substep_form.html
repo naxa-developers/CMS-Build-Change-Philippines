@@ -1,0 +1,185 @@
+{% extends "_base.html" %}
+
+{% load static %}
+{% block extra_css %}
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+    <script type="text/javascript" src="{% static 'assets/formset/jquery.formset.js' %}"></script>
+{% endblock %}
+{% block content %}
+<head>
+<script type="text/javascript">
+        $(function() {
+            $(".inline.{{ primary_photo_form.prefix }}").formset({
+                prefix: "{{ primary_photo_form.prefix }}",
+            })
+
+        })
+
+     $(function() {
+            $(".inline.{{ good_photo_form.prefix }}").formset({
+                prefix: "{{ good_photo_form.prefix }}",
+            })
+
+        })
+
+     $(function() {
+            $(".inline.{{ bad_photo_form.prefix }}").formset({
+                prefix: "{{ bad_photo_form.prefix }}",
+            })
+
+        })
+    </script>
+</head>
+<div class="col-md-12">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">{% if request.user.is_superuser %}
+            <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">{{ project }}</a></li>
+            {% if step %}
+            <li class="breadcrumb-item"><a href="{% url 'core:construction_substeps_update' step.pk %}">{{ step }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ step }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Construction Substep</li>
+            {% endif %}
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+            {% if step %}
+            <li class="breadcrumb-item"><a href="{% url 'core:construction_substeps_update' step.pk %}">{{ step }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit {{ step }}</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">New Construction Substep</li>
+            {% endif %}
+            {% endif %}
+        </ol>
+    </nav>
+</div>
+<body>
+<!--                 </div>
+                    <div class="col-md-8 col-lg-9">
+                        <div class="dash-left">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="widget-info margin-top-large">
+                                        <div class="widget-head">
+                                            <h4><a href="#" title="">Construction Substep</a></h4>
+                                        </div>
+                                        <div class="widget-body">
+        <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}
+            <div>
+                {{ form.as_p }}
+            </div>
+            <fieldset>
+                <legend>Primary Photo</legend>
+                {{ primary_photo_form.management_form }}
+                {{ primary_photo_form.non_form_errors }}
+                {% for form in primary_photo_form %}
+                    {{ form.id }}
+                    <div class="inline {{ primary_photo_form.prefix }}">
+                        {{ form.image.errors }}
+                        {{ form.image.label_tag }}
+                        {{ form.image }}
+
+
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+              <fieldset>
+                <legend>Good Photo</legend>
+                {{ good_photo_form.management_form }}
+                {{ good_photo_form.non_form_errors }}
+                {% for form in good_photo_form %}
+                    {{ form.id }}
+                    <div class="inline {{ good_photo_form.prefix }}">
+                        {{ form.image.errors }}
+                        {{ form.image.label_tag }}
+                        {{ form.image }}
+
+
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+              <fieldset>
+                <legend>Bad Photo</legend>
+                {{ bad_photo_form.management_form }}
+                {{ bad_photo_form.non_form_errors }}
+                {% for form in bad_photo_form %}
+                    {{ form.id }}
+                    <div class="inline {{ bad_photo_form.prefix }}">
+                        {{ form.image.errors }}
+                        {{ form.image.label_tag }}
+                        {{ form.image }}
+
+
+                    </div>
+                {% endfor %}
+            </fieldset>
+
+
+
+            <input type="submit" class="btn-primary"/>
+        </form>
+    </div>
+    </div></div></div></div></div></div> -->
+
+    <div class="formHolder">
+        <div class="widget-info margin-top-large">
+            <div class="widget-head">
+                <div class="widget-body mt-2 horizontalForm">
+                <div class="widget-head">
+                    <h4><a href="#" title="">Construction Substep</a></h4>
+                </div>
+                    <form action="" method="post" enctype="multipart/form-data"> {% csrf_token %}
+                        <div>
+                        {{ form.as_p }} </div>
+                        <div class="">
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Primary Photo</label>
+                            {{ primary_photo_form.management_form }}
+                            {{ primary_photo_form.non_form_errors }}
+                            {% for form in primary_photo_form %}
+                            {{ form.id }}
+                            <div class="inline {{ primary_photo_form.prefix }}">
+                                {{ form.image.errors }}
+                                {{ form.image.label_tag }}
+                                {{ form.image }}
+                            </div>
+                            {% endfor %}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Good Photo</label>
+                            {{ good_photo_form.management_form }}
+                            {{ good_photo_form.non_form_errors }}
+                            {% for form in good_photo_form %}
+                            {{ form.id }}
+                            <div class="inline {{ good_photo_form.prefix }}">
+                                {{ form.image.errors }}
+                                {{ form.image.label_tag }}
+                                {{ form.image }}
+                            </div>
+                            {% endfor %}
+                            </div>
+                            <div class="form-group col-md-12">
+                            <label for="inputSchoolName">Bad Photo</label>
+                            {{ bad_photo_form.management_form }}
+                            {{ bad_photo_form.non_form_errors }}
+                            {% for form in bad_photo_form %}
+                            {{ form.id }}
+                            <div class="inline {{ bad_photo_form.prefix }}">
+                                {{ form.image.errors }}
+                                {{ form.image.label_tag }}
+                                {{ form.image }}
+                            </div>
+                            {% endfor %}
+                            </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-success"><i class="la la-plus"></i> Submit</button>
+                         </div>                    
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

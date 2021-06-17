@@ -1,0 +1,143 @@
+{% extends '_base.html' %}
+
+{% load static %}
+{% load render_bundle from webpack_loader %}
+{% load get_files from webpack_loader %}
+
+{% block content %}
+
+<style>
+table {
+    width: 100%;
+}
+
+thead, tbody, tr, td, th { display: block; }
+
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
+}
+
+thead th {
+    height: 30px;
+
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 450px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+
+tbody td, thead th {
+    width: 207px;
+    float: left;
+}
+</style>
+
+    <div class="row no-gutters">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">{% if request.user.is_superuser %}
+                    <li class="breadcrumb-item"><a href="{% url 'core:admin_dashboard' %}">Dashboard</a></li>
+                    {% else %}<li class="breadcrumb-item"><a href="{% url 'core:project_dashboard' project.pk %}">Dashboard</a></li>
+                    {% endif %}<li class="breadcrumb-item active" aria-current="page">Category List</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+<!--         <div class="col-md-8 col-lg-9">
+            <div class="dash-left">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="widget-info margin-top-large">
+                            <div class="widget-head">
+                                <h4><a href="#" title="">Category</a></h4>
+                            </div>
+                            <div class="widget-body">
+                                    {% for category in category_list %}
+                                        <a href="{% url 'core:category_update' category.pk %}"><h5>
+                                            {{ forloop.counter }}. {{ category }}</h5></a><a href="{% url 'core:category_delete' category.pk%}">Delete</a>
+                                        <br>
+                                        {% empty %}
+                                         <p>Not Categories Found.</p>
+                                    {% endfor %}
+
+                               <br>
+                                <strong><a href="{% url 'core:category_create' project.pk %}">Create
+                                    New</a></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!--<div class="formHolder">-->
+        <!--<div class="widget-info margin-top-large">-->
+            <!--<div class="widget-head">-->
+                <!--<div class="widget-body mt-2 horizontalForm">-->
+                    <!--<div class="widget-head">-->
+                        <!--<h4><a href="#" title="">Category</a></h4>-->
+                    <!--</div>-->
+                    <!--<div class="widget-body">-->
+                        <!--{% for category in category_list %}-->
+                                        <!--<a href="{% url 'core:category_update' category.pk %}"><h5>-->
+                                            <!--{{ forloop.counter }}. {{ category }}</h5></a><a href="{% url 'core:category_delete' category.pk%}">Delete</a>-->
+                                        <!--<br>-->
+                                        <!--{% empty %}-->
+                                         <!--<p>Not Categories Found.</p>-->
+                                    <!--{% endfor %}-->
+                                    <!--<br>-->
+                                    <!--<strong><a href="{% url 'core:category_create' project.pk %}">Create New</a></strong>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+        <div class="d-flex justify-content-center">
+            <div class="col-md-2 col-lg-9"><a href="{% url 'core:category_create' project.pk %}" title=""
+                                              class="btn btn-sm btn-xs btn-primary"><i
+                    class="la la-plus"></i>Add New Category</a>
+                <div class="dash-right">
+                    <div class="widget-info margin-top-large">
+                        <!--<div id="table-wrapper">-->
+                            <!--<div id="table-scroll">-->
+                                <table id="gallery" class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>S.N</th>
+                                        <th>Title</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for category in category_list %}
+                                    <tr>
+                                        <td class="filterable-cell">{{forloop.counter}}</td>
+                                        <td class="filterable-cell"><a href="{% url 'core:category_material' category.pk %}">{{category.name}}</a></td>
+                                        <td class="filterable-cell"><a href="{% url 'core:category_update' category.pk %}">Edit</a></td>
+                                        <td class="filterable-cell"><a href="{% url 'core:category_delete' category.pk %}">Delete</a></td>
+                                    </tr>
+                                    {%endfor%}
+                                    </tbody>
+                                </table>
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}
+{% block  extra_script %}
+    {% render_bundle 'project' 'js' %}
+{% endblock extra_script %}
