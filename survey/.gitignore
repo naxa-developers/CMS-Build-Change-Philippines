@@ -1,5 +1,13 @@
+#Django
+static/
 db.sqlite3
+*.pgsql
+pip-selfcheck.json
+ 
+#BashUtils
+nohup.out
 
+# Pycharm
 *.pyc
 .idea/*
 .idea/workspace.xml
@@ -182,6 +190,7 @@ celerybeat-schedule
 venv/
 ENV/
 virtualenvs/
+bin
 
 # Spyder project settings
 .spyderproject
@@ -200,5 +209,6 @@ package-lock.json
 
 #mediafiles
 media/
-
+*.pdf
+*.zip
 webpack-stats-local.json
